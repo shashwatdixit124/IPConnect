@@ -49,7 +49,7 @@ void Messenger::handleConnection()
     qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
     m_client = new Client();
-    m_client->setSocket(m_socket);
+    m_client->setSocketDescriptor(m_socket->socketDescriptor());
     m_client->moveToThread(m_thread);
     qDebug() << m_client << "moved to thread " << m_thread;
 }

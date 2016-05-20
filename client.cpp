@@ -10,15 +10,16 @@ Client::~Client()
     qDebug() << this << "Client Destroyed";
 }
 
-void Client::setSocket(QTcpSocket *socket)
+void Client::setSocketDescriptor(qintptr desc)
 {
-    m_socket = socket;
-    connect(m_socket,&QTcpSocket::connected, this, &Client::connected);
-    connect(m_socket,&QTcpSocket::disconnected, this, &Client::disconnected);
-    connect(m_socket,&QTcpSocket::readyRead, this, &Client::readyRead);
-    connect(m_socket,&QTcpSocket::bytesWritten, this, &Client::bytesWritten);
-    connect(m_socket,&QTcpSocket::stateChanged, this, &Client::stateChanged);
-    connect(m_socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&Client::error);
+    m_socket = new QTcpSocket(this);
+    m_socket->setSocketDescriptor(desc);
+    connect(m_socket,&QTcpSocket::connected, this, &Client::connected,Qt::DirectConnection);
+    connect(m_socket,&QTcpSocket::disconnected, this, &Client::disconnected,Qt::DirectConnection);
+    connect(m_socket,&QTcpSocket::readyRead, this, &Client::readyRead,Qt::DirectConnection);
+    connect(m_socket,&QTcpSocket::bytesWritten, this, &Client::bytesWritten,Qt::DirectConnection);
+    connect(m_socket,&QTcpSocket::stateChanged, this, &Client::stateChanged,Qt::DirectConnection);
+    connect(m_socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&Client::error,Qt::DirectConnection);
 }
 
 void Client::connected()

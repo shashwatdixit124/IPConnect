@@ -34,8 +34,6 @@ private:
     ConnectDialog *m_connectDialog;
     Client *m_client;
 
-    QList<Client*> m_clientList;
-
 public slots:
     void readyRead();
     void bytesWritten(qint64 bytes);
