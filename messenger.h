@@ -2,11 +2,13 @@
 #define MESSENGER_H
 
 #include <QDebug>
+#include <QList>
 #include <QMainWindow>
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QThread>
 
+#include "client.h"
 #include "connectdialog.h"
 
 namespace Ui {
@@ -30,6 +32,9 @@ private:
     QThread *m_thread;
 
     ConnectDialog *m_connectDialog;
+    Client *m_client;
+
+    QList<Client*> m_clientList;
 
 public slots:
     void readyRead();

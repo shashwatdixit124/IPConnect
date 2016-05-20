@@ -48,10 +48,10 @@ void Messenger::handleConnection()
 {
     qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
-    connect(m_socket,&QTcpSocket::readyRead,this,&Messenger::readyRead,Qt::QueuedConnection);
-    connect(m_socket,&QTcpSocket::bytesWritten,this,&Messenger::bytesWritten,Qt::QueuedConnection);
-    m_socket->moveToThread(m_thread);
-    qDebug() << m_socket << "moved to thread " << m_thread;
+    m_client = new Client();
+    m_client->setSocket(m_socket);
+    m_client->moveToThread(m_thread);
+    qDebug() << m_client << "moved to thread " << m_thread;
 }
 
 void Messenger::serverDestroyed()

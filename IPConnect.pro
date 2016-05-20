@@ -15,10 +15,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         messenger.cpp \
-    connectdialog.cpp
+    connectdialog.cpp \
+    client.cpp
 
 HEADERS  += messenger.h \
-    connectdialog.h
+    connectdialog.h \
+    client.h
 
 FORMS    += messenger.ui \
     connectdialog.ui
