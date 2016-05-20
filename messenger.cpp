@@ -59,3 +59,9 @@ void Messenger::serverDestroyed()
     qDebug() << this << "Server Destroyed";
     m_thread->deleteLater();
 }
+
+void Messenger::on_actionConnect_triggered()
+{
+    qDebug() << this << "connect Clicked";
+    m_connectDialog = new ConnectDialog(this);
+}

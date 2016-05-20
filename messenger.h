@@ -7,6 +7,8 @@
 #include <QTcpServer>
 #include <QThread>
 
+#include "connectdialog.h"
+
 namespace Ui {
 class Messenger;
 }
@@ -27,12 +29,16 @@ private:
     QTcpSocket *m_socket;
     QThread *m_thread;
 
+    ConnectDialog *m_connectDialog;
+
 public slots:
     void readyRead();
     void bytesWritten(qint64 bytes);
     void handleConnection();
     void serverDestroyed();
 
+private slots:
+    void on_actionConnect_triggered();
 };
 
 #endif // MESSENGER_H
