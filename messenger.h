@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QTcpSocket>
 #include <QTcpServer>
+#include <QThread>
 
 namespace Ui {
 class Messenger;
@@ -24,6 +25,7 @@ private:
     Ui::Messenger *ui;
     QTcpServer m_server;
     QTcpSocket *m_socket;
+    QThread *m_thread;
 
 public slots:
     void readyRead();

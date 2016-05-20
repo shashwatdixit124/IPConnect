@@ -15,6 +15,7 @@ Messenger::Messenger(QWidget *parent) :
 
 Messenger::~Messenger()
 {
+    qDebug() << this << "Messenger Destroyed";
     delete ui;
 }
 
@@ -28,12 +29,14 @@ void Messenger::startServer()
     {
         qDebug() << this << "Server Could not start";
     }
+
+    m_thread = new QThread(this);
+    qDebug() << this << "Created new QThread " << m_thread ;
 }
 
 void Messenger::readyRead()
 {
-    qDebug() << this << "incomming Data through socket " << m_socket;
-    m_socket->write(m_socket->readAll());
+    qDebug() << this << "incomming Data ";
 }
 
 void Messenger::bytesWritten(qint64 bytes)
@@ -45,11 +48,14 @@ void Messenger::handleConnection()
 {
     qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
-    connect(m_socket,&QTcpSocket::readyRead,this,&Messenger::readyRead);
-    connect(m_socket,&QTcpSocket::bytesWritten,this,&Messenger::bytesWritten);
+    connect(m_socket,&QTcpSocket::readyRead,this,&Messenger::readyRead,Qt::QueuedConnection);
+    connect(m_socket,&QTcpSocket::bytesWritten,this,&Messenger::bytesWritten,Qt::QueuedConnection);
+    m_socket->moveToThread(m_thread);
+    qDebug() << m_socket << "moved to thread " << m_thread;
 }
 
 void Messenger::serverDestroyed()
 {
     qDebug() << this << "Server Destroyed";
+    m_thread->deleteLater();
 }
