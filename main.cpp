@@ -1,12 +1,13 @@
-#include "messenger.h"
 #include <QApplication>
+
+#include "messenger.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Messenger w;
-    w.setWindowTitle("IPConnect");
-    w.show();
+    Messenger app;
+    app.setWindowTitle("IPConnect");
+    app.show();
 
     return a.exec();
 }

@@ -1,9 +1,10 @@
 #ifndef MESSENGER_H
 #define MESSENGER_H
 
+#include <QDebug>
 #include <QMainWindow>
-#include <QTcpServer>
 #include <QTcpSocket>
+#include <QTcpServer>
 
 namespace Ui {
 class Messenger;
@@ -23,6 +24,13 @@ private:
     Ui::Messenger *ui;
     QTcpServer m_server;
     QTcpSocket *m_socket;
+
+public slots:
+    void readyRead();
+    void bytesWritten(qint64 bytes);
+    void handleConnection();
+    void serverDestroyed();
+
 };
 
 #endif // MESSENGER_H
