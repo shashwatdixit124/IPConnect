@@ -33,6 +33,7 @@ protected slots:
 public slots:
     void start();
     void quit();
+    void accept(qintptr handle, Client *client, bool server);
 };
 
 #endif // CLIENTMANAGER_H

@@ -10,10 +10,9 @@ Client::~Client()
     qDebug() << this << "Client Destroyed";
 }
 
-void Client::setSocketDescriptor(qintptr desc)
+void Client::setSocket(QTcpSocket *socket)
 {
-    m_socket = new QTcpSocket(this);
-    m_socket->setSocketDescriptor(desc);
+    m_socket = socket;
     connect(m_socket,&QTcpSocket::connected, this, &Client::connected,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::disconnected, this, &Client::disconnected,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::readyRead, this, &Client::readyRead,Qt::DirectConnection);

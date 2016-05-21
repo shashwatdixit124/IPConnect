@@ -77,3 +77,25 @@ void ClientManager::quit()
         removeSocket(socket);
     }
 }
+
+void ClientManager::accept(qintptr handle, Client *client, bool server)
+{
+    QTcpSocket *socket = new QTcpSocket(this);
+
+    if(!socket->setSocketDescriptor(handle))
+    {
+        qWarning() << this << "could not accept connection" << handle;
+        client->deleteLater();
+        return;
+    }
+
+    connect(socket,&QTcpSocket::disconnected, this, &ClientManager::disconnected);
+    connect(socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&ConnectionManager::error);
+
+    client->moveToThread(QThread::currentThread());
+    client->setSocket(socket);
+
+    m_clients.insert(socket,client);
+    qDebug() << this << "clients = " << m_clients.count();
+    emit socket->connected();
+}

@@ -36,6 +36,9 @@ private:
     Client *m_client;
     ClientManager *m_manager;
 
+signals:
+    void accepting(qintptr handle, Client *client, bool server);
+
 public slots:
     void readyRead();
     void bytesWritten(qint64 bytes);

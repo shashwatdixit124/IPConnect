@@ -12,7 +12,7 @@ public:
     explicit Client(QObject *parent = 0);
     ~Client();
 
-    void setSocketDescriptor(qintptr desc);
+    void setSocket(QTcpSocket *socket);
 
 
 protected:
