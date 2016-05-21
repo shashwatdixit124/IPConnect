@@ -9,6 +9,7 @@
 #include <QThread>
 
 #include "client.h"
+#include "clientmanager.h"
 #include "connectdialog.h"
 
 namespace Ui {
@@ -33,12 +34,14 @@ private:
 
     ConnectDialog *m_connectDialog;
     Client *m_client;
+    ClientManager *m_manager;
 
 public slots:
     void readyRead();
     void bytesWritten(qint64 bytes);
     void handleConnection();
     void serverDestroyed();
+    void threadFinished();
 
 private slots:
     void on_actionConnect_triggered();

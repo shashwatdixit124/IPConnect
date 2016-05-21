@@ -27,7 +27,6 @@ private:
 
 
 protected slots:
-
     void disconnected();
     void error(QAbstractSocket::SocketError socketError);
 

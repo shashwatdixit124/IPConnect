@@ -21,6 +21,15 @@ Messenger::~Messenger()
 
 void Messenger::startServer()
 {
+    m_manager = new ClientManager();
+    qDebug() << this << "Created new Client Manager " << m_manager ;
+    m_thread = new QThread(this);
+    qDebug() << this << "Created new QThread " << m_thread ;
+    connect(m_thread,&QThread::finished,this,&Messenger::threadFinished);
+    connect(m_thread,&QThread::started,m_manager,&ClientManager::start, Qt::QueuedConnection);
+    m_manager->moveToThread(m_thread);
+    qDebug() << this << "Client Manager moved to thread " << m_thread;
+    m_thread->start();
     if(this->m_server.listen(QHostAddress::Any, 2424))
     {
         qDebug() << this << "Server started  ";
@@ -29,9 +38,6 @@ void Messenger::startServer()
     {
         qDebug() << this << "Server Could not start";
     }
-
-    m_thread = new QThread(this);
-    qDebug() << this << "Created new QThread " << m_thread ;
 }
 
 void Messenger::readyRead()
@@ -58,6 +64,11 @@ void Messenger::serverDestroyed()
 {
     qDebug() << this << "Server Destroyed";
     m_thread->deleteLater();
+}
+
+void Messenger::threadFinished()
+{
+    qDebug() << this << "Thread finished " << m_thread;
 }
 
 void Messenger::on_actionConnect_triggered()
