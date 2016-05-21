@@ -16,11 +16,24 @@ public:
     explicit ClientManager(QObject *parent = 0);
     ~ClientManager();
 
+    int count();
+
+protected:
+    void removeSocket(QTcpSocket *socket);
+
+private:
+    QMap<QTcpSocket*, Client*> m_clients;
+    QTcpSocket *socket;
+
+
 protected slots:
 
-signals:
+    void disconnected();
+    void error(QAbstractSocket::SocketError socketError);
 
 public slots:
+    void start();
+    void quit();
 };
 
 #endif // CLIENTMANAGER_H
