@@ -16,6 +16,11 @@ Messenger::Messenger(QWidget *parent) :
 Messenger::~Messenger()
 {
     qDebug() << this << "Messenger Destroyed";
+    if(m_thread->isRunning())
+    {
+        m_thread->deleteLater();
+        m_thread->quit();
+    }
     delete ui;
 }
 
@@ -56,10 +61,10 @@ void Messenger::handleConnection()
     qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
     m_client = new Client();
-    m_client->setSocketDescriptor(m_socket->socketDescriptor());
+    m_client->setSocket(m_socket);
     m_client->moveToThread(m_thread);
     qDebug() << m_client << "moved to thread " << m_thread;
-    emit accepting(m_socket->socketDescriptor(),connection,true);
+    emit accepting(m_socket->socketDescriptor(),m_client,true);
 }
 
 void Messenger::serverDestroyed()

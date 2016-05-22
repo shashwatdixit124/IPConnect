@@ -90,7 +90,7 @@ void ClientManager::accept(qintptr handle, Client *client, bool server)
     }
 
     connect(socket,&QTcpSocket::disconnected, this, &ClientManager::disconnected);
-    connect(socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&ConnectionManager::error);
+    connect(socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&ClientManager::error);
 
     client->moveToThread(QThread::currentThread());
     client->setSocket(socket);
