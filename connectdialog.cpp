@@ -22,7 +22,7 @@ void ConnectDialog::on_pushButton_clicked()
     if(!ui->lineEdit->text().isEmpty())
     {
         this->close();
-        qDebug() << this << "IP Address Selected is " << ui->lineEdit->text();
+        emit connect(ui->lineEdit->text());
     }
 }
 

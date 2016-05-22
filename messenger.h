@@ -33,6 +33,7 @@ private:
     QTcpSocket *m_socket;
     QThread *m_thread;
     QString m_MyUsername;
+    QMap<QString , Client*> m_users;
 
     ConnectDialog *m_connectDialog;
     Client *m_client;
@@ -40,6 +41,7 @@ private:
 
 signals:
     void accepting(qintptr handle, Client *client, bool server);
+    void connectToHost(Client* , QString, int);
 
 public slots:
     void readyRead();

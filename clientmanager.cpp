@@ -101,3 +101,20 @@ void ClientManager::accept(qintptr handle, Client *client, bool server)
     qDebug() << this << "clients = " << m_clients.count();
     emit socket->connected();
 }
+
+void ClientManager::connectToHost(Client *t_client, QString t_addr, int t_port)
+{
+    qDebug() << this << "inside connect to host";
+    m_socket = new QTcpSocket();
+    t_client->setSocket(socket);
+    t_client->moveToThread(QThread::currentThread());
+    qDebug() << this << "socket is " << t_client->getSocket();
+    connect(socket,&QTcpSocket::disconnected, this, &ClientManager::disconnected);
+    connect(socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&ClientManager::error);
+
+    m_socket->connectToHost(t_addr,t_port);
+    qDebug() << this << "socketDescriptor of manual connection = " << t_client->getSocket()->socketDescriptor() ;
+    m_clients.insert(socket,t_client);
+    qDebug() << this << "clients = " << m_clients.count();
+    emit m_socket->connected();
+}

@@ -33,9 +33,10 @@ protected slots:
     void error(QAbstractSocket::SocketError socketError);
 
 public slots:
-    void start();
+    void accept(qintptr, Client *, bool );
+    void connectToHost(Client*, QString, int);
     void quit();
-    void accept(qintptr handle, Client *client, bool server);
+    void start();
 };
 
 #endif // CLIENTMANAGER_H
