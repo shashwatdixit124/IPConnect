@@ -40,15 +40,17 @@ private:
     ClientManager *m_manager;
 
 signals:
-    void accepting(qintptr handle, Client *client, bool server);
+    void accepting(qintptr, Client*, bool);
     void connectToHost(Client* , QString, int);
 
 public slots:
-    void readyRead();
-    void bytesWritten(qint64 bytes);
+    void bytesWritten(qint64);
     void handleConnection();
+    void readyRead();
+    void removeUser(QString);
     void serverDestroyed();
     void threadFinished();
+    void updateList(QString, Client*);
 
 private slots:
     void on_actionConnect_triggered();
