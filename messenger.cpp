@@ -52,13 +52,9 @@ void Messenger::startServer()
     qDebug() << this << "Client Manager moved to thread " << m_thread;
     m_thread->start();
     if(this->m_server.listen(QHostAddress::Any, 2424))
-    {
         qDebug() << this << "Server started  ";
-    }
     else
-    {
         qDebug() << this << "Server Could not start";
-    }
 }
 
 void Messenger::readyRead()

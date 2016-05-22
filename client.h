@@ -28,6 +28,7 @@ protected:
 
 signals:
     void destroyingConnection(QString);
+
 public slots:
     void connected();
     void disconnected();

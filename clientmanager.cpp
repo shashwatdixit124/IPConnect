@@ -79,26 +79,28 @@ void ClientManager::quit()
     emit finished();
 }
 
-void ClientManager::accept(qintptr handle, Client *client, bool server)
+void ClientManager::accept(qintptr t_handle, Client *t_client, bool t_server)
 {
-    qDebug() << this << "accepting for a client for server = "<<server;
+    qDebug() << this << "accepting for a client for server = "<<t_server;
     QTcpSocket *socket = new QTcpSocket(this);
 
-    if(!socket->setSocketDescriptor(handle))
+    if(!socket->setSocketDescriptor(t_handle))
     {
-        qWarning() << this << "could not accept connection" << handle;
-        client->deleteLater();
+        qWarning() << this << "could not accept connection" << t_handle;
+        t_client->deleteLater();
         return;
     }
 
     connect(socket,&QTcpSocket::disconnected, this, &ClientManager::disconnected);
     connect(socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&ClientManager::error);
 
-    client->moveToThread(QThread::currentThread());
-    client->setSocket(socket);
+    t_client->moveToThread(QThread::currentThread());
+    t_client->setSocket(socket);
 
-    m_clients.insert(socket,client);
+    m_clients.insert(socket,t_client);
     qDebug() << this << "clients = " << m_clients.count();
+    if(t_server)
+        t_client->sendDetail();
     emit socket->connected();
 }
 
