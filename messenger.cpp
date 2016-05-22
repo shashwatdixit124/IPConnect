@@ -6,7 +6,7 @@ Messenger::Messenger(QWidget *parent) :
     ui(new Ui::Messenger)
 {
     ui->setupUi(this);
-    m_MyUsername = "test";
+    m_MyUsername = "Shashwat";
     connect(&m_server,&QTcpServer::newConnection,this,&Messenger::handleConnection);
     connect(&m_server,&QTcpServer::destroyed,this,&Messenger::serverDestroyed);
 
@@ -72,7 +72,8 @@ void Messenger::handleConnection()
     qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
     m_client = new Client();
-    connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
+    connect(m_client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
+    connect(m_client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
     m_client->setSocket(m_socket);
     m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);

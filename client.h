@@ -25,6 +25,14 @@ public:
 protected:
     QString m_ClientUsername;
     QString m_MyUsername;
+    bool m_detailAccepted;
+    bool m_detailSent;
+    QMap<QString, QString> m_request;
+    QMap<QString, QString> m_response;
+
+private:
+    void processRead(QByteArray);
+    void handleRequest();
 
 signals:
     void capturedDetail(QString, Client*);
