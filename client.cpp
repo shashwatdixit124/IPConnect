@@ -8,9 +8,10 @@ Client::Client(QObject *parent) : QObject(parent)
 Client::~Client()
 {
     qDebug() << this << "Client Destroyed";
+    emit destroyingConnection(m_ClientUsername);
 }
 
-QTcpSocket *Client::getSocket()
+const QTcpSocket *Client::getSocket()
 {
     return m_socket;
 }

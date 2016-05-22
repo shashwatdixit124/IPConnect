@@ -76,10 +76,12 @@ void ClientManager::quit()
     {
         removeSocket(socket);
     }
+    emit finished();
 }
 
 void ClientManager::accept(qintptr handle, Client *client, bool server)
 {
+    qDebug() << this << "accepting for a client for server = "<<server;
     QTcpSocket *socket = new QTcpSocket(this);
 
     if(!socket->setSocketDescriptor(handle))

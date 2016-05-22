@@ -6,7 +6,7 @@ Messenger::Messenger(QWidget *parent) :
     ui(new Ui::Messenger)
 {
     ui->setupUi(this);
-
+    m_MyUsername = "test";
     connect(&m_server,&QTcpServer::newConnection,this,&Messenger::handleConnection);
     connect(&m_server,&QTcpServer::destroyed,this,&Messenger::serverDestroyed);
 
@@ -24,6 +24,19 @@ Messenger::~Messenger()
     delete ui;
 }
 
+void Messenger::connectManually(QString address)
+{
+    qDebug() << this << "Connect Manually Called with address " << address;
+
+    Client* client = new Client();
+    connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
+    client->setUsername(m_MyUsername);
+    client->moveToThread(m_thread);
+
+    emit connectToHost(client,address,2424);
+    qDebug() << this << "connected to host" ;
+}
+
 void Messenger::startServer()
 {
     m_manager = new ClientManager();
@@ -33,6 +46,7 @@ void Messenger::startServer()
     connect(this, &Messenger::accepting,m_manager,&ClientManager::accept, Qt::QueuedConnection);
     connect(m_thread,&QThread::started,m_manager,&ClientManager::start, Qt::QueuedConnection);
     connect(m_thread,&QThread::finished,this,&Messenger::threadFinished);
+    connect(m_manager,&ClientManager::finished,m_manager,&ClientManager::quit,Qt::QueuedConnection);
     m_manager->moveToThread(m_thread);
     qDebug() << this << "Client Manager moved to thread " << m_thread;
     m_thread->start();
@@ -70,7 +84,11 @@ void Messenger::handleConnection()
 void Messenger::serverDestroyed()
 {
     qDebug() << this << "Server Destroyed";
-    m_thread->deleteLater();
+    if(m_thread->isRunning())
+    {
+        m_thread->deleteLater();
+        m_thread->quit();
+    }
 }
 
 void Messenger::threadFinished()
@@ -82,4 +100,5 @@ void Messenger::on_actionConnect_triggered()
 {
     qDebug() << this << "connect Clicked";
     m_connectDialog = new ConnectDialog(this);
+    connect(m_connectDialog,&ConnectDialog::connect,this,&Messenger::connectManually);
 }

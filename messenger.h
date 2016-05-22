@@ -24,6 +24,7 @@ public:
     explicit Messenger(QWidget *parent = 0);
     ~Messenger();
 
+    void connectManually(QString);
     void startServer();
 
 private:
@@ -31,6 +32,7 @@ private:
     QTcpServer m_server;
     QTcpSocket *m_socket;
     QThread *m_thread;
+    QString m_MyUsername;
 
     ConnectDialog *m_connectDialog;
     Client *m_client;

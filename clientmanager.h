@@ -23,8 +23,10 @@ protected:
 
 private:
     QMap<QTcpSocket*, Client*> m_clients;
-    QTcpSocket *socket;
+    QTcpSocket *m_socket;
 
+signals:
+    void finished();
 
 protected slots:
     void disconnected();

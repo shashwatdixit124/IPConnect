@@ -13,7 +13,7 @@ public:
     ~Client();
 
 
-    QTcpSocket *getSocket();
+    const QTcpSocket *getSocket();
 
     void setClientUsername(const QString);
     void sendDetail();
@@ -27,7 +27,7 @@ protected:
     QString m_MyUsername;
 
 signals:
-
+    void destroyingConnection(QString);
 public slots:
     void connected();
     void disconnected();
