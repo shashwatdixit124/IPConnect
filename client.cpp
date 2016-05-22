@@ -31,7 +31,6 @@ void Client::sendDetail()
     }
     else
         qDebug() << this << "socket not available on greetings";
-
 }
 
 void Client::setSocket(QTcpSocket *t_socket)

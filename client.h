@@ -27,6 +27,7 @@ protected:
     QString m_MyUsername;
 
 signals:
+    void capturedDetail(QString, Client*);
     void destroyingConnection(QString);
 
 public slots:

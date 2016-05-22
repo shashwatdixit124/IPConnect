@@ -30,9 +30,9 @@ void Messenger::connectManually(QString address)
 
     Client* client = new Client();
     connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
+    connect(client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
     client->setUsername(m_MyUsername);
     client->moveToThread(m_thread);
-
     emit connectToHost(client,address,2424);
     qDebug() << this << "connected to host" ;
 }
@@ -72,7 +72,9 @@ void Messenger::handleConnection()
     qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
     m_client = new Client();
+    connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
+    m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);
     qDebug() << m_client << "moved to thread " << m_thread;
     emit accepting(m_socket->socketDescriptor(),m_client,true);
