@@ -10,15 +10,43 @@ Client::~Client()
     qDebug() << this << "Client Destroyed";
 }
 
-void Client::setSocket(QTcpSocket *socket)
+QTcpSocket *Client::getSocket()
 {
-    m_socket = socket;
+    return m_socket;
+}
+
+void Client::setClientUsername(const QString t_username)
+{
+    m_ClientUsername = t_username;
+}
+
+void Client::sendDetail()
+{
+    qDebug() << this << "Checking for sockets";
+    if(m_socket)
+    {
+        QByteArray message = "IPC:CONNECT:REQUEST:"+m_MyUsername.toUtf8();
+        m_socket->write(message);
+    }
+    else
+        qDebug() << this << "socket not available on greetings";
+
+}
+
+void Client::setSocket(QTcpSocket *t_socket)
+{
+    m_socket = t_socket;
     connect(m_socket,&QTcpSocket::connected, this, &Client::connected,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::disconnected, this, &Client::disconnected,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::readyRead, this, &Client::readyRead,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::bytesWritten, this, &Client::bytesWritten,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::stateChanged, this, &Client::stateChanged,Qt::DirectConnection);
     connect(m_socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&Client::error,Qt::DirectConnection);
+}
+
+void Client::setUsername(const QString t_username)
+{
+    m_MyUsername = t_username;
 }
 
 void Client::connected()

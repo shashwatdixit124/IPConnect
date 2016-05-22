@@ -12,11 +12,19 @@ public:
     explicit Client(QObject *parent = 0);
     ~Client();
 
-    void setSocket(QTcpSocket *socket);
 
+    QTcpSocket *getSocket();
+
+    void setClientUsername(const QString);
+    void sendDetail();
+    void setSocket(QTcpSocket *t_socket);
+    void setUsername(const QString);
+
+    QTcpSocket *m_socket;
 
 protected:
-    QTcpSocket *m_socket;
+    QString m_ClientUsername;
+    QString m_MyUsername;
 
 signals:
 
