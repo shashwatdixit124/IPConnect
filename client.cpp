@@ -45,6 +45,16 @@ void Client::sendDetail()
         qDebug() << this << "socket not available on greetings";
 }
 
+void Client::sendMessage(QString t_message)
+{
+    if(!m_socket) return;
+    qDebug() << this << "writing to " << m_socket;
+    QByteArray socketMessage = "IPC:MESSAGE:TEXT:"+t_message.toUtf8();
+    m_socket->write(socketMessage);
+    m_response.insert("message","IPC:MESSAGE:TEXT:"+t_message);
+    m_socket->waitForBytesWritten();
+}
+
 void Client::setSocket(QTcpSocket *t_socket)
 {
     m_socket = t_socket;
@@ -63,8 +73,8 @@ void Client::setUsername(const QString t_username)
 
 void Client::processRead(QByteArray t_data)
 {
-    qDebug() << this << "Processing GET";
     QString header = t_data;
+    qDebug() << this << "Processing GET header = "<<header;
     m_request.insert("request",header);
     qDebug() << this << "request changed to " << m_request.value("request");
 

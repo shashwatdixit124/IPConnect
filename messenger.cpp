@@ -1,6 +1,8 @@
 #include "messenger.h"
 #include "ui_messenger.h"
 
+#include <QMessageBox>
+
 Messenger::Messenger(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Messenger)
@@ -48,6 +50,7 @@ void Messenger::startServer()
     connect(m_thread,&QThread::finished,this,&Messenger::threadFinished);
     connect(m_manager,&ClientManager::finished,m_manager,&ClientManager::quit,Qt::QueuedConnection);
     connect(this,&Messenger::connectToHost,m_manager,&ClientManager::connectToHost,Qt::QueuedConnection);
+    connect(this, &Messenger::sendMessageRequest,m_manager,&ClientManager::sendMessage, Qt::QueuedConnection);
     m_manager->moveToThread(m_thread);
     qDebug() << this << "Client Manager moved to thread " << m_thread;
     m_thread->start();
@@ -113,6 +116,13 @@ void Messenger::threadFinished()
     qDebug() << this << "Thread finished " << m_thread;
 }
 
+void Messenger::updateList(QString t_detail, Client *t_client)
+{
+    qDebug() << this << "Got the Details " << t_detail;
+    ui->listWidget->addItem(t_detail);
+    m_users.insert(t_detail,t_client);
+}
+
 void Messenger::on_actionConnect_triggered()
 {
     qDebug() << this << "connect Clicked";
@@ -120,9 +130,45 @@ void Messenger::on_actionConnect_triggered()
     connect(m_connectDialog,&ConnectDialog::connect,this,&Messenger::connectManually);
 }
 
-void Messenger::updateList(QString t_detail, Client *t_client)
+void Messenger::on_lineEdit_returnPressed()
 {
-    qDebug() << this << "Got the Details " << t_detail;
-    ui->listWidget->addItem(t_detail);
-    m_users.insert(t_detail,t_client);
+    QString message = ui->lineEdit->text();
+    qDebug() << "return pressed data is " << message;
+    if(!message.isEmpty())
+    {
+        int row = ui->listWidget->currentRow();
+        if(row>=0)
+        {
+            qDebug() << this << "user row is " << row;
+            QListWidgetItem *user = ui->listWidget->item(row);
+            qDebug() << this << "user is " << user;
+            QString username = user->text();
+            qDebug() << this << "user selected " << username;
+            if(m_users.contains(username))
+            {
+                qDebug() << this << "value of username is " << m_users[username];
+
+                if(m_users[username])
+                {
+                    emit sendMessageRequest(message, m_users[username]);
+                    ui->textEdit->append(m_MyUsername+" : "+message);
+                    ui->lineEdit->setText("");
+                }
+                else
+                {
+                    qDebug() << ui->listWidget->currentItem();
+                    QMessageBox msgBox;
+                    msgBox.setText("User Disconnected");
+                    msgBox.exec();
+                }
+            }
+        }
+        else
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Select User to send Message");
+            msgBox.exec();
+        }
+    }
 }
+

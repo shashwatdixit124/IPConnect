@@ -17,6 +17,7 @@ public:
 
     void setClientUsername(const QString);
     void sendDetail();
+    void sendMessage(QString);
     void setSocket(QTcpSocket *t_socket);
     void setUsername(const QString);
 

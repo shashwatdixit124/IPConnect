@@ -17,6 +17,7 @@ public:
     ~ClientManager();
 
     int count();
+    void sendMessage(QString, Client *);
 
 protected:
     void removeSocket(QTcpSocket *socket);

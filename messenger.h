@@ -42,6 +42,7 @@ private:
 signals:
     void accepting(qintptr, Client*, bool);
     void connectToHost(Client* , QString, int);
+    void sendMessageRequest(QString, Client *);
 
 public slots:
     void bytesWritten(qint64);
@@ -54,6 +55,7 @@ public slots:
 
 private slots:
     void on_actionConnect_triggered();
+    void on_lineEdit_returnPressed();
 };
 
 #endif // MESSENGER_H

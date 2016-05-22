@@ -19,6 +19,16 @@ int ClientManager::count()
     return value;
 }
 
+void ClientManager::sendMessage(QString t_message, Client* t_client)
+{
+    try{
+        t_client->sendMessage(t_message);
+    }catch(...)
+    {
+        qDebug()<<this<<"NO User";
+    }
+}
+
 void ClientManager::removeSocket(QTcpSocket *socket)
 {
     if(!socket) return;
