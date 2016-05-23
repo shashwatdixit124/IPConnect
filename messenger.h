@@ -47,6 +47,7 @@ signals:
 public slots:
     void bytesWritten(qint64);
     void handleConnection();
+    void handleMessage(QString);
     void readyRead();
     void removeUser(QString);
     void serverDestroyed();

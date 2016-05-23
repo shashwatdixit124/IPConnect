@@ -134,6 +134,14 @@ void Client::handleRequest()
             }
         }
     }
+    if(method == "MESSAGE")
+    {
+        m_request.insert("message",m_request.value("request"));
+        m_response.insert("app","IPC");
+        m_response.insert("method","MESSAGE");
+
+        if(m_request.value("option") == "TEXT") emit gotMessageRequest(m_ClientUsername+" : "+m_request.value("data"));
+    }
 }
 
 void Client::connected()

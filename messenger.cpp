@@ -33,6 +33,7 @@ void Messenger::connectManually(QString address)
     Client* client = new Client();
     connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
     connect(client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
+    connect(client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     client->setUsername(m_MyUsername);
     client->moveToThread(m_thread);
     emit connectToHost(client,address,2424);
@@ -77,11 +78,18 @@ void Messenger::handleConnection()
     m_client = new Client();
     connect(m_client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
     connect(m_client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
+    connect(m_client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     m_client->setSocket(m_socket);
     m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);
     qDebug() << m_client << "moved to thread " << m_thread;
     emit accepting(m_socket->socketDescriptor(),m_client,true);
+}
+
+void Messenger::handleMessage(QString t_message)
+{
+    qDebug() << this << "Handling Message " << t_message ;
+    ui->textEdit->append(t_message.trimmed());
 }
 
 void Messenger::removeUser(QString t_username)

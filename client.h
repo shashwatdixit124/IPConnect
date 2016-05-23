@@ -38,6 +38,7 @@ private:
 signals:
     void capturedDetail(QString, Client*);
     void destroyingConnection(QString);
+    void gotMessageRequest(QString);
 
 public slots:
     void connected();
