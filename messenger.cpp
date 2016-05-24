@@ -35,6 +35,7 @@ void Messenger::connectManually(QString address)
     connect(client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
     connect(client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     connect(client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
+    connect(client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
     client->setUsername(m_MyUsername);
     client->moveToThread(m_thread);
     emit connectToHost(client,address,2424);
@@ -77,6 +78,13 @@ void Messenger::displayWarning(QString t_title, QString t_message)
     QMessageBox::warning(this,t_title,t_message);
 }
 
+void Messenger::displayQuestion(QString t_title, QString t_filename, QString t_username, qint64 t_size)
+{
+    Q_UNUSED(t_size);
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this,t_title,"Accept "+t_filename+" from "+t_username,QMessageBox::Yes | QMessageBox::No);
+}
+
 void Messenger::handleConnection()
 {
     qDebug() << this << "incomming Connection";
@@ -86,6 +94,7 @@ void Messenger::handleConnection()
     connect(m_client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
     connect(m_client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     connect(m_client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
+    connect(m_client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
     m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);

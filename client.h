@@ -40,6 +40,7 @@ signals:
     void destroyingConnection(QString);
     void gotMessageRequest(QString);
     void warning(QString,QString);
+    void question(QString,QString,QString,qint64);
 
 public slots:
     void connected();
