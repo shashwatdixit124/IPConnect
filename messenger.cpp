@@ -34,6 +34,7 @@ void Messenger::connectManually(QString address)
     connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
     connect(client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
     connect(client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
+    connect(client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
     client->setUsername(m_MyUsername);
     client->moveToThread(m_thread);
     emit connectToHost(client,address,2424);
@@ -71,6 +72,11 @@ void Messenger::bytesWritten(qint64 bytes)
     qDebug() << this << "bytes written = " << bytes << " through socket " << m_socket ;
 }
 
+void Messenger::displayWarning(QString t_title, QString t_message)
+{
+    QMessageBox::warning(this,t_title,t_message);
+}
+
 void Messenger::handleConnection()
 {
     qDebug() << this << "incomming Connection";
@@ -79,6 +85,7 @@ void Messenger::handleConnection()
     connect(m_client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
     connect(m_client,&Client::capturedDetail,this,&Messenger::updateList, Qt::QueuedConnection);
     connect(m_client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
+    connect(m_client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
     m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);

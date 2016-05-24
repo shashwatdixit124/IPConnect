@@ -46,6 +46,7 @@ signals:
 
 public slots:
     void bytesWritten(qint64);
+    void displayWarning(QString,QString);
     void handleConnection();
     void handleMessage(QString);
     void readyRead();
