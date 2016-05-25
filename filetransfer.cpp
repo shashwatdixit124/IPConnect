@@ -5,6 +5,10 @@ FileTransfer::FileTransfer(QObject *parent) : QObject(parent)
     qDebug() << this << "Created";
     m_size = 0;
     m_rate = 0;
+    m_transfering = false;
+    m_error = "";
+    m_source = 0;
+    m_destination = 0;
 }
 
 FileTransfer::~FileTransfer()
