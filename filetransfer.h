@@ -20,6 +20,8 @@ public:
     QString errorString();
     QIODevice *source();
     void setSource(QIODevice *device);
+    QIODevice *destination();
+    void setDestination(QIODevice *device);
 
 signals:
 
@@ -31,6 +33,7 @@ protected:
     bool m_transfering;
     QString m_error;
     QIODevice *m_source;
+    QIODevice *m_destination;
 };
 
 #endif // FILETRANSFER_H

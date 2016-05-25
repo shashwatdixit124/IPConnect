@@ -55,3 +55,14 @@ void FileTransfer::setSource(QIODevice *t_device)
     m_source = t_device;
     qDebug() << this << "Source set to" << t_device;
 }
+
+QIODevice *FileTransfer::destination()
+{
+    return m_destination;
+}
+
+void FileTransfer::setDestination(QIODevice *t_device)
+{
+    m_destination = t_device;
+    qDebug() << this << "Destination set to" << t_device;
+}
