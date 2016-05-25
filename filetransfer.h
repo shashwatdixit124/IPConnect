@@ -25,6 +25,7 @@ public:
     void setDestination(QIODevice *device);
 
 signals:
+    void error();
 
 public slots:
 
@@ -35,6 +36,8 @@ protected:
     QString m_error;
     QIODevice *m_source;
     QIODevice *m_destination;
+
+    bool checkTransfer();
 };
 
 #endif // FILETRANSFER_H

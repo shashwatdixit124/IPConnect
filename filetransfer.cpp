@@ -75,3 +75,16 @@ void FileTransfer::setDestination(QIODevice *t_device)
     m_destination = t_device;
     qDebug() << this << "Destination set to" << t_device;
 }
+
+bool FileTransfer::checkTransfer()
+{
+    if(!m_transfering)
+    {
+        m_error = "Not transfering, aborting!";
+        qDebug() << this << m_error;
+        emit error();
+        return false;
+    }
+
+    return true;
+}
