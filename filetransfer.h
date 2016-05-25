@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QIODevice>
 
 class FileTransfer : public QObject
 {
@@ -17,6 +18,8 @@ public:
     void setSize(int);
     bool isTransfering();
     QString errorString();
+    QIODevice *source();
+    void setSource(QIODevice *device);
 
 signals:
 
@@ -26,6 +29,8 @@ protected:
     int m_rate;
     int m_size;
     bool m_transfering;
+    QString m_error;
+    QIODevice *m_source;
 };
 
 #endif // FILETRANSFER_H

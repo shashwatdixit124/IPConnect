@@ -44,3 +44,14 @@ QString FileTransfer::errorString()
 {
     return m_error;
 }
+
+QIODevice *FileTransfer::source()
+{
+    return m_source;
+}
+
+void FileTransfer::setSource(QIODevice *t_device)
+{
+    m_source = t_device;
+    qDebug() << this << "Source set to" << t_device;
+}
