@@ -12,6 +12,7 @@ public:
     explicit FileTransfer(QObject *parent = 0);
     ~FileTransfer();
 
+    void setDefaults();
     int rate();
     void setRate(int);
     int size();
