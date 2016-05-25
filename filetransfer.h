@@ -15,6 +15,7 @@ public:
     void setRate(int);
     int size();
     void setSize(int);
+    bool isTransfering();
 
 signals:
 
@@ -23,6 +24,7 @@ public slots:
 protected:
     int m_rate;
     int m_size;
+    bool m_transfering;
 };
 
 #endif // FILETRANSFER_H

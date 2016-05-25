@@ -34,3 +34,8 @@ void FileTransfer::setSize(int t_value)
     m_size = t_value;
     qDebug() << this << "Size set to" << t_value;
 }
+
+bool FileTransfer::isTransfering()
+{
+    return m_transfering;
+}
