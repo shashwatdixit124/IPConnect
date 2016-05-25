@@ -39,3 +39,8 @@ bool FileTransfer::isTransfering()
 {
     return m_transfering;
 }
+
+QString FileTransfer::errorString()
+{
+    return m_error;
+}

@@ -16,6 +16,7 @@ public:
     int size();
     void setSize(int);
     bool isTransfering();
+    QString errorString();
 
 signals:
 
