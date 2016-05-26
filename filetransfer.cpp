@@ -76,6 +76,47 @@ void FileTransfer::setDestination(QIODevice *t_device)
     qDebug() << this << "Destination set to" << t_device;
 }
 
+bool FileTransfer::checkDevices()
+{
+    if(!m_source)
+    {
+        m_transfering = false;
+        m_error = "No source device!";
+        qDebug() << this << m_error;
+        emit error();
+        return false;
+    }
+
+    if(!m_destination)
+    {
+        m_transfering = false;
+        m_error = "No destination device!";
+        qDebug() << this << m_error;
+        emit error();
+        return false;
+    }
+
+    if(!m_source->isOpen() || !m_source->isReadable())
+    {
+        m_transfering = false;
+        m_error = "Source device is not open or is not readable!";
+        qDebug() << this << m_error;
+        emit error();
+        return false;
+    }
+
+    if(!m_destination->isOpen() || !m_destination->isWritable())
+    {
+        m_transfering = false;
+        m_error = "Destination device is not open or is not writable!";
+        qDebug() << this << m_error;
+        emit error();
+        return false;
+    }
+
+    return true;
+}
+
 bool FileTransfer::checkTransfer()
 {
     if(!m_transfering)

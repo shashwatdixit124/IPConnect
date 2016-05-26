@@ -37,6 +37,7 @@ protected:
     QIODevice *m_source;
     QIODevice *m_destination;
 
+    bool checkDevices();
     bool checkTransfer();
 };
 
