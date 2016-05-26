@@ -63,6 +63,7 @@ void FileTransfer::setSource(QIODevice *t_device)
 {
     m_source = t_device;
     qDebug() << this << "Source set to" << t_device;
+    if(m_source->isSequential()) connect(m_source,&QIODevice::readyRead, this, &FileTransfer::readyRead);
 }
 
 QIODevice *FileTransfer::destination()
@@ -74,6 +75,7 @@ void FileTransfer::setDestination(QIODevice *t_device)
 {
     m_destination = t_device;
     qDebug() << this << "Destination set to" << t_device;
+    if(m_destination->isSequential()) connect(m_source,&QIODevice::bytesWritten, this, &FileTransfer::bytesWritten);
 }
 
 bool FileTransfer::checkDevices()
