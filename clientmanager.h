@@ -37,6 +37,7 @@ public slots:
     void accept(qintptr, Client *, bool );
     void connectToHost(Client*, QString, int);
     void quit();
+    void sendFile(QString, Client *);
     void start();
 };
 

@@ -54,6 +54,7 @@ void Messenger::startServer()
     connect(m_manager,&ClientManager::finished,m_manager,&ClientManager::quit,Qt::QueuedConnection);
     connect(this,&Messenger::connectToHost,m_manager,&ClientManager::connectToHost,Qt::QueuedConnection);
     connect(this, &Messenger::sendMessageRequest,m_manager,&ClientManager::sendMessage, Qt::QueuedConnection);
+    connect(this, &Messenger::sendFileRequest,m_manager,&ClientManager::sendFile, Qt::QueuedConnection);
     m_manager->moveToThread(m_thread);
     qDebug() << this << "Client Manager moved to thread " << m_thread;
     m_thread->start();
@@ -196,3 +197,41 @@ void Messenger::on_lineEdit_returnPressed()
     }
 }
 
+
+void Messenger::on_actionSend_File_triggered()
+{
+    int row = ui->listWidget->currentRow();
+    if(row>=0)
+    {
+        QListWidgetItem *user = ui->listWidget->item(row);
+        QString username = user->text();
+        if(m_users.contains(username))
+        {
+            qDebug() << this << "username is " << m_users[username];
+
+            if(m_users[username])
+            {
+                QString fileName = QFileDialog::getOpenFileName(this, "Select a file to open...", QDir::homePath());
+                qDebug() << this << fileName;
+                emit sendFileRequest(fileName, m_users[username]);
+            }
+            else
+            {
+                QList<QListWidgetItem*> list =  ui->listWidget->selectedItems();
+                foreach (QListWidgetItem *item, list) {
+                    delete item;
+                }
+                QMessageBox msgBox;
+                msgBox.setText("User Disconnected");
+                msgBox.exec();
+            }
+        }
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Select User to send File");
+        msgBox.exec();
+    }
+
+}

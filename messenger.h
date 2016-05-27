@@ -43,6 +43,7 @@ signals:
     void accepting(qintptr, Client*, bool);
     void connectToHost(Client* , QString, int);
     void sendMessageRequest(QString, Client *);
+    void sendFileRequest(QString, Client *);
 
 public slots:
     void bytesWritten(qint64);
@@ -59,6 +60,7 @@ public slots:
 private slots:
     void on_actionConnect_triggered();
     void on_lineEdit_returnPressed();
+    void on_actionSend_File_triggered();
 };
 
 #endif // MESSENGER_H

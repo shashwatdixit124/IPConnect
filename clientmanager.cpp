@@ -89,6 +89,16 @@ void ClientManager::quit()
     emit finished();
 }
 
+void ClientManager::sendFile(QString t_file, Client *t_client)
+{
+    try{
+        t_client->requestSendFile(t_file);
+    }catch(...)
+    {
+        qDebug()<<"NO User";
+    }
+}
+
 void ClientManager::accept(qintptr t_handle, Client *t_client, bool t_server)
 {
     qDebug() << this << "accepting for a client for server = "<<t_server;
