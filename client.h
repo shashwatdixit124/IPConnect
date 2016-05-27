@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include <QDebug>
+#include <QFileInfo>
 #include <QObject>
 #include <QTcpSocket>
 
@@ -24,7 +25,12 @@ public:
     QTcpSocket *m_socket;
 
 protected:
+    QFile *m_file;
+    QString m_filename;
+    qint64 m_filesize;
+    QString m_filepath;
     QString m_ClientUsername;
+    bool m_isTransfering;
     QString m_MyUsername;
     bool m_detailAccepted;
     bool m_detailSent;
@@ -48,7 +54,7 @@ public slots:
     void disconnected();
     void error(QAbstractSocket::SocketError socketError);
     void readyRead();
-    void requestSendFile(QString file);
+    void requestSendFile(QString);
     void stateChanged(QAbstractSocket::SocketState socketState);
 };
 

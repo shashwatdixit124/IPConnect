@@ -162,6 +162,27 @@ void Client::readyRead()
     processRead(allData.toUtf8());
 }
 
+void Client::requestSendFile(QString t_file)
+{
+    if(!m_socket) return;
+    if(m_isTransfering) return;
+    qDebug() << this << "writing to " << m_socket;
+    qDebug() << this << "selected file is " << t_file;
+    m_filepath = t_file;
+    QFileInfo fileInfo(t_file);
+    m_filename = fileInfo.fileName();
+    m_filesize = fileInfo.size();
+
+    m_response.insert("app","IPC");
+    m_response.insert("method","FILE");
+    m_response.insert("option","RSF");
+    m_response.insert("data",QString::number(m_filesize)+":"+m_filename);
+
+    QByteArray socketMessage = "IPC:FILE:RSF:"+QString::number(m_filesize).toUtf8()+":"+m_filename.toUtf8();
+    m_socket->write(socketMessage);
+    m_response.insert("message","IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename);
+}
+
 void Client::bytesWritten(qint64 bytes)
 {
     qDebug() << this << "BytesWritten Called " << bytes;
