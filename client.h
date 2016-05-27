@@ -32,8 +32,8 @@ protected:
     QMap<QString, QString> m_response;
 
 private:
-    void processRead(QByteArray);
     void handleRequest();
+    void processRead(QByteArray);
 
 signals:
     void capturedDetail(QString, Client*);
@@ -43,12 +43,13 @@ signals:
     void question(QString,QString,QString,qint64);
 
 public slots:
+    void bytesWritten(qint64 bytes);
     void connected();
     void disconnected();
-    void readyRead();
-    void bytesWritten(qint64 bytes);
-    void stateChanged(QAbstractSocket::SocketState socketState);
     void error(QAbstractSocket::SocketError socketError);
+    void readyRead();
+    void requestSendFile(QString file);
+    void stateChanged(QAbstractSocket::SocketState socketState);
 };
 
 #endif // CLIENT_H
