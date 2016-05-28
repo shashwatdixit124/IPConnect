@@ -8,6 +8,7 @@ ClientManager::ClientManager(QObject *parent) : QObject(parent)
 ClientManager::~ClientManager()
 {
     qDebug() << this << "Client Manager Destroyed";
+    quit();
 }
 
 int ClientManager::count()

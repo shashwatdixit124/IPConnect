@@ -3,17 +3,26 @@
 Client::Client(QObject *parent) : QObject(parent)
 {
     qDebug() << this << "Client Created";
-
-    m_ClientUsername = "test";
-    m_MyUsername = "";
-    m_detailSent = false;
-    m_detailAccepted = false;
+    setDefaults();
 }
 
 Client::~Client()
 {
     qDebug() << this << "Client Destroyed";
     emit destroyingConnection(m_ClientUsername);
+}
+
+void Client::setDefaults()
+{
+    m_ClientUsername = "test";
+    m_MyUsername = "";
+    m_detailSent = false;
+    m_detailAccepted = false;
+    m_isTransfering = false;
+    m_file = 0;
+    m_filename = "";
+    m_filepath = "";
+    m_filesize = 0;
 }
 
 const QTcpSocket *Client::getSocket()
@@ -182,6 +191,7 @@ void Client::readyRead()
 
 void Client::requestSendFile(QString t_file)
 {
+    qDebug() << this << "inside request send file";
     if(!m_socket) return;
     if(m_isTransfering) return;
     qDebug() << this << "writing to " << m_socket;
@@ -197,6 +207,7 @@ void Client::requestSendFile(QString t_file)
     m_response.insert("data",QString::number(m_filesize)+":"+m_filename);
 
     QByteArray socketMessage = "IPC:FILE:RSF:"+QString::number(m_filesize).toUtf8()+":"+m_filename.toUtf8();
+    qDebug() << this << "writing msg = " << socketMessage ;
     m_socket->write(socketMessage);
     m_response.insert("message","IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename);
 }

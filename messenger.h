@@ -49,12 +49,10 @@ signals:
     void sendFileRequest(QString, Client *);
 
 public slots:
-    void bytesWritten(qint64);
     void displayWarning(QString,QString);
     void displayQuestion(QString, QString, QString, qint64);
     void handleConnection();
     void handleMessage(QString);
-    void readyRead();
     void removeUser(QString);
     void serverDestroyed();
     void threadFinished();

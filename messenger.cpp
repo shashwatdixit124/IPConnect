@@ -49,7 +49,6 @@ void Messenger::startServer()
     connect(this, &Messenger::accepting,m_manager,&ClientManager::accept, Qt::QueuedConnection);
     connect(m_thread,&QThread::started,m_manager,&ClientManager::start, Qt::QueuedConnection);
     connect(m_thread,&QThread::finished,this,&Messenger::threadFinished);
-    connect(m_manager,&ClientManager::finished,m_manager,&ClientManager::quit,Qt::QueuedConnection);
     connect(this,&Messenger::connectToHost,m_manager,&ClientManager::connectToHost,Qt::QueuedConnection);
     connect(this, &Messenger::sendMessageRequest,m_manager,&ClientManager::sendMessage, Qt::QueuedConnection);
     connect(this, &Messenger::sendFileRequest,m_manager,&ClientManager::sendFile, Qt::QueuedConnection);
@@ -60,16 +59,6 @@ void Messenger::startServer()
         qDebug() << this << "Server started  ";
     else
         qDebug() << this << "Server Could not start";
-}
-
-void Messenger::readyRead()
-{
-    qDebug() << this << "incomming Data ";
-}
-
-void Messenger::bytesWritten(qint64 bytes)
-{
-    qDebug() << this << "bytes written = " << bytes << " through socket " << m_socket ;
 }
 
 void Messenger::displayWarning(QString t_title, QString t_message)
@@ -195,10 +184,11 @@ void Messenger::on_lineEdit_returnPressed()
     }
 }
 
-
 void Messenger::on_actionSend_File_triggered()
 {
+    qDebug() << this << "actionSend_file triggered";
     int row = ui->listWidget->currentRow();
+    qDebug() << this << "selected row is " << row ;
     if(row>=0)
     {
         QListWidgetItem *user = ui->listWidget->item(row);

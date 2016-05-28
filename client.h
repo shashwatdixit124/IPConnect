@@ -41,6 +41,7 @@ protected:
     QMap<QString, QString> m_response;
 
 private:
+    void setDefaults();
     void handleRequest();
     void processRead(QByteArray);
 
