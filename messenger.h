@@ -2,8 +2,11 @@
 #define MESSENGER_H
 
 #include <QDebug>
+#include <QFile>
+#include <QFileDialog>
 #include <QList>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QThread>

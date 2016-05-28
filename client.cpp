@@ -142,6 +142,24 @@ void Client::handleRequest()
 
         if(m_request.value("option") == "TEXT") emit gotMessageRequest(m_ClientUsername+" : "+m_request.value("data"));
     }
+    if(method == "FILE")
+    {
+        m_request.insert("message",m_request.value("request"));
+        m_response.insert("app","IPC");
+        m_response.insert("method","FILE");
+        m_response.insert("data",m_filename);
+
+        if(m_request.value("option") == "RSF")     //IPC:FILE:RSF:65563:AllIsWell.mp4
+        {
+            QString data = m_request.value("data");
+            QStringList options = data.split(":");
+            m_filesize = options.at(0).trimmed().toInt();
+            int pos = data.indexOf(":");
+            m_filename = data.mid(pos + 1);
+            qDebug() << this << "Incomming file " << m_filename << " of " << m_filesize << " bytes" ;
+        }
+    }
+    return;
 }
 
 void Client::connected()

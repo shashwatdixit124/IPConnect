@@ -6,6 +6,8 @@
 #include <QObject>
 #include <QTcpSocket>
 
+#include "filetransfer.h"
+
 class Client : public QObject
 {
     Q_OBJECT
@@ -29,6 +31,7 @@ protected:
     QString m_filename;
     qint64 m_filesize;
     QString m_filepath;
+    FileTransfer *m_FileTransfer;
     QString m_ClientUsername;
     bool m_isTransfering;
     QString m_MyUsername;

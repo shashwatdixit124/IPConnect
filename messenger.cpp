@@ -1,8 +1,6 @@
 #include "messenger.h"
 #include "ui_messenger.h"
 
-#include <QMessageBox>
-
 Messenger::Messenger(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Messenger)
