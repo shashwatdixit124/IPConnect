@@ -17,6 +17,7 @@ void FileTransfer::setDefaults()
     m_size = 0;
     m_rate = 0;
     m_transfering = false;
+    m_transfered = 0;
     m_error = "";
     m_source = 0;
     m_destination = 0;
@@ -76,6 +77,33 @@ void FileTransfer::setDestination(QIODevice *t_device)
     m_destination = t_device;
     qDebug() << this << "Destination set to" << t_device;
     if(m_destination->isSequential()) connect(m_source,&QIODevice::bytesWritten, this, &FileTransfer::bytesWritten);
+}
+
+void FileTransfer::start()
+{
+    qDebug() << this << "Start called";
+    if(m_transfering)
+    {
+        qDebug() << "Already Transfering!";
+        return;
+    }
+
+    m_error = "";
+    if(!checkDevices()) return;
+
+    m_transfering = true;
+    m_transfered = 0;
+
+    if(!m_source->isSequential() && m_source->bytesAvailable() > 0)
+    {
+        qDebug() << this <<"started the transfer";
+    }
+}
+
+void FileTransfer::stop()
+{
+    qDebug() << this << "Stopping the transfer";
+    m_transfering = false;
 }
 
 bool FileTransfer::checkDevices()

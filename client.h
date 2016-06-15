@@ -5,6 +5,7 @@
 #include <QFileInfo>
 #include <QObject>
 #include <QTcpSocket>
+#include <QTimer>
 
 #include "filetransfer.h"
 
@@ -21,7 +22,7 @@ public:
     void setClientUsername(const QString);
     void sendDetail();
     void sendMessage(QString);
-    void setSocket(QTcpSocket *t_socket);
+    void setSocket(QTcpSocket *);
     void setUsername(const QString);
 
     QTcpSocket *m_socket;
@@ -42,6 +43,8 @@ protected:
 
 private:
     void setDefaults();
+    void sendFile(QString);
+    void acceptFile(QString);
     void handleRequest();
     void processRead(QByteArray);
 
@@ -53,7 +56,7 @@ signals:
     void question(QString,QString,QString,qint64);
 
 public slots:
-    void bytesWritten(qint64 bytes);
+    void bytesWritten(qint64);
     void connected();
     void disconnected();
     void error(QAbstractSocket::SocketError socketError);
@@ -61,7 +64,8 @@ public slots:
     void fileRejected();
     void readyRead();
     void requestSendFile(QString);
-    void stateChanged(QAbstractSocket::SocketState socketState);
+    void stateChanged(QAbstractSocket::SocketState);
+    void transferError();
 };
 
 #endif // CLIENT_H

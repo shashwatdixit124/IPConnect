@@ -28,11 +28,14 @@ signals:
     void error();
 
 public slots:
+    void start();
+    void stop();
 
 protected:
     int m_rate;
     int m_size;
     bool m_transfering;
+    qint64 m_transfered;
     QString m_error;
     QIODevice *m_source;
     QIODevice *m_destination;

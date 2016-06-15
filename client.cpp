@@ -25,6 +25,65 @@ void Client::setDefaults()
     m_filesize = 0;
 }
 
+void Client::sendFile(QString t_file)
+{
+    m_isTransfering = true;
+
+    if(!m_socket) return;
+    qDebug() << this << "Sending file " << t_file;
+
+    m_file = new QFile(t_file,this);
+    m_FileTransfer = new FileTransfer(this);
+
+    connect(m_FileTransfer,&FileTransfer::error,this, &Client::transferError);
+
+    if(!m_file->open(QFile::ReadOnly))
+    {
+        qWarning() << "Could not open file: " << t_file;
+        emit warning("Warning","Cannot open File "+t_file);
+        return;
+    }
+
+    m_FileTransfer->setSource(m_file);
+    m_FileTransfer->setDestination(m_socket);
+    m_FileTransfer->setRate(1024000);
+    m_FileTransfer->setSize(102400);
+
+    QTimer::singleShot(500, m_FileTransfer, SLOT(start()));
+}
+
+void Client::acceptFile(QString t_file)
+{
+    m_isTransfering = true;
+
+    if(!m_socket) return;
+    qDebug() << this << "Accepting file " << t_file;
+
+    m_file = new QFile(t_file,this);
+    m_FileTransfer = new FileTransfer(this);
+
+    qDebug() << this << "Created: " << m_FileTransfer;
+
+    connect(m_FileTransfer,&FileTransfer::error,this, &Client::transferError);
+
+    if(!m_file->open(QFile::WriteOnly))
+    {
+        qWarning() << "Could not open file: " << t_file;
+        //m_socket->close();
+        emit warning("Warning","Cannot open File "+t_file);
+        return;
+    }
+
+    m_FileTransfer->setSource(m_socket);
+    m_FileTransfer->setDestination(m_file);
+    m_FileTransfer->setRate(1024000);
+    m_FileTransfer->setSize(102400);
+
+    qDebug() << this << "Starting file transfer...";
+
+    m_FileTransfer->start();
+}
+
 const QTcpSocket *Client::getSocket()
 {
     return m_socket;
@@ -220,14 +279,21 @@ void Client::requestSendFile(QString t_file)
     m_response.insert("message","IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename);
 }
 
-void Client::bytesWritten(qint64 bytes)
+void Client::bytesWritten(qint64 t_bytes)
 {
-    qDebug() << this << "BytesWritten Called " << bytes;
+    qDebug() << this << "BytesWritten Called " << t_bytes;
 }
 
-void Client::stateChanged(QAbstractSocket::SocketState socketState)
+void Client::stateChanged(QAbstractSocket::SocketState t_socketState)
 {
-    qDebug() << this << "stateChanged" << m_socket << socketState;
+    qDebug() << this << "stateChanged" << m_socket << t_socketState;
+}
+
+void Client::transferError()
+{
+    qDebug() << this <<  "File transfer error: " << m_FileTransfer->errorString();
+    m_file->close();
+    m_FileTransfer->deleteLater();
 }
 
 void Client::error(QAbstractSocket::SocketError socketError)
