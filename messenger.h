@@ -45,6 +45,8 @@ private:
 signals:
     void accepting(qintptr, Client*, bool);
     void connectToHost(Client* , QString, int);
+    void fileAccept();
+    void fileReject();
     void sendMessageRequest(QString, Client *);
     void sendFileRequest(QString, Client *);
 

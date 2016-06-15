@@ -165,7 +165,15 @@ void Client::handleRequest()
             m_filesize = options.at(0).trimmed().toInt();
             int pos = data.indexOf(":");
             m_filename = data.mid(pos + 1);
-            qDebug() << this << "Incomming file " << m_filename << " of " << m_filesize << " bytes" ;
+            emit question("Incomming",m_filename,m_ClientUsername,m_filesize);
+        }
+        if(m_request.value("option") == "RAF")
+        {
+            qDebug() << this <<"file accepted";
+        }
+        if(m_request.value("option") == "REJ")
+        {
+            qDebug() << this <<"file Rejected";
         }
     }
     return;
@@ -225,4 +233,24 @@ void Client::stateChanged(QAbstractSocket::SocketState socketState)
 void Client::error(QAbstractSocket::SocketError socketError)
 {
     qDebug() << this << "error" << m_socket << socketError;
+}
+
+void Client::fileAccepted()
+{
+    m_response.insert("app","IPC");
+    m_response.insert("method","FILE");
+    m_response.insert("option","RAF");
+    m_socket->write("IPC:FILE:RAF:"+m_filename.toUtf8());
+    m_response.insert("message","IPC:FILE:RAF:"+m_filename);
+    m_socket->waitForBytesWritten();
+}
+
+void Client::fileRejected()
+{
+    m_response.insert("app","IPC");
+    m_response.insert("method","FILE");
+    m_response.insert("option","REJ");
+    m_socket->write("IPC:FILE:REJ:"+m_filename.toUtf8());
+    m_response.insert("message","IPC:FILE:REJ:"+m_filename);
+    m_socket->waitForBytesWritten(1000);
 }

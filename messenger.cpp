@@ -34,6 +34,8 @@ void Messenger::connectManually(QString address)
     connect(client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     connect(client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
     connect(client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
+    connect(this,&Messenger::fileAccept,client,&Client::fileAccepted,Qt::QueuedConnection);
+    connect(this,&Messenger::fileReject,client,&Client::fileRejected,Qt::QueuedConnection);
     client->setUsername(m_MyUsername);
     client->moveToThread(m_thread);
     emit connectToHost(client,address,2424);
@@ -71,6 +73,10 @@ void Messenger::displayQuestion(QString t_title, QString t_filename, QString t_u
     Q_UNUSED(t_size);
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this,t_title,"Accept "+t_filename+" from "+t_username,QMessageBox::Yes | QMessageBox::No);
+    if(reply == QMessageBox::Yes)
+        emit fileAccept();
+    else
+        emit fileReject();
 }
 
 void Messenger::handleConnection()
@@ -83,6 +89,8 @@ void Messenger::handleConnection()
     connect(m_client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     connect(m_client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
     connect(m_client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
+    connect(this,&Messenger::fileAccept,m_client,&Client::fileAccepted,Qt::QueuedConnection);
+    connect(this,&Messenger::fileReject,m_client,&Client::fileRejected,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
     m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);
@@ -221,5 +229,4 @@ void Messenger::on_actionSend_File_triggered()
         msgBox.setText("Select User to send File");
         msgBox.exec();
     }
-
 }

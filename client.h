@@ -57,6 +57,8 @@ public slots:
     void connected();
     void disconnected();
     void error(QAbstractSocket::SocketError socketError);
+    void fileAccepted();
+    void fileRejected();
     void readyRead();
     void requestSendFile(QString);
     void stateChanged(QAbstractSocket::SocketState socketState);
