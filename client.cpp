@@ -227,12 +227,27 @@ void Client::handleRequest()
             emit question("Incomming",m_filename,m_ClientUsername,m_filesize);
         }
         if(m_request.value("option") == "RAF")
-        {
-            qDebug() << this <<"file accepted";
+        {            
+            m_response.insert("option","SFI");
+            m_socket->write("IPC:FILE:SFI:"+m_filename.toUtf8());
+            m_response.insert("message","IPC:FILE:SFI:"+m_filename);
+            m_socket->waitForBytesWritten(1000);
         }
         if(m_request.value("option") == "REJ")
         {
-            qDebug() << this <<"file Rejected";
+            m_filename = "";
+            m_filesize = 0;
+            m_filepath = "";
+            m_response.insert("app","");
+            m_response.insert("method","");
+            m_response.insert("data","");
+
+            emit warning("rejected","File "+m_filename+" Rejected ! ");
+        }
+        if(m_request.value("option") == "SFI")
+        {
+            qDebug() << "going to accept file";
+            acceptFile("/root/Desktop/"+m_filename);
         }
     }
     return;
@@ -281,7 +296,30 @@ void Client::requestSendFile(QString t_file)
 
 void Client::bytesWritten(qint64 t_bytes)
 {
-    qDebug() << this << "BytesWritten Called " << t_bytes;
+    Q_UNUSED(t_bytes)
+    if(m_isTransfering) return;
+    if(!m_socket) return;
+    qDebug() << "Socket available on bytesWritten";
+
+    QString method = m_response.value("method");
+
+    if(method == "CONNECT")
+    {
+        if(!m_detailSent)
+        {
+            m_detailSent = true;
+            qDebug() << this << "detailSent Set to true";
+        }
+    }
+
+    if(method == "FILE")
+    {
+        if(m_response.value("option") == "SFI")
+        {
+            qDebug() << "sending file from bytesWritten";
+            sendFile(m_filepath);
+        }
+    }
 }
 
 void Client::stateChanged(QAbstractSocket::SocketState t_socketState)
