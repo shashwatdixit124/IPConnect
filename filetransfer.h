@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QIODevice>
+#include <QTimer>
 
 class FileTransfer : public QObject
 {
@@ -39,6 +40,8 @@ protected:
     QString m_error;
     QIODevice *m_source;
     QIODevice *m_destination;
+    QTimer m_timer;
+    bool m_scheduled;
 
     bool checkDevices();
     bool checkTransfer();

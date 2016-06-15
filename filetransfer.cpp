@@ -97,6 +97,7 @@ void FileTransfer::start()
     if(!m_source->isSequential() && m_source->bytesAvailable() > 0)
     {
         qDebug() << this <<"started the transfer";
+        transfer();
     }
 }
 
