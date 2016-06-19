@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QIODevice>
+#include <QTime>
 #include <QTimer>
 
 class FileTransfer : public QObject
@@ -45,6 +46,7 @@ protected:
 
     bool checkDevices();
     bool checkTransfer();
+    void scheduleTransfer();
 
 protected slots:
     void bytesWritten(qint64);

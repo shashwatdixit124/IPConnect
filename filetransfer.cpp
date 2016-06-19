@@ -157,8 +157,53 @@ bool FileTransfer::checkTransfer()
         emit error();
         return false;
     }
-
+    if(m_transfered >= m_rate)
+    {
+        m_error = "Rate exeeded, not allowed to transfer!";
+        qDebug() << this << m_error;
+        emit error();
+        return false;
+    }
     return true;
+}
+
+void FileTransfer::scheduleTransfer()
+{
+    qDebug() << this << "scheduleTransfer called";
+
+    if(m_scheduled)
+    {
+        qWarning() << this << "Exiting scheduleTransfer due to: waiting on timer";
+        return;
+    }
+
+    if(!m_transfering)
+    {
+        qWarning() << this << "Exiting scheduleTransfer due to: not transfering";
+        return;
+    }
+
+    if(m_source->bytesAvailable() <= 0)
+    {
+        qWarning() << this << "Exiting scheduleTransfer due to: no bytes available to be read";
+        return;
+    }
+
+    int prediction = m_transfered + m_size;
+    if(prediction <= m_rate)
+    {
+        qDebug() << this << "calling transfer from scheduleTransfer";
+        transfer();
+    }
+    else
+    {
+        int current = QTime::currentTime().msec();
+        int delay = 1000 - current;
+        qDebug() << this << "Rate limit (" << m_rate << ") exeeded in prediction (" << m_transfered << " to " <<  prediction << "), delaying transfer for " << delay << "ms";
+        m_transfered = 0;
+        m_scheduled = true;
+        m_timer.singleShot(delay,this,&FileTransfer::transfer);
+    }
 }
 
 void FileTransfer::bytesWritten(qint64 t_bytes)
@@ -182,6 +227,20 @@ void FileTransfer::transfer()
     if(!checkTransfer()) return;
     QByteArray buffer;
     buffer = m_source->readAll();
+    qDebug() << this << "writting to destination: " << buffer.length();
     m_destination->write(buffer);
-    m_transfering = false;
+    m_transfered += buffer.length();
+
+    if(!m_source->isSequential() && m_source->bytesAvailable() == 0)
+    {
+        qDebug() << this << "Stopping due to end of file";
+        stop();
+    }
+
+    if(m_transfering == false) return;
+    if(!m_source->isSequential() && m_source->bytesAvailable() > 0)
+    {
+        qDebug() << this << "Source still has bytes, scheduling a transfer";
+        scheduleTransfer();
+    }
 }
