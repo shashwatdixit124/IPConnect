@@ -28,6 +28,7 @@ public:
 
 signals:
     void error();
+    void finished();
 
 public slots:
     void start();

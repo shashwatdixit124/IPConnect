@@ -36,6 +36,7 @@ void Client::sendFile(QString t_file)
     m_FileTransfer = new FileTransfer(this);
 
     connect(m_FileTransfer,&FileTransfer::error,this, &Client::transferError);
+    connect(m_FileTransfer,&FileTransfer::finished,this, &Client::fileTransferFinished);
 
     if(!m_file->open(QFile::ReadOnly))
     {
@@ -65,11 +66,11 @@ void Client::acceptFile(QString t_file)
     qDebug() << this << "Created: " << m_FileTransfer;
 
     connect(m_FileTransfer,&FileTransfer::error,this, &Client::transferError);
+    connect(m_FileTransfer,&FileTransfer::finished,this, &Client::fileTransferFinished);
 
     if(!m_file->open(QFile::WriteOnly))
     {
         qWarning() << "Could not open file: " << t_file;
-        //m_socket->close();
         emit warning("Warning","Cannot open File "+t_file);
         return;
     }
@@ -104,7 +105,7 @@ void Client::sendDetail()
         m_response.insert("method","CONNECT");
         m_response.insert("option","REQUEST");
         m_response.insert("data",m_MyUsername);
-        m_socket->write(message);
+        write(message);
         m_response.insert("message","IPC:CONNECT:REQUEST:"+m_MyUsername);
         m_socket->waitForBytesWritten();
         m_detailSent = true;
@@ -118,7 +119,7 @@ void Client::sendMessage(QString t_message)
     if(!m_socket) return;
     qDebug() << this << "writing to " << m_socket;
     QByteArray socketMessage = "IPC:MESSAGE:TEXT:"+t_message.toUtf8();
-    m_socket->write(socketMessage);
+    write(socketMessage);
     m_response.insert("message","IPC:MESSAGE:TEXT:"+t_message);
     m_socket->waitForBytesWritten();
 }
@@ -157,12 +158,16 @@ void Client::processRead(QByteArray t_data)
 
     if(options.count() >= 4)
     {
-        //  IPC:MESSAGE:TEXT:hi
         int pos = header.indexOf(":") + m_request.value("method","").size() + m_request.value("option","").size() + 2;
         m_request.insert("data", header.mid(pos + 1));
     }
 
     handleRequest();
+}
+
+void Client::write(QByteArray t_message)
+{
+    write(t_message);
 }
 
 void Client::handleRequest()
@@ -191,7 +196,7 @@ void Client::handleRequest()
                     QByteArray message = "IPC:CONNECT:REQUEST:"+m_MyUsername.toUtf8();
                     if(!m_detailSent)
                     {
-                        m_socket->write(message);
+                        write(message);
                         m_response.insert("message",message);
                         m_socket->waitForBytesWritten(1000);
                     }
@@ -229,7 +234,7 @@ void Client::handleRequest()
         if(m_request.value("option") == "RAF")
         {            
             m_response.insert("option","SFI");
-            m_socket->write("IPC:FILE:SFI:"+m_filename.toUtf8());
+            write("IPC:FILE:SFI:"+m_filename.toUtf8());
             m_response.insert("message","IPC:FILE:SFI:"+m_filename);
             m_socket->waitForBytesWritten(1000);
         }
@@ -290,7 +295,7 @@ void Client::requestSendFile(QString t_file)
 
     QByteArray socketMessage = "IPC:FILE:RSF:"+QString::number(m_filesize).toUtf8()+":"+m_filename.toUtf8();
     qDebug() << this << "writing msg = " << socketMessage ;
-    m_socket->write(socketMessage);
+    write(socketMessage);
     m_response.insert("message","IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename);
 }
 
@@ -344,7 +349,7 @@ void Client::fileAccepted()
     m_response.insert("app","IPC");
     m_response.insert("method","FILE");
     m_response.insert("option","RAF");
-    m_socket->write("IPC:FILE:RAF:"+m_filename.toUtf8());
+    write("IPC:FILE:RAF:"+m_filename.toUtf8());
     m_response.insert("message","IPC:FILE:RAF:"+m_filename);
     m_socket->waitForBytesWritten();
 }
@@ -354,7 +359,14 @@ void Client::fileRejected()
     m_response.insert("app","IPC");
     m_response.insert("method","FILE");
     m_response.insert("option","REJ");
-    m_socket->write("IPC:FILE:REJ:"+m_filename.toUtf8());
+    write("IPC:FILE:REJ:"+m_filename.toUtf8());
     m_response.insert("message","IPC:FILE:REJ:"+m_filename);
     m_socket->waitForBytesWritten(1000);
+}
+
+void Client::fileTransferFinished()
+{
+    qDebug() << this << "File transfer finished";
+    m_file->close();
+    m_FileTransfer->deleteLater();
 }

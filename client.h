@@ -47,6 +47,7 @@ private:
     void acceptFile(QString);
     void handleRequest();
     void processRead(QByteArray);
+    void write(QByteArray);
 
 signals:
     void capturedDetail(QString, Client*);
@@ -62,6 +63,7 @@ public slots:
     void error(QAbstractSocket::SocketError socketError);
     void fileAccepted();
     void fileRejected();
+    void fileTransferFinished();
     void readyRead();
     void requestSendFile(QString);
     void stateChanged(QAbstractSocket::SocketState);
