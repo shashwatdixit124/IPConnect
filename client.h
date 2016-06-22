@@ -40,6 +40,8 @@ protected:
     bool m_detailSent;
     QMap<QString, QString> m_request;
     QMap<QString, QString> m_response;
+    QTimer *m_timer;
+    bool m_timeractive;
 
 private:
     void setDefaults();
@@ -48,6 +50,7 @@ private:
     void handleRequest();
     void processRead(QByteArray);
     void write(QString);
+    void sendMessageAgain();
 
 signals:
     void capturedDetail(QString, Client*);

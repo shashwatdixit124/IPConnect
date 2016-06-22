@@ -23,6 +23,8 @@ void Client::setDefaults()
     m_filename = "";
     m_filepath = "";
     m_filesize = 0;
+    m_timer = 0;
+    m_timeractive = 0;
 }
 
 void Client::sendFile(QString t_file)
@@ -168,6 +170,21 @@ void Client::processRead(QByteArray t_data)
 void Client::write(QString t_message)
 {
     m_socket->write(t_message.toUtf8());
+    if(!m_timeractive)
+    {
+        m_timeractive = true;
+        qDebug() << "* starting timer on REJ";
+        m_timer = new QTimer(this);
+        connect(m_timer,&QTimer::timeout,this,&Client::sendMessageAgain);
+        m_timer->start(500);
+    }
+}
+
+void Client::sendMessageAgain()
+{
+    QString msg = m_response.value("message");
+    write(msg);
+    m_socket->waitForBytesWritten();
 }
 
 void Client::handleRequest()
@@ -192,8 +209,6 @@ void Client::handleRequest()
                     m_response.insert("method","CONNECT");
                     m_response.insert("option","REQUEST");
                     m_response.insert("data",m_MyUsername);
-
-                    m_response.insert("message",message);
                     if(!m_detailSent)
                     {
                         QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
@@ -255,6 +270,15 @@ void Client::handleRequest()
         {
             qDebug() << "going to accept file";
             acceptFile("/root/Desktop/"+m_filename);
+        }
+    }
+    if(method == "VERIFY")
+    {
+        if(m_timeractive)
+        {
+            m_timer->stop();
+            m_timeractive = false;
+            m_timer->deleteLater();
         }
     }
     return;
