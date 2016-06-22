@@ -47,7 +47,7 @@ private:
     void acceptFile(QString);
     void handleRequest();
     void processRead(QByteArray);
-    void write(QByteArray);
+    void write(QString);
 
 signals:
     void capturedDetail(QString, Client*);

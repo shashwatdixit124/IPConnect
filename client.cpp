@@ -100,13 +100,13 @@ void Client::sendDetail()
     qDebug() << this << "Checking for sockets";
     if(m_socket)
     {
-        QByteArray message = "IPC:CONNECT:REQUEST:"+m_MyUsername.toUtf8();
+        QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
         m_response.insert("app","IPC");
         m_response.insert("method","CONNECT");
         m_response.insert("option","REQUEST");
         m_response.insert("data",m_MyUsername);
         write(message);
-        m_response.insert("message","IPC:CONNECT:REQUEST:"+m_MyUsername);
+        m_response.insert("message",message);
         m_socket->waitForBytesWritten();
         m_detailSent = true;
     }
@@ -118,9 +118,9 @@ void Client::sendMessage(QString t_message)
 {
     if(!m_socket) return;
     qDebug() << this << "writing to " << m_socket;
-    QByteArray socketMessage = "IPC:MESSAGE:TEXT:"+t_message.toUtf8();
+    QString socketMessage = "IPC:MESSAGE:TEXT:"+t_message;
     write(socketMessage);
-    m_response.insert("message","IPC:MESSAGE:TEXT:"+t_message);
+    m_response.insert("message",socketMessage);
     m_socket->waitForBytesWritten();
 }
 
@@ -165,9 +165,9 @@ void Client::processRead(QByteArray t_data)
     handleRequest();
 }
 
-void Client::write(QByteArray t_message)
+void Client::write(QString t_message)
 {
-    write(t_message);
+    m_socket->write(t_message.toUtf8());
 }
 
 void Client::handleRequest()
@@ -193,9 +193,10 @@ void Client::handleRequest()
                     m_response.insert("option","REQUEST");
                     m_response.insert("data",m_MyUsername);
 
-                    QByteArray message = "IPC:CONNECT:REQUEST:"+m_MyUsername.toUtf8();
+                    m_response.insert("message",message);
                     if(!m_detailSent)
                     {
+                        QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
                         write(message);
                         m_response.insert("message",message);
                         m_socket->waitForBytesWritten(1000);
@@ -234,8 +235,9 @@ void Client::handleRequest()
         if(m_request.value("option") == "RAF")
         {            
             m_response.insert("option","SFI");
-            write("IPC:FILE:SFI:"+m_filename.toUtf8());
-            m_response.insert("message","IPC:FILE:SFI:"+m_filename);
+            QString message = "IPC:FILE:SFI:"+m_filename;
+            write(message);
+            m_response.insert("message",message);
             m_socket->waitForBytesWritten(1000);
         }
         if(m_request.value("option") == "REJ")
@@ -293,10 +295,10 @@ void Client::requestSendFile(QString t_file)
     m_response.insert("option","RSF");
     m_response.insert("data",QString::number(m_filesize)+":"+m_filename);
 
-    QByteArray socketMessage = "IPC:FILE:RSF:"+QString::number(m_filesize).toUtf8()+":"+m_filename.toUtf8();
+    QString socketMessage = "IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename;
     qDebug() << this << "writing msg = " << socketMessage ;
     write(socketMessage);
-    m_response.insert("message","IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename);
+    m_response.insert("message",socketMessage);
 }
 
 void Client::bytesWritten(qint64 t_bytes)
@@ -349,8 +351,9 @@ void Client::fileAccepted()
     m_response.insert("app","IPC");
     m_response.insert("method","FILE");
     m_response.insert("option","RAF");
-    write("IPC:FILE:RAF:"+m_filename.toUtf8());
-    m_response.insert("message","IPC:FILE:RAF:"+m_filename);
+    QString message = "IPC:FILE:RAF:"+m_filename;
+    write(message);
+    m_response.insert("message",message);
     m_socket->waitForBytesWritten();
 }
 
@@ -359,8 +362,9 @@ void Client::fileRejected()
     m_response.insert("app","IPC");
     m_response.insert("method","FILE");
     m_response.insert("option","REJ");
-    write("IPC:FILE:REJ:"+m_filename.toUtf8());
-    m_response.insert("message","IPC:FILE:REJ:"+m_filename);
+    QString message = "IPC:FILE:REJ:"+m_filename;
+    write(message);
+    m_response.insert("message",message);
     m_socket->waitForBytesWritten(1000);
 }
 
