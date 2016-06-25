@@ -26,7 +26,7 @@ Messenger::~Messenger()
 
 void Messenger::connectManually(QString address)
 {
-    qDebug() << this << "Connect Manually Called with address " << address;
+    //qDebug() << this << "Connect Manually Called with address " << address;
 
     Client* client = new Client();
     connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
@@ -39,15 +39,15 @@ void Messenger::connectManually(QString address)
     client->setUsername(m_MyUsername);
     client->moveToThread(m_thread);
     emit connectToHost(client,address,2424);
-    qDebug() << this << "connected to host" ;
+    //qDebug() << this << "connected to host" ;
 }
 
 void Messenger::startServer()
 {
     m_manager = new ClientManager();
-    qDebug() << this << "Created new Client Manager " << m_manager ;
+    //qDebug() << this << "Created new Client Manager " << m_manager ;
     m_thread = new QThread(this);
-    qDebug() << this << "Created new QThread " << m_thread ;
+    //qDebug() << this << "Created new QThread " << m_thread ;
     connect(this, &Messenger::accepting,m_manager,&ClientManager::accept, Qt::QueuedConnection);
     connect(m_thread,&QThread::started,m_manager,&ClientManager::start, Qt::QueuedConnection);
     connect(m_thread,&QThread::finished,this,&Messenger::threadFinished);
@@ -55,7 +55,7 @@ void Messenger::startServer()
     connect(this, &Messenger::sendMessageRequest,m_manager,&ClientManager::sendMessage, Qt::QueuedConnection);
     connect(this, &Messenger::sendFileRequest,m_manager,&ClientManager::sendFile, Qt::QueuedConnection);
     m_manager->moveToThread(m_thread);
-    qDebug() << this << "Client Manager moved to thread " << m_thread;
+    //qDebug() << this << "Client Manager moved to thread " << m_thread;
     m_thread->start();
     if(this->m_server.listen(QHostAddress::Any, 2424))
         qDebug() << this << "Server started  ";
@@ -81,7 +81,7 @@ void Messenger::displayQuestion(QString t_title, QString t_filename, QString t_u
 
 void Messenger::handleConnection()
 {
-    qDebug() << this << "incomming Connection";
+    //qDebug() << this << "incomming Connection";
     m_socket = m_server.nextPendingConnection();
     m_client = new Client();
     connect(m_client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
@@ -94,7 +94,7 @@ void Messenger::handleConnection()
     m_client->setSocket(m_socket);
     m_client->setUsername(m_MyUsername);
     m_client->moveToThread(m_thread);
-    qDebug() << m_client << "moved to thread " << m_thread;
+    //qDebug() << m_client << "moved to thread " << m_thread;
     emit accepting(m_socket->socketDescriptor(),m_client,true);
 }
 
@@ -123,7 +123,7 @@ void Messenger::removeUser(QString t_username)
 
 void Messenger::serverDestroyed()
 {
-    qDebug() << this << "Server Destroyed";
+    //qDebug() << this << "Server Destroyed";
     if(m_thread->isRunning())
     {
         m_thread->deleteLater();
@@ -138,14 +138,14 @@ void Messenger::threadFinished()
 
 void Messenger::updateList(QString t_detail, Client *t_client)
 {
-    qDebug() << this << "Got the Details " << t_detail;
+    //qDebug() << this << "Got the Details " << t_detail;
     ui->listWidget->addItem(t_detail);
     m_users.insert(t_detail,t_client);
 }
 
 void Messenger::on_actionConnect_triggered()
 {
-    qDebug() << this << "connect Clicked";
+    //qDebug() << this << "connect Clicked";
     m_connectDialog = new ConnectDialog(this);
     connect(m_connectDialog,&ConnectDialog::connect,this,&Messenger::connectManually);
 }
@@ -159,14 +159,14 @@ void Messenger::on_lineEdit_returnPressed()
         int row = ui->listWidget->currentRow();
         if(row>=0)
         {
-            qDebug() << this << "user row is " << row;
+            //qDebug() << this << "user row is " << row;
             QListWidgetItem *user = ui->listWidget->item(row);
-            qDebug() << this << "user is " << user;
+            //qDebug() << this << "user is " << user;
             QString username = user->text();
-            qDebug() << this << "user selected " << username;
+            //qDebug() << this << "user selected " << username;
             if(m_users.contains(username))
             {
-                qDebug() << this << "value of username is " << m_users[username];
+                qDebug() << this << "username is " << m_users[username];
 
                 if(m_users[username])
                 {
@@ -194,9 +194,9 @@ void Messenger::on_lineEdit_returnPressed()
 
 void Messenger::on_actionSend_File_triggered()
 {
-    qDebug() << this << "actionSend_file triggered";
+    //qDebug() << this << "actionSend_file triggered";
     int row = ui->listWidget->currentRow();
-    qDebug() << this << "selected row is " << row ;
+    //qDebug() << this << "selected row is " << row ;
     if(row>=0)
     {
         QListWidgetItem *user = ui->listWidget->item(row);
