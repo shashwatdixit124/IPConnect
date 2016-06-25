@@ -102,15 +102,14 @@ void Client::sendDetail()
     qDebug() << this << "Checking for sockets";
     if(m_socket)
     {
+        m_detailSent = true;
         QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
         m_response.insert("app","IPC");
         m_response.insert("method","CONNECT");
         m_response.insert("option","REQUEST");
         m_response.insert("data",m_MyUsername);
-        write(message);
         m_response.insert("message",message);
-        m_socket->waitForBytesWritten();
-        m_detailSent = true;
+        write(message);
     }
     else
         qDebug() << this << "socket not available on greetings";
@@ -121,9 +120,8 @@ void Client::sendMessage(QString t_message)
     if(!m_socket) return;
     qDebug() << this << "writing to " << m_socket;
     QString socketMessage = "IPC:MESSAGE:TEXT:"+t_message;
-    write(socketMessage);
     m_response.insert("message",socketMessage);
-    m_socket->waitForBytesWritten();
+    write(socketMessage);
 }
 
 void Client::setSocket(QTcpSocket *t_socket)
@@ -170,10 +168,12 @@ void Client::processRead(QByteArray t_data)
 void Client::write(QString t_message)
 {
     m_socket->write(t_message.toUtf8());
+    qDebug() << this << "writing message : " << t_message;
+    m_socket->waitForBytesWritten();
     if(!m_timeractive)
     {
         m_timeractive = true;
-        qDebug() << "* starting timer on REJ";
+        qDebug() << this << "***** starting timer";
         m_timer = new QTimer(this);
         connect(m_timer,&QTimer::timeout,this,&Client::sendMessageAgain);
         m_timer->start(500);
@@ -182,9 +182,8 @@ void Client::write(QString t_message)
 
 void Client::sendMessageAgain()
 {
-    QString msg = m_response.value("message");
-    write(msg);
-    m_socket->waitForBytesWritten();
+    QByteArray msg = m_response.value("message").toUtf8();
+    m_socket->write(msg);
 }
 
 void Client::handleRequest()
@@ -212,9 +211,9 @@ void Client::handleRequest()
                     if(!m_detailSent)
                     {
                         QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
-                        write(message);
                         m_response.insert("message",message);
-                        m_socket->waitForBytesWritten(1000);
+                        m_detailSent = true;
+                        write(message);
                     }
                     m_detailAccepted = true;
                     qDebug() <<this<< "emiting capturedDetail";
@@ -251,9 +250,8 @@ void Client::handleRequest()
         {            
             m_response.insert("option","SFI");
             QString message = "IPC:FILE:SFI:"+m_filename;
-            write(message);
             m_response.insert("message",message);
-            m_socket->waitForBytesWritten(1000);
+            write(message);
         }
         if(m_request.value("option") == "REJ")
         {
@@ -297,9 +295,19 @@ void Client::disconnected()
 void Client::readyRead()
 {
     if(!m_socket) return;
-    qDebug() << "Socket available on ready read " << m_socket->socketDescriptor();
+    if(m_isTransfering) return;
+    qDebug() << this << "Socket available on ready read " << m_socket->socketDescriptor();
     QString allData = m_socket->readAll();
-    processRead(allData.toUtf8());
+    if(allData.isEmpty())   return;
+    if(allData.contains("IPC:FILE:SFI:"))
+        processRead(allData.toUtf8());
+    else if(m_request.value("message") == allData)
+    {
+        qDebug() << this << "***** sending GOT";
+        m_socket->write("IPC:VERIFY:GOT:");
+    }
+    else
+        processRead(allData.toUtf8());
 }
 
 void Client::requestSendFile(QString t_file)
@@ -320,9 +328,8 @@ void Client::requestSendFile(QString t_file)
     m_response.insert("data",QString::number(m_filesize)+":"+m_filename);
 
     QString socketMessage = "IPC:FILE:RSF:"+QString::number(m_filesize)+":"+m_filename;
-    qDebug() << this << "writing msg = " << socketMessage ;
-    write(socketMessage);
     m_response.insert("message",socketMessage);
+    write(socketMessage);
 }
 
 void Client::bytesWritten(qint64 t_bytes)
@@ -330,7 +337,7 @@ void Client::bytesWritten(qint64 t_bytes)
     Q_UNUSED(t_bytes)
     if(m_isTransfering) return;
     if(!m_socket) return;
-    qDebug() << "Socket available on bytesWritten";
+    qDebug() << this <<"Socket available on bytesWritten";
 
     QString method = m_response.value("method");
 
@@ -376,9 +383,8 @@ void Client::fileAccepted()
     m_response.insert("method","FILE");
     m_response.insert("option","RAF");
     QString message = "IPC:FILE:RAF:"+m_filename;
-    write(message);
     m_response.insert("message",message);
-    m_socket->waitForBytesWritten();
+    write(message);
 }
 
 void Client::fileRejected()
@@ -387,9 +393,8 @@ void Client::fileRejected()
     m_response.insert("method","FILE");
     m_response.insert("option","REJ");
     QString message = "IPC:FILE:REJ:"+m_filename;
-    write(message);
     m_response.insert("message",message);
-    m_socket->waitForBytesWritten(1000);
+    write(message);
 }
 
 void Client::fileTransferFinished()
