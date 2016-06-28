@@ -21,6 +21,8 @@ public:
     void setSize(int);
     bool isTransfering();
     QString errorString();
+    bool isSender();
+    void setSender(bool);
     QIODevice *source();
     void setSource(QIODevice *device);
     QIODevice *destination();
@@ -44,6 +46,7 @@ protected:
     QIODevice *m_destination;
     QTimer m_timer;
     bool m_scheduled;
+    bool m_isSender;
 
     bool checkDevices();
     bool checkTransfer();

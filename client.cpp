@@ -51,6 +51,7 @@ void Client::sendFile(QString t_file)
     m_FileTransfer->setDestination(m_socket);
     m_FileTransfer->setRate(1024000);
     m_FileTransfer->setSize(102400);
+    m_FileTransfer->setSender(true);
 
     QTimer::singleShot(500, m_FileTransfer, SLOT(start()));
 }
@@ -81,6 +82,7 @@ void Client::acceptFile(QString t_file)
     m_FileTransfer->setDestination(m_file);
     m_FileTransfer->setRate(1024000);
     m_FileTransfer->setSize(102400);
+    m_FileTransfer->setSender(false);
 
     qDebug() << this << "Starting file transfer...";
 

@@ -21,6 +21,7 @@ void FileTransfer::setDefaults()
     m_error = "";
     m_source = 0;
     m_destination = 0;
+    m_isSender = false;
 }
 
 int FileTransfer::rate()
@@ -53,6 +54,16 @@ bool FileTransfer::isTransfering()
 QString FileTransfer::errorString()
 {
     return m_error;
+}
+
+bool FileTransfer::isSender()
+{
+    return m_isSender;
+}
+
+void FileTransfer::setSender(bool t_value)
+{
+    m_isSender = t_value;
 }
 
 QIODevice *FileTransfer::source()
@@ -97,13 +108,14 @@ void FileTransfer::start()
     if(!m_source->isSequential() && m_source->bytesAvailable() > 0)
     {
         qDebug() << this <<"started the transfer";
-        transfer();
+        scheduleTransfer();
     }
 }
 
 void FileTransfer::stop()
 {
     qDebug() << this << "Stopping the transfer";
+    m_timer.stop();
     m_transfering = false;
 }
 
@@ -208,25 +220,26 @@ void FileTransfer::scheduleTransfer()
 
 void FileTransfer::bytesWritten(qint64 t_bytes)
 {
-    qDebug() <<this<< "wrote "<<t_bytes<<" bytes to destination";
-    if(!checkTransfer())
-        transfer();
+    scheduleTransfer();
 }
 
 void FileTransfer::readyRead()
 {
-    qDebug() <<this<< "reading bytes from source";
-    if(!checkTransfer())
-        transfer();
+    scheduleTransfer();
 }
 
 void FileTransfer::transfer()
 {
+    m_scheduled = false;
+    m_error = "";
     m_transfering = true;
     if(!checkDevices()) return;
     if(!checkTransfer()) return;
     QByteArray buffer;
-    buffer = m_source->readAll();
+    if(isSender())
+        buffer = m_source->read(m_size);
+    else
+        buffer = m_source->read(m_source->bytesAvailable());
     qDebug() << this << "writting to destination: " << buffer.length();
     m_destination->write(buffer);
     m_transfered += buffer.length();
