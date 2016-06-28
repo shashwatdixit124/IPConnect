@@ -22,6 +22,7 @@ void FileTransfer::setDefaults()
     m_source = 0;
     m_destination = 0;
     m_isSender = false;
+    m_scheduled = false;
 }
 
 int FileTransfer::rate()
