@@ -18,11 +18,14 @@ void FileTransfer::setDefaults()
     m_rate = 0;
     m_transfering = false;
     m_transfered = 0;
+    m_totalTransfer = 0;
+    m_timer.setInterval(5);
     m_error = "";
     m_source = 0;
     m_destination = 0;
     m_isSender = false;
     m_scheduled = false;
+    m_fileSize = 0;
 }
 
 int FileTransfer::rate()
@@ -65,6 +68,11 @@ bool FileTransfer::isSender()
 void FileTransfer::setSender(bool t_value)
 {
     m_isSender = t_value;
+}
+
+void FileTransfer::setFileSize(qint64 t_size)
+{
+    m_fileSize = t_size;
 }
 
 QIODevice *FileTransfer::source()
@@ -243,7 +251,18 @@ void FileTransfer::transfer()
         buffer = m_source->read(m_source->bytesAvailable());
     qDebug() << this << "writting to destination: " << buffer.length();
     m_destination->write(buffer);
+    qDebug() << this << buffer;
     m_transfered += buffer.length();
+    m_totalTransfer += buffer.length();
+
+    if(!isSender())
+    {
+        if(m_fileSize == m_totalTransfer)
+        {
+            emit finished();
+            stop();
+        }
+    }
 
     if(!m_source->isSequential() && m_source->bytesAvailable() == 0)
     {

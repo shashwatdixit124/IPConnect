@@ -23,6 +23,7 @@ public:
     QString errorString();
     bool isSender();
     void setSender(bool);
+    void setFileSize(qint64);
     QIODevice *source();
     void setSource(QIODevice *device);
     QIODevice *destination();
@@ -47,6 +48,8 @@ protected:
     QTimer m_timer;
     bool m_scheduled;
     bool m_isSender;
+    qint64 m_fileSize;
+    qint64 m_totalTransfer;
 
     bool checkDevices();
     bool checkTransfer();

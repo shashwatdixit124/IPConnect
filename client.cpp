@@ -83,6 +83,7 @@ void Client::acceptFile(QString t_file)
     m_FileTransfer->setRate(1024000);
     m_FileTransfer->setSize(102400);
     m_FileTransfer->setSender(false);
+    m_FileTransfer->setFileSize(m_filesize);
 
     qDebug() << this << "Starting file transfer...";
 
@@ -253,7 +254,7 @@ void Client::handleRequest()
             m_response.insert("option","SFI");
             QString message = "IPC:FILE:SFI:"+m_filename;
             m_response.insert("message",message);
-            write(message);
+            m_socket->write(message.toUtf8());
         }
         if(m_request.value("option") == "REJ")
         {
