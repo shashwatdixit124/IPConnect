@@ -131,3 +131,28 @@ bool FileTransfer::checkTransfer()
 
     return true;
 }
+
+void FileTransfer::bytesWritten(qint64 t_bytes)
+{
+    qDebug() <<this<< "wrote "<<t_bytes<<" bytes to destination";
+    if(!checkTransfer())
+        transfer();
+}
+
+void FileTransfer::readyRead()
+{
+    qDebug() <<this<< "reading bytes from source";
+    if(!checkTransfer())
+        transfer();
+}
+
+void FileTransfer::transfer()
+{
+    m_transfering = true;
+    if(!checkDevices()) return;
+    if(!checkTransfer()) return;
+    QByteArray buffer;
+    buffer = m_source->readAll();
+    m_destination->write(buffer);
+    m_transfering = false;
+}

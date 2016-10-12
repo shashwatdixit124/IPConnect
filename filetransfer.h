@@ -39,6 +39,11 @@ protected:
 
     bool checkDevices();
     bool checkTransfer();
+
+protected slots:
+    void bytesWritten(qint64);
+    void readyRead();
+    void transfer();
 };
 
 #endif // FILETRANSFER_H
