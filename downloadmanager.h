@@ -26,6 +26,8 @@ private:
 signals:
 
 public slots:
+    void handleTransfer();
+    void serverDestroyed();
 };
 
 #endif // DOWNLOADMANAGER_H
