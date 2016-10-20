@@ -16,5 +16,5 @@ IPConnect is a P2P Chatting and File Transfering app made on Qt.
 - [x] Connection on different Thread for managing multiple Connection.
 - [x] Chatting
 - [x] File Transfer
-- [ ] Download manager ( to manage downloads on different thread)
+- [ ] Download manager ( to manage file transfer on different thread)
 - [ ] Auto Discovery ( Effecient Way )
