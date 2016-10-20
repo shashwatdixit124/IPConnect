@@ -11,10 +11,10 @@ IPConnect is a P2P Chatting and File Transfering app made on Qt.
 
 ###Features
 
--[x] GUI
--[x] P2P Connection on TCP
--[x] Connection on different Thread for managing multiple Connection.
--[x] Chatting
--[x] File Transfer
--[ ] Download manager ( to manage downloads on different thread)
--[ ] Auto Discovery ( Effecient Way )
+- [x] GUI
+- [x] P2P Connection on TCP
+- [x] Connection on different Thread for managing multiple Connection.
+- [x] Chatting
+- [x] File Transfer
+- [ ] Download manager ( to manage downloads on different thread)
+- [ ] Auto Discovery ( Effecient Way )
