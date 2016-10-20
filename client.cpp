@@ -101,6 +101,12 @@ void Client::setClientUsername(const QString t_username)
     m_ClientUsername = t_username;
 }
 
+void Client::setDefaultSettings(const QString t_username, const QString t_dir)
+{
+    m_MyUsername = t_username;
+    m_DownloadDirectory = t_dir;
+}
+
 void Client::sendDetail()
 {
     qDebug() << this << "Checking for sockets";
@@ -137,12 +143,6 @@ void Client::setSocket(QTcpSocket *t_socket)
     connect(m_socket,&QTcpSocket::bytesWritten, this, &Client::bytesWritten,Qt::DirectConnection);
     connect(m_socket,&QTcpSocket::stateChanged, this, &Client::stateChanged,Qt::DirectConnection);
     connect(m_socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&Client::error,Qt::DirectConnection);
-}
-
-void Client::setUsername(const QString t_username, const QString t_dir)
-{
-    m_MyUsername = t_username;
-    m_DownloadDirectory = t_dir;
 }
 
 void Client::processRead(QByteArray t_data)
