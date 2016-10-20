@@ -14,6 +14,7 @@
 #include "client.h"
 #include "clientmanager.h"
 #include "connectdialog.h"
+#include "detaildialog.h"
 
 namespace Ui {
 class Messenger;
@@ -36,11 +37,13 @@ private:
     QTcpSocket *m_socket;
     QThread *m_thread;
     QString m_MyUsername;
+    QString m_myDefaultDirectory;
     QMap<QString , Client*> m_users;
 
     ConnectDialog *m_connectDialog;
     Client *m_client;
     ClientManager *m_manager;
+    DetailDialog m_detailDialog;
 
 signals:
     void accepting(qintptr, Client*, bool);
@@ -51,6 +54,7 @@ signals:
     void sendFileRequest(QString, Client *);
 
 public slots:
+    void defaultChanged(QString,QString);
     void displayWarning(QString,QString);
     void displayQuestion(QString, QString, QString, qint64);
     void handleConnection();

@@ -7,9 +7,11 @@ Messenger::Messenger(QWidget *parent) :
 {
     ui->setupUi(this);
     m_MyUsername = "Shashwat";
+    m_myDefaultDirectory = "/home/";
     connect(&m_server,&QTcpServer::newConnection,this,&Messenger::handleConnection);
     connect(&m_server,&QTcpServer::destroyed,this,&Messenger::serverDestroyed);
-
+    connect(&m_detailDialog,&DetailDialog::saveClicked,this,&Messenger::defaultChanged);
+    m_detailDialog.exec();
     startServer();
 }
 
@@ -54,6 +56,13 @@ void Messenger::startServer()
         qDebug() << this << "Server started  ";
     else
         qDebug() << this << "Server Could not start";
+}
+
+void Messenger::defaultChanged(QString t_directory, QString t_username)
+{
+    m_myDefaultDirectory = t_directory+"/";
+    m_MyUsername = t_username;
+    qDebug() << this << "Default Changed to " << m_MyUsername << " , " << m_myDefaultDirectory;
 }
 
 void Messenger::displayWarning(QString t_title, QString t_message)
