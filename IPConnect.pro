@@ -19,14 +19,16 @@ SOURCES += main.cpp\
     client.cpp \
     clientmanager.cpp \
     filetransfer.cpp \
-    detaildialog.cpp
+    detaildialog.cpp \
+    downloadmanager.cpp
 
 HEADERS  += messenger.h \
     connectdialog.h \
     client.h \
     clientmanager.h \
     filetransfer.h \
-    detaildialog.h
+    detaildialog.h \
+    downloadmanager.h
 
 FORMS    += messenger.ui \
     connectdialog.ui \
