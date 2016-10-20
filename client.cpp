@@ -16,6 +16,7 @@ void Client::setDefaults()
 {
     m_ClientUsername = "test";
     m_MyUsername = "";
+    m_DownloadDirectory = "";
     m_detailSent = false;
     m_detailAccepted = false;
     m_isTransfering = false;
@@ -138,9 +139,10 @@ void Client::setSocket(QTcpSocket *t_socket)
     connect(m_socket,static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),this,&Client::error,Qt::DirectConnection);
 }
 
-void Client::setUsername(const QString t_username)
+void Client::setUsername(const QString t_username, const QString t_dir)
 {
     m_MyUsername = t_username;
+    m_DownloadDirectory = t_dir;
 }
 
 void Client::processRead(QByteArray t_data)
@@ -269,8 +271,8 @@ void Client::handleRequest()
         }
         if(m_request.value("option") == "SFI")
         {
-            qDebug() << "going to accept file";
-            acceptFile("/root/Desktop/"+m_filename);
+            qDebug() << "going to accept file to "<<m_DownloadDirectory;
+            acceptFile(m_DownloadDirectory+m_filename);
         }
     }
     if(method == "VERIFY")

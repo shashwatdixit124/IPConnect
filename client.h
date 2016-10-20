@@ -20,10 +20,10 @@ public:
     const QTcpSocket *getSocket();
 
     void setClientUsername(const QString);
+    void setDefaultSettings(const QString, const QString);
     void sendDetail();
     void sendMessage(QString);
     void setSocket(QTcpSocket *);
-    void setUsername(const QString);
 
     QTcpSocket *m_socket;
 
@@ -36,6 +36,7 @@ protected:
     QString m_ClientUsername;
     bool m_isTransfering;
     QString m_MyUsername;
+    QString m_DownloadDirectory;
     bool m_detailAccepted;
     bool m_detailSent;
     QMap<QString, QString> m_request;

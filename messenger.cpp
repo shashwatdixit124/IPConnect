@@ -93,7 +93,7 @@ void Messenger::handleConnection()
     connect(this,&Messenger::fileAccept,m_client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,m_client,&Client::fileRejected,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
-    m_client->setUsername(m_MyUsername);
+    m_client->setDefaults(m_MyUsername,m_myDefaultDirectory);
     m_client->moveToThread(m_thread);
     emit accepting(m_socket->socketDescriptor(),m_client,true);
 }
