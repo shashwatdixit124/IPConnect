@@ -7,10 +7,11 @@ Messenger::Messenger(QWidget *parent) :
 {
     ui->setupUi(this);
     m_MyUsername = "Shashwat";
-    m_myDefaultDirectory = "/home/";
+    m_DownloadDirectory = "/home/";
     connect(&m_server,&QTcpServer::newConnection,this,&Messenger::handleConnection);
     connect(&m_server,&QTcpServer::destroyed,this,&Messenger::serverDestroyed);
     connect(&m_detailDialog,&DetailDialog::saveClicked,this,&Messenger::defaultChanged);
+    m_detailDialog.setDefault(m_MyUsername,m_DownloadDirectory);
     m_detailDialog.exec();
     startServer();
 }
@@ -25,7 +26,7 @@ Messenger::~Messenger()
     delete ui;
 }
 
-void Messenger::connectManually(QString address)
+void Messenger::connectManually(QString t_address)
 {
     Client* client = new Client();
     connect(client,&Client::destroyingConnection,this,&Messenger::removeUser,Qt::QueuedConnection);
@@ -35,9 +36,9 @@ void Messenger::connectManually(QString address)
     connect(client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
     connect(this,&Messenger::fileAccept,client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,client,&Client::fileRejected,Qt::QueuedConnection);
-    client->setUsername(m_MyUsername);
+    client->setDefaultSettings(m_MyUsername,m_DownloadDirectory);
     client->moveToThread(m_thread);
-    emit connectToHost(client,address,2424);
+    emit connectToHost(client,t_address,2424);
 }
 
 void Messenger::startServer()
@@ -53,16 +54,16 @@ void Messenger::startServer()
     m_manager->moveToThread(m_thread);
     m_thread->start();
     if(this->m_server.listen(QHostAddress::Any, 2424))
-        qDebug() << this << "Server started  ";
+        qDebug() << this << "Server started on 2424";
     else
-        qDebug() << this << "Server Could not start";
+        qDebug() << this << "Server Could not start on 2424";
 }
 
 void Messenger::defaultChanged(QString t_directory, QString t_username)
 {
-    m_myDefaultDirectory = t_directory+"/";
+    m_DownloadDirectory = t_directory+"/";
     m_MyUsername = t_username;
-    qDebug() << this << "Default Changed to " << m_MyUsername << " , " << m_myDefaultDirectory;
+    qDebug() << this << "Default Changed to " << m_MyUsername << " , " << m_DownloadDirectory;
 }
 
 void Messenger::displayWarning(QString t_title, QString t_message)
@@ -93,7 +94,7 @@ void Messenger::handleConnection()
     connect(this,&Messenger::fileAccept,m_client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,m_client,&Client::fileRejected,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
-    m_client->setDefaults(m_MyUsername,m_myDefaultDirectory);
+    m_client->setDefaultSettings(m_MyUsername,m_DownloadDirectory);
     m_client->moveToThread(m_thread);
     emit accepting(m_socket->socketDescriptor(),m_client,true);
 }

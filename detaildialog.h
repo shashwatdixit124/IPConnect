@@ -17,6 +17,8 @@ public:
     explicit DetailDialog(QWidget *parent = 0);
     ~DetailDialog();
 
+    void setDefault(QString , QString);
+
 private slots:
     void on_selectBtn_clicked();
 
@@ -31,6 +33,8 @@ private:
     Ui::DetailDialog *ui;
     QString dir;
     QString username;
+    QString p_username;
+    QString p_dir;
 };
 
 #endif // DETAILDIALOG_H

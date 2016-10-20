@@ -15,6 +15,7 @@
 #include "clientmanager.h"
 #include "connectdialog.h"
 #include "detaildialog.h"
+#include "downloadmanager.h"
 
 namespace Ui {
 class Messenger;
@@ -37,13 +38,14 @@ private:
     QTcpSocket *m_socket;
     QThread *m_thread;
     QString m_MyUsername;
-    QString m_myDefaultDirectory;
+    QString m_DownloadDirectory;
     QMap<QString , Client*> m_users;
 
     ConnectDialog *m_connectDialog;
     Client *m_client;
     ClientManager *m_manager;
     DetailDialog m_detailDialog;
+    DownloadManager m_downloadManger;
 
 signals:
     void accepting(qintptr, Client*, bool);
