@@ -209,7 +209,8 @@ void Messenger::on_actionSend_File_triggered()
             {
                 QString fileName = QFileDialog::getOpenFileName(this, "Select a file to open...", QDir::homePath());
                 qDebug() << this << fileName;
-                emit sendFileRequest(fileName, m_users[username]);
+                if(!fileName.isEmpty())
+                    emit sendFileRequest(fileName, m_users[username]);
             }
             else
             {
