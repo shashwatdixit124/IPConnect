@@ -7,7 +7,7 @@ Messenger::Messenger(QWidget *parent) :
 {
     ui->setupUi(this);
     m_MyUsername = "Shashwat";
-    m_DownloadDirectory = "/home/";
+    m_DownloadDirectory = "/home";
     m_MyIpAddress = "0.0.0.0";
     connect(&m_server,&QTcpServer::newConnection,this,&Messenger::handleConnection);
     connect(&m_server,&QTcpServer::destroyed,this,&Messenger::serverDestroyed);
@@ -19,10 +19,7 @@ Messenger::Messenger(QWidget *parent) :
     {
         if(!list[nIter].isLoopback())
             if (list[nIter].protocol() == QAbstractSocket::IPv4Protocol )
-            {
                 m_MyIpAddress = list[nIter].toString();
-                qDebug() << this << "ip = " << m_MyIpAddress;
-            }
     }
 
     startServer();
@@ -46,6 +43,7 @@ void Messenger::connectManually(QString t_address)
     connect(client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     connect(client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
     connect(client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
+    connect(client,&Client::transferFile,&m_downloadManager,DownloadManager::transfer);
     connect(this,&Messenger::fileAccept,client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,client,&Client::fileRejected,Qt::QueuedConnection);
     client->setDefaultSettings(m_MyUsername,m_DownloadDirectory,m_MyIpAddress);
@@ -103,6 +101,7 @@ void Messenger::handleConnection()
     connect(m_client,&Client::gotMessageRequest,this,&Messenger::handleMessage, Qt::QueuedConnection);
     connect(m_client,&Client::warning,this,&Messenger::displayWarning,Qt::QueuedConnection);
     connect(m_client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
+    connect(m_client,&Client::transferFile,&m_downloadManager,DownloadManager::transfer);
     connect(this,&Messenger::fileAccept,m_client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,m_client,&Client::fileRejected,Qt::QueuedConnection);
     m_client->setSocket(m_socket);

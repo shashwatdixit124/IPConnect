@@ -47,7 +47,7 @@ private:
     Client *m_client;
     ClientManager *m_manager;
     DetailDialog m_detailDialog;
-    DownloadManager m_downloadManger;
+    DownloadManager m_downloadManager;
 
 signals:
     void accepting(qintptr, Client*, bool);

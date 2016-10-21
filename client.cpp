@@ -15,6 +15,7 @@ Client::~Client()
 void Client::setDefaults()
 {
     m_ClientUsername = "test";
+    m_ClientIp = "0.0.0.0";
     m_MyUsername = "";
     m_DownloadDirectory = "";
     m_detailSent = false;
@@ -283,7 +284,8 @@ void Client::handleRequest()
         if(m_request.value("option") == "SFI")
         {
             qDebug() << "going to accept file to "<<m_DownloadDirectory;
-            acceptFile(m_DownloadDirectory+m_filename);
+            emit transferFile(m_ClientIp,m_filename,m_filepath,false);
+            //acceptFile(m_DownloadDirectory+m_filename);
         }
     }
     if(method == "VERIFY")
@@ -371,7 +373,8 @@ void Client::bytesWritten(qint64 t_bytes)
         if(m_response.value("option") == "SFI")
         {
             qDebug() << "sending file from bytesWritten";
-            sendFile(m_filepath);
+            emit transferFile(m_ClientIp,m_filename,m_filepath,true);
+            //sendFile(m_filepath);
         }
     }
 }
