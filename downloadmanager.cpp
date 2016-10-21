@@ -107,6 +107,8 @@ void DownloadManager::acceptFile(Transfer *t_transfer, QTcpSocket * t_socket)
 void DownloadManager::handleTransfer()
 {
     m_socket = m_server.nextPendingConnection();
+    connect(m_socket,&QTcpSocket::readyRead,this,&DownloadManager::readyRead);
+    connect(m_socket,&QTcpSocket::bytesWritten,this,&DownloadManager::bytesWritten);
     qDebug() << this << "got the connection on 2423" << m_socket;
 }
 
@@ -154,7 +156,7 @@ void DownloadManager::transfer(QString t_address, QString t_filename, QString t_
         }
         else
         {
-            qDebug() << this << "something wrong with connection" ;
+            qDebug() << this << "something wrong with connection";
             m_socket->deleteLater();
         }
     }

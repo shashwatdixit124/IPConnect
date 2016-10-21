@@ -285,6 +285,14 @@ void Client::handleRequest()
         if(m_request.value("option") == "SFI")
         {
             //qDebug() << this << "going to accept file to "<<m_DownloadDirectory;
+            qDebug() << "got SFI ";
+            m_response.value("app","");
+            m_response.value("method","");
+            m_response.value("option","");
+            m_response.value("data","");
+            m_response.value("message","");
+            if(m_timeractive)
+                m_timer->deleteLater();
             m_filepath = m_DownloadDirectory+m_filename;
             emit transferFile(m_ClientIp,m_filename,m_filepath,m_filesize,false);
             //acceptFile(m_DownloadDirectory+m_filename);
@@ -323,7 +331,7 @@ void Client::readyRead()
         processRead(allData.toUtf8());
     else if(m_request.value("message") == allData)
     {
-        //qDebug() << this << "***** sending GOT";
+        qDebug() << this << "sending msg : IPC:VERIFYGOT:";
         m_socket->write("IPC:VERIFY:GOT:");
     }
     else
@@ -375,6 +383,13 @@ void Client::bytesWritten(qint64 t_bytes)
         if(m_response.value("option") == "SFI")
         {
             qDebug() << this <<"sending file "<< m_filename << "from bytesWritten";
+            m_response.value("app","");
+            m_response.value("method","");
+            m_response.value("option","");
+            m_response.value("data","");
+            m_response.value("message","");
+            if(m_timeractive)
+                m_timer->deleteLater();
             emit transferFile(m_ClientIp,m_filename,m_filepath,m_filesize,true);
             //sendFile(m_filepath);
         }
