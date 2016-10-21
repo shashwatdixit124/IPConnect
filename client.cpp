@@ -2,13 +2,13 @@
 
 Client::Client(QObject *parent) : QObject(parent)
 {
-    qDebug() << this << "Client Created";
+    //qDebug() << this << "Client Created";
     setDefaults();
 }
 
 Client::~Client()
 {
-    qDebug() << this << "Client Destroyed";
+    //qDebug() << this << "Client Destroyed";
     emit destroyingConnection(m_ClientUsername);
 }
 
@@ -34,7 +34,7 @@ void Client::sendFile(QString t_file)
     m_isTransfering = true;
 
     if(!m_socket) return;
-    qDebug() << this << "Sending file " << t_file;
+    //qDebug() << this << "Sending file " << t_file;
 
     m_file = new QFile(t_file,this);
     m_FileTransfer = new FileTransfer(this);
@@ -87,7 +87,7 @@ void Client::acceptFile(QString t_file)
     m_FileTransfer->setSender(false);
     m_FileTransfer->setFileSize(m_filesize);
 
-    qDebug() << this << "Starting file transfer...";
+    //qDebug() << this << "Starting file transfer...";
 
     m_FileTransfer->start();
 }
@@ -116,7 +116,7 @@ void Client::setDefaultSettings(const QString t_username, const QString t_dir, c
 
 void Client::sendDetail()
 {
-    qDebug() << this << "Checking for sockets";
+    //qDebug() << this << "Checking for sockets";
     if(m_socket)
     {
         m_detailSent = true;
@@ -135,7 +135,7 @@ void Client::sendDetail()
 void Client::sendMessage(QString t_message)
 {
     if(!m_socket) return;
-    qDebug() << this << "writing to " << m_socket;
+    //qDebug() << this << "writing to " << m_socket;
     QString socketMessage = "IPC:MESSAGE:TEXT:"+t_message;
     m_response.insert("message",socketMessage);
     write(socketMessage);
@@ -157,7 +157,6 @@ void Client::processRead(QByteArray t_data)
     QString header = t_data;
     qDebug() << this << "Processing GET header = "<<header;
     m_request.insert("request",header);
-    qDebug() << this << "request changed to " << m_request.value("request");
 
     //Header has 4 values APP METHOD OPTION DATA(optional)
     QStringList options = header.split(":");
@@ -180,12 +179,12 @@ void Client::processRead(QByteArray t_data)
 void Client::write(QString t_message)
 {
     m_socket->write(t_message.toUtf8());
-    qDebug() << this << "writing message : " << t_message;
+    //qDebug() << this << "writing message : " << t_message;
     m_socket->waitForBytesWritten();
     if(!m_timeractive)
     {
         m_timeractive = true;
-        qDebug() << this << "***** starting timer";
+        //qDebug() << this << "***** starting timer";
         m_timer = new QTimer(this);
         connect(m_timer,&QTimer::timeout,this,&Client::sendMessageAgain);
         m_timer->start(500);
@@ -195,7 +194,9 @@ void Client::write(QString t_message)
 void Client::sendMessageAgain()
 {
     QByteArray msg = m_response.value("message").toUtf8();
-    m_socket->write(msg);
+    qDebug() <<this << "sending msg : " << msg;
+    if(!msg.contains("IPC:FILE:SFI:"))
+        m_socket->write(msg);
 }
 
 void Client::handleRequest()
@@ -212,7 +213,7 @@ void Client::handleRequest()
             {
                 if(m_request.value("option") == "REQUEST")
                 {
-                    qDebug() << this << "Accepting Detail";
+                    //qDebug() << this << "Accepting Detail";
                     QString data = m_request.value("data");
                     QString ip = data.split(":").at(0);
                     int pos = data.indexOf(":");
@@ -233,7 +234,7 @@ void Client::handleRequest()
                         write(message);
                     }
                     m_detailAccepted = true;
-                    qDebug() <<this<< "emiting capturedDetail";
+                    //qDebug() <<this<< "emiting capturedDetail";
                     emit capturedDetail(name.trimmed()+" ("+m_ClientIp.trimmed()+")",this);
                 }
             }
@@ -283,9 +284,9 @@ void Client::handleRequest()
         }
         if(m_request.value("option") == "SFI")
         {
-            qDebug() << this << "going to accept file to "<<m_DownloadDirectory;
+            //qDebug() << this << "going to accept file to "<<m_DownloadDirectory;
             m_filepath = m_DownloadDirectory+m_filename;
-            emit transferFile(m_ClientIp,m_filename,m_filepath,false);
+            emit transferFile(m_ClientIp,m_filename,m_filepath,m_filesize,false);
             //acceptFile(m_DownloadDirectory+m_filename);
         }
     }
@@ -303,26 +304,26 @@ void Client::handleRequest()
 
 void Client::connected()
 {
-    qDebug() << this << "Client Connected";
+    //qDebug() << this << "Client Connected";
 }
 
 void Client::disconnected()
 {
-    qDebug() << this << "Client Disconnected";
+    //qDebug() << this << "Client Disconnected";
 }
 
 void Client::readyRead()
 {
     if(!m_socket) return;
     if(m_isTransfering) return;
-    qDebug() << this << "Socket available on ready read " << m_socket->socketDescriptor();
+    //qDebug() << this << "Socket available on ready read " << m_socket->socketDescriptor();
     QString allData = m_socket->readAll();
     if(allData.isEmpty())   return;
     if(allData.contains("IPC:FILE:SFI:"))
         processRead(allData.toUtf8());
     else if(m_request.value("message") == allData)
     {
-        qDebug() << this << "***** sending GOT";
+        //qDebug() << this << "***** sending GOT";
         m_socket->write("IPC:VERIFY:GOT:");
     }
     else
@@ -331,11 +332,11 @@ void Client::readyRead()
 
 void Client::requestSendFile(QString t_file)
 {
-    qDebug() << this << "inside request send file";
+    //qDebug() << this << "inside request send file";
     if(!m_socket) return;
     if(m_isTransfering) return;
-    qDebug() << this << "writing to " << m_socket;
-    qDebug() << this << "selected file is " << t_file;
+    //qDebug() << this << "writing to " << m_socket;
+    //qDebug() << this << "selected file is " << t_file;
     m_filepath = t_file;
     QFileInfo fileInfo(t_file);
     m_filename = fileInfo.fileName();
@@ -356,7 +357,7 @@ void Client::bytesWritten(qint64 t_bytes)
     Q_UNUSED(t_bytes)
     if(m_isTransfering) return;
     if(!m_socket) return;
-    qDebug() << this <<"Socket available on bytesWritten";
+    //qDebug() << this <<"Socket available on bytesWritten";
 
     QString method = m_response.value("method");
 
@@ -365,7 +366,7 @@ void Client::bytesWritten(qint64 t_bytes)
         if(!m_detailSent)
         {
             m_detailSent = true;
-            qDebug() << this << "detailSent Set to true";
+            //qDebug() << this << "detailSent Set to true";
         }
     }
 
@@ -374,7 +375,7 @@ void Client::bytesWritten(qint64 t_bytes)
         if(m_response.value("option") == "SFI")
         {
             qDebug() << this <<"sending file "<< m_filename << "from bytesWritten";
-            emit transferFile(m_ClientIp,m_filename,m_filepath,true);
+            emit transferFile(m_ClientIp,m_filename,m_filepath,m_filesize,true);
             //sendFile(m_filepath);
         }
     }
@@ -382,19 +383,19 @@ void Client::bytesWritten(qint64 t_bytes)
 
 void Client::stateChanged(QAbstractSocket::SocketState t_socketState)
 {
-    qDebug() << this << "stateChanged" << m_socket << t_socketState;
+    //qDebug() << this << "stateChanged" << m_socket << t_socketState;
 }
 
 void Client::transferError()
 {
-    qDebug() << this <<  "File transfer error: " << m_FileTransfer->errorString();
+    //qDebug() << this <<  "File transfer error: " << m_FileTransfer->errorString();
     m_file->close();
     m_FileTransfer->deleteLater();
 }
 
 void Client::error(QAbstractSocket::SocketError socketError)
 {
-    qDebug() << this << "error" << m_socket << socketError;
+    //qDebug() << this << "error" << m_socket << socketError;
 }
 
 void Client::fileAccepted()
@@ -419,7 +420,7 @@ void Client::fileRejected()
 
 void Client::fileTransferFinished()
 {
-    qDebug() << this << "File transfer finished";
+    //qDebug() << this << "File transfer finished";
     m_file->close();
     m_FileTransfer->deleteLater();
 }

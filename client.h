@@ -62,7 +62,7 @@ signals:
     void gotMessageRequest(QString);
     void warning(QString,QString);
     void question(QString,QString,QString,qint64);
-    void transferFile(QString,QString,QString,bool);
+    void transferFile(QString,QString,QString,qint64,bool);
 
 public slots:
     void bytesWritten(qint64);

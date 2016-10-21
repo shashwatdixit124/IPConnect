@@ -73,7 +73,7 @@ void Messenger::defaultChanged(QString t_directory, QString t_username)
 {
     m_DownloadDirectory = t_directory+"/";
     m_MyUsername = t_username;
-    qDebug() << this << "Default Changed to " << m_MyUsername << " , " << m_DownloadDirectory;
+    //qDebug() << this << "Default Changed to " << m_MyUsername << " , " << m_DownloadDirectory;
 }
 
 void Messenger::displayWarning(QString t_title, QString t_message)
@@ -112,7 +112,7 @@ void Messenger::handleConnection()
 
 void Messenger::handleMessage(QString t_message)
 {
-    qDebug() << this << "Handling Message " << t_message ;
+    //qDebug() << this << "Handling Message " << t_message ;
     ui->textEdit->append(t_message.trimmed());
 }
 
@@ -144,7 +144,7 @@ void Messenger::serverDestroyed()
 
 void Messenger::threadFinished()
 {
-    qDebug() << this << "Thread finished " << m_thread;
+    //qDebug() << this << "Thread finished " << m_thread;
 }
 
 void Messenger::updateList(QString t_detail, Client *t_client)
@@ -179,7 +179,7 @@ void Messenger::on_lineEdit_returnPressed()
                 }
                 else
                 {
-                    qDebug() << ui->listWidget->currentItem();
+                    //qDebug() << ui->listWidget->currentItem();
                     QMessageBox msgBox;
                     msgBox.setText("User Disconnected");
                     msgBox.exec();
@@ -207,7 +207,7 @@ void Messenger::on_actionSend_File_triggered()
             if(m_users[username])
             {
                 QString fileName = QFileDialog::getOpenFileName(this, "Select a file to open...", QDir::homePath());
-                qDebug() << this << fileName;
+                //qDebug() << this << fileName;
                 if(!fileName.isEmpty())
                     emit sendFileRequest(fileName, m_users[username]);
             }
