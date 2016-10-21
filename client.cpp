@@ -101,10 +101,16 @@ void Client::setClientUsername(const QString t_username)
     m_ClientUsername = t_username;
 }
 
-void Client::setDefaultSettings(const QString t_username, const QString t_dir)
+void Client::setClientIp(const QString t_ip)
+{
+    m_ClientIp = t_ip;
+}
+
+void Client::setDefaultSettings(const QString t_username, const QString t_dir, const QString t_ip)
 {
     m_MyUsername = t_username;
     m_DownloadDirectory = t_dir;
+    m_MyIp = t_ip;
 }
 
 void Client::sendDetail()
@@ -113,11 +119,11 @@ void Client::sendDetail()
     if(m_socket)
     {
         m_detailSent = true;
-        QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
+        QString message = "IPC:CONNECT:REQUEST:"+m_MyIp+":"+m_MyUsername;
         m_response.insert("app","IPC");
         m_response.insert("method","CONNECT");
         m_response.insert("option","REQUEST");
-        m_response.insert("data",m_MyUsername);
+        m_response.insert("data",m_MyIp+":"+m_MyUsername);
         m_response.insert("message",message);
         write(message);
     }
@@ -206,23 +212,28 @@ void Client::handleRequest()
                 if(m_request.value("option") == "REQUEST")
                 {
                     qDebug() << this << "Accepting Detail";
-                    QString name = m_request.value("data");
+                    QString data = m_request.value("data");
+                    QString ip = data.split(":").at(0);
+                    int pos = data.indexOf(":") + m_ClientIp.size();
+                    QString name = data.mid(pos + 1);
                     setClientUsername(name.trimmed());
+                    setClientIp(ip.trimmed());
                     qDebug() << this << "Accepted request from "<<m_ClientUsername;
-                    m_response.insert("app","IPC");
-                    m_response.insert("method","CONNECT");
-                    m_response.insert("option","REQUEST");
-                    m_response.insert("data",m_MyUsername);
+
                     if(!m_detailSent)
                     {
-                        QString message = "IPC:CONNECT:REQUEST:"+m_MyUsername;
+                        m_response.insert("app","IPC");
+                        m_response.insert("method","CONNECT");
+                        m_response.insert("option","REQUEST");
+                        m_response.insert("data",m_MyIp+":"+m_MyUsername);
+                        QString message = "IPC:CONNECT:REQUEST:"+m_MyIp+":"+m_MyUsername;
                         m_response.insert("message",message);
                         m_detailSent = true;
                         write(message);
                     }
                     m_detailAccepted = true;
                     qDebug() <<this<< "emiting capturedDetail";
-                    emit capturedDetail(name.trimmed(),this);
+                    emit capturedDetail(name.trimmed()+" ("+m_ClientIp.trimmed()+")",this);
                 }
             }
         }

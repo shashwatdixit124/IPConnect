@@ -7,6 +7,7 @@
 #include <QList>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QNetworkInterface>
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QThread>
@@ -39,6 +40,7 @@ private:
     QThread *m_thread;
     QString m_MyUsername;
     QString m_DownloadDirectory;
+    QString m_MyIpAddress;
     QMap<QString , Client*> m_users;
 
     ConnectDialog *m_connectDialog;

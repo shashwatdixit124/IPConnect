@@ -8,11 +8,23 @@ Messenger::Messenger(QWidget *parent) :
     ui->setupUi(this);
     m_MyUsername = "Shashwat";
     m_DownloadDirectory = "/home/";
+    m_MyIpAddress = "0.0.0.0";
     connect(&m_server,&QTcpServer::newConnection,this,&Messenger::handleConnection);
     connect(&m_server,&QTcpServer::destroyed,this,&Messenger::serverDestroyed);
     connect(&m_detailDialog,&DetailDialog::saveClicked,this,&Messenger::defaultChanged);
     m_detailDialog.setDefault(m_MyUsername,m_DownloadDirectory);
     m_detailDialog.exec();
+    QList<QHostAddress> list = QNetworkInterface::allAddresses();
+    for(int nIter=0; nIter<list.count(); nIter++)
+    {
+        if(!list[nIter].isLoopback())
+            if (list[nIter].protocol() == QAbstractSocket::IPv4Protocol )
+            {
+                m_MyIpAddress = list[nIter].toString();
+                qDebug() << this << "ip = " << m_MyIpAddress;
+            }
+    }
+
     startServer();
 }
 
@@ -36,7 +48,7 @@ void Messenger::connectManually(QString t_address)
     connect(client,&Client::question,this,&Messenger::displayQuestion,Qt::QueuedConnection);
     connect(this,&Messenger::fileAccept,client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,client,&Client::fileRejected,Qt::QueuedConnection);
-    client->setDefaultSettings(m_MyUsername,m_DownloadDirectory);
+    client->setDefaultSettings(m_MyUsername,m_DownloadDirectory,m_MyIpAddress);
     client->moveToThread(m_thread);
     emit connectToHost(client,t_address,2424);
 }
@@ -94,7 +106,7 @@ void Messenger::handleConnection()
     connect(this,&Messenger::fileAccept,m_client,&Client::fileAccepted,Qt::QueuedConnection);
     connect(this,&Messenger::fileReject,m_client,&Client::fileRejected,Qt::QueuedConnection);
     m_client->setSocket(m_socket);
-    m_client->setDefaultSettings(m_MyUsername,m_DownloadDirectory);
+    m_client->setDefaultSettings(m_MyUsername,m_DownloadDirectory,m_MyIpAddress);
     m_client->moveToThread(m_thread);
     emit accepting(m_socket->socketDescriptor(),m_client,true);
 }
