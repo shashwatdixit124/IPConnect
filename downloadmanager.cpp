@@ -41,6 +41,7 @@ void DownloadManager::serverDestroyed()
 
 void DownloadManager::transfer(QString t_address, QString t_filename, QString t_filepath, bool t_isSending)
 {
+    qDebug() << this << t_address << t_filename << t_filepath << t_isSending;
     if(!t_isSending)
     {
         m_socket = new QTcpSocket();
@@ -49,12 +50,14 @@ void DownloadManager::transfer(QString t_address, QString t_filename, QString t_
         m_socket->connectToHost(t_address,2423);
         if(m_socket->isOpen() && !t_address.isEmpty() && !t_filename.isEmpty() && !t_filepath.isEmpty())
         {
+            qDebug() << this << "creating new transfer";
             m_transfer = new Transfer;
             m_transfer->m_ip = t_address;
             m_transfer->m_filename = t_filename;
             m_transfer->m_filepath = t_filepath;
             m_transfer->isSending = t_isSending;
             m_transfers.insert(t_filename,m_transfer);
+            qDebug() << this << "sending transfer request";
             m_socket->write("IPC:FILE:TRANSFER:"+t_filename.toUtf8());
         }
         else
@@ -65,6 +68,7 @@ void DownloadManager::transfer(QString t_address, QString t_filename, QString t_
     }
     else
     {
+        qDebug() << this << "creating new transfer";
         m_transfer = new Transfer;
         m_transfer->m_ip = t_address;
         m_transfer->m_filename = t_filename;

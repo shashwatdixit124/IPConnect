@@ -215,7 +215,7 @@ void Client::handleRequest()
                     qDebug() << this << "Accepting Detail";
                     QString data = m_request.value("data");
                     QString ip = data.split(":").at(0);
-                    int pos = data.indexOf(":") + m_ClientIp.size();
+                    int pos = data.indexOf(":");
                     QString name = data.mid(pos + 1);
                     setClientUsername(name.trimmed());
                     setClientIp(ip.trimmed());
@@ -283,7 +283,8 @@ void Client::handleRequest()
         }
         if(m_request.value("option") == "SFI")
         {
-            qDebug() << "going to accept file to "<<m_DownloadDirectory;
+            qDebug() << this << "going to accept file to "<<m_DownloadDirectory;
+            m_filepath = m_DownloadDirectory+m_filename;
             emit transferFile(m_ClientIp,m_filename,m_filepath,false);
             //acceptFile(m_DownloadDirectory+m_filename);
         }
@@ -372,7 +373,7 @@ void Client::bytesWritten(qint64 t_bytes)
     {
         if(m_response.value("option") == "SFI")
         {
-            qDebug() << "sending file from bytesWritten";
+            qDebug() << this <<"sending file "<< m_filename << "from bytesWritten";
             emit transferFile(m_ClientIp,m_filename,m_filepath,true);
             //sendFile(m_filepath);
         }
