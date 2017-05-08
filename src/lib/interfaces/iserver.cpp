@@ -1,7 +1,6 @@
 #include "iserver.h"
 
 #include <QObject>
-#include <QTcpSocket>
 
 namespace IPConnect
 {

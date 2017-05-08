@@ -4,10 +4,17 @@
 
 namespace IPConnect
 {
-    IControlCenter* IControlCenter::m_instance = nullptr;
 
-    IControlCenter::IControlCenter(QObject *parent) : QObject(parent)
-    {
-		Q_ASSERT(m_instance == nullptr);
-    }
+IControlCenter* IControlCenter::m_instance = nullptr;
+
+IControlCenter::IControlCenter(QObject *parent) : QObject(parent)
+{
+	Q_ASSERT(m_instance == nullptr);
+}
+
+IControlCenter* IControlCenter::instance()
+{
+	return m_instance;
+}
+
 }
