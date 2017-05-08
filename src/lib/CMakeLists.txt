@@ -1,7 +1,8 @@
 set(IPConnectLibrary_SRS
     interfaces/icontrolcenter.cpp
-    controlcenter.cpp
     interfaces/iserver.cpp
+    controlcenter.cpp
+    debug.cpp
     server.cpp
 )
 
@@ -12,6 +13,7 @@ set(IPConnectLibrary_Interafces_HEADERS
 
 set(IPConnectLibrary_HEADERS
     controlcenter.h
+    debug.h
     server.h
 )
 

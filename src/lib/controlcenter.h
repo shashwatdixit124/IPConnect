@@ -1,5 +1,5 @@
-#ifndef ICONTROLCENTER_H
-#define ICONTROLCENTER_H
+#ifndef CONTROLCENTER_H
+#define CONTROLCENTER_H
 
 #include <QObject>
 

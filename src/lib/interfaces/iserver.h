@@ -1,5 +1,5 @@
-#ifndef ICONTROLCENTER_H
-#define ICONTROLCENTER_H
+#ifndef ISERVER_H
+#define ISERVER_H
 
 #include <QObject>
 #include <QTcpServer>
@@ -12,7 +12,7 @@ class IServer : public QObject
 	Q_OBJECT
 
 public:
-	virtual start() = 0;
+	virtual void start() = 0;
 
 protected:
 	QTcpServer m_server;
