@@ -7,7 +7,7 @@ set(IPConnectLibrary_SRS
     server.cpp
 )
 
-set(IPConnectLibrary_Interafces_HEADERS
+set(IPConnectLibrary_Interfaces_HEADERS
     interfaces/icontrolcenter.h
     interfaces/iserver.h
 )
