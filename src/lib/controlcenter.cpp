@@ -1,6 +1,7 @@
+#include "controlcenter.h"
+
 #include "interfaces/icontrolcenter.h"
 #include "interfaces/iserver.h"
-#include "controlcenter.h"
 #include "controlcenter_p.h"
 #include "server.h"
 
@@ -9,10 +10,9 @@
 namespace IPConnect
 {
 
-ControlCenter::ControlCenter(QObject* parent) : IControlCenter(parent) , m_ccp(new ControlCenterPrivate(this))
-{
+ControlCenter* ControlCenter::m_instance = nullptr;
 
-}
+ControlCenter::ControlCenter(QObject* parent) : IControlCenter(parent) , m_ccp(new ControlCenterPrivate(this)){}
 
 ControlCenter::~ControlCenter()
 {

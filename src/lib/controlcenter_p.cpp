@@ -6,10 +6,9 @@
 namespace IPConnect
 {
 
-ControlCenterPrivate::ControlCenterPrivate(ControlCenter* parent) : m_cc(parent)
-{
-	
-}
+ControlCenterPrivate::ControlCenterPrivate(ControlCenter* parent) : m_cc(parent){}
+
+ControlCenterPrivate::~ControlCenterPrivate(){}
 
 void ControlCenterPrivate::init()
 {

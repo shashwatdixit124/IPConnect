@@ -11,6 +11,7 @@ class ControlCenterPrivate
 {
 public:
 	explicit ControlCenterPrivate(ControlCenter* parent = nullptr);
+	~ControlCenterPrivate();
 	void init();
 	void shutdown();
 

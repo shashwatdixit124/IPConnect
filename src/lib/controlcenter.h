@@ -14,6 +14,7 @@ class ControlCenterPrivate;
 
 class ControlCenter : public IControlCenter
 {
+	Q_OBJECT
 public:
 	explicit ControlCenter(QObject* parent = nullptr);
 	~ControlCenter();
@@ -26,8 +27,8 @@ public Q_SLOTS:
 	void shutdown();
 
 protected:
-	friend class ControlCenterPrivate;
-	ControlCenterPrivate* m_ccp;
+	friend ControlCenterPrivate;
+	IPConnect::ControlCenterPrivate* m_ccp;
 	static ControlCenter* m_instance;
 
 };

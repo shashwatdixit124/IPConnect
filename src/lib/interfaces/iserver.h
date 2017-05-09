@@ -17,6 +17,7 @@ public:
 protected:
 	QTcpServer m_server;
 	explicit IServer(QObject* parent);
+	~IServer();
 };
 
 }

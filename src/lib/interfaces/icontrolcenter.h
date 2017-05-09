@@ -14,12 +14,12 @@ class IControlCenter : public QObject
 
 public:
 	static IControlCenter* instance();
-
 	virtual IServer* server() = 0;
 
 protected:
 	static IControlCenter* m_instance;
 	explicit IControlCenter(QObject* parent = nullptr);
+	~IControlCenter();
 };
 
 }

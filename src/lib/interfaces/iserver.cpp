@@ -4,8 +4,9 @@
 
 namespace IPConnect
 {
-    IServer::IServer(QObject *parent) : QObject(parent)
-    {
-		
-    }
+
+IServer::IServer(QObject *parent) : QObject(parent){}
+
+IServer::~IServer(){}
+
 }
