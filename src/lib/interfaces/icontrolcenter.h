@@ -22,6 +22,7 @@ protected:
 	static IControlCenter* m_instance;
 	explicit IControlCenter(QObject* parent = nullptr);
 	~IControlCenter();
+
 };
 
 }

@@ -8,7 +8,6 @@
 namespace IPConnect
 {
 
-class Server;
 class IServer;
 class IClientManager;
 class ControlCenterPrivate;

@@ -5,6 +5,7 @@
 
 namespace IPConnect
 {
+
 class ClientManager;
 class Server;
 

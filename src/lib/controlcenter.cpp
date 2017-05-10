@@ -3,6 +3,7 @@
 #include "interfaces/iclientmanager.h"
 #include "interfaces/icontrolcenter.h"
 #include "interfaces/iserver.h"
+#include "clientmanager.h"
 #include "controlcenter_p.h"
 #include "server.h"
 
