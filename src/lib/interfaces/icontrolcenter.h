@@ -7,6 +7,7 @@ namespace IPConnect
 {
 
 class IServer;
+class IClientManager;
 
 class IControlCenter : public QObject
 {
@@ -15,6 +16,7 @@ class IControlCenter : public QObject
 public:
 	static IControlCenter* instance();
 	virtual IServer* server() = 0;
+//	virtual IClientManager* clientManager() = 0;
 
 protected:
 	static IControlCenter* m_instance;
