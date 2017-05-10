@@ -7,7 +7,6 @@
 namespace IPConnect
 {
 
-class IServer;
 class IConnection;
 class IClient;
 

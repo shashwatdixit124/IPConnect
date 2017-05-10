@@ -16,6 +16,8 @@ public:
 	~Server();
 	void start() override;
 
+protected:
+	QTcpServer m_server;
 };
 
 }

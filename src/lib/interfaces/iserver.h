@@ -15,7 +15,6 @@ public:
 	virtual void start() = 0;
 
 protected:
-	QTcpServer m_server;
 	explicit IServer(QObject* parent);
 	~IServer();
 };
