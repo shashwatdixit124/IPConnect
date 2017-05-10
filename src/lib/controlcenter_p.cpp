@@ -1,5 +1,6 @@
 #include "controlcenter_p.h" 
 
+#include "clientmanager.h"
 #include "controlcenter.h"
 #include "server.h"
 
@@ -12,12 +13,16 @@ ControlCenterPrivate::~ControlCenterPrivate(){}
 
 void ControlCenterPrivate::init()
 {
+	m_clientManager = new ClientManager(m_cc);
 	m_server = new Server(m_cc);
 	m_server->start();
 }
 
 void ControlCenterPrivate::shutdown()
 {
+	if(m_clientManager)
+		m_clientManager->deleteLater();
+
 	if(m_server)
 		m_server->deleteLater();
 }

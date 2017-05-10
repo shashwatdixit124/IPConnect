@@ -10,6 +10,7 @@ namespace IPConnect
 
 class Server;
 class IServer;
+class IClientManager;
 class ControlCenterPrivate;
 
 class ControlCenter : public IControlCenter
@@ -22,6 +23,7 @@ public:
 	static void init();
 
 	IServer* server() override;
+	IClientManager* clientManager() override;
 
 public Q_SLOTS:
 	void shutdown();

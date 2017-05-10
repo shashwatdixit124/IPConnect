@@ -21,6 +21,7 @@ class ClientManager : public IClientManager
 public:
 	explicit ClientManager(QObject* parent = nullptr);
 	~ClientManager();
+
 	QList<IClient*> getAllClients() override;
 	void removeClient(IClient*) override;
 	void removeClient(qint16) override;

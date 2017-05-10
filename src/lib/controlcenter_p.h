@@ -5,6 +5,7 @@
 
 namespace IPConnect
 {
+class ClientManager;
 class Server;
 
 class ControlCenterPrivate
@@ -16,7 +17,8 @@ public:
 	void shutdown();
 
 	Server* m_server;
-	ControlCenter* m_cc;	
+	ClientManager* m_clientManager;
+	ControlCenter* m_cc;
 };
 
 }

@@ -1,5 +1,6 @@
 #include "controlcenter.h"
 
+#include "interfaces/iclientmanager.h"
 #include "interfaces/icontrolcenter.h"
 #include "interfaces/iserver.h"
 #include "controlcenter_p.h"
@@ -33,6 +34,11 @@ void ControlCenter::init()
 IServer* ControlCenter::server()
 {
 	return m_ccp->m_server;
+}
+
+IClientManager* ControlCenter::clientManager()
+{
+	return m_ccp->m_clientManager;
 }
 
 void ControlCenter::shutdown()
