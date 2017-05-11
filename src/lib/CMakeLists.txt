@@ -6,6 +6,7 @@ set(IPConnectLibrary_SRS
     interfaces/iserver.cpp
     
     client.cpp
+    clientinformation.cpp
     clientmanager.cpp
     connection.cpp
     controlcenter.cpp
@@ -24,6 +25,7 @@ set(IPConnectLibrary_Interfaces_HEADERS
 
 set(IPConnectLibrary_HEADERS
     client.h
+    clientinformation.h
     clientmanager.h
     connection.h
     controlcenter.h

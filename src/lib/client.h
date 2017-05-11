@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include "interfaces/iclient.h"
+#include "clientinformation.h"
 
 #include <QObject>
 
@@ -19,17 +20,12 @@ public:
 	explicit Client(QObject* parent = nullptr);
 	~Client();
 
-	void setConnection(Connection* conn);
-	IConnection* getConnection();
-	void setName(QString name);
-	QString name();
-	void setIp(QString ip);
-	QString ip();
+	IConnection* connection() override;
+	ClientInformation info() override;
 
 protected:
 	Connection* m_conn;
-	QString m_name;
-	QString m_ip;
+	ClientInformation m_info;
 
 };
 
