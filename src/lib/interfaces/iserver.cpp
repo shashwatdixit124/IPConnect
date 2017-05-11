@@ -1,11 +1,11 @@
 #include "iserver.h"
 
-#include <QObject>
+#include <QTcpServer>
 
 namespace IPConnect
 {
 
-IServer::IServer(QObject *parent) : QObject(parent){}
+IServer::IServer(QObject *parent) : QTcpServer(parent){}
 
 IServer::~IServer(){}
 

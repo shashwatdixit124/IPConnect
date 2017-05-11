@@ -7,7 +7,7 @@
 namespace IPConnect
 {
 
-class IServer : public QObject
+class IServer : public QTcpServer
 {
 	Q_OBJECT
 
@@ -17,6 +17,8 @@ public:
 protected:
 	explicit IServer(QObject* parent);
 	~IServer();
+	virtual void incomingConnection(qintptr handle) Q_DECL_OVERRIDE {};
+
 };
 
 }
