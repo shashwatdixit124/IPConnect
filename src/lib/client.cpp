@@ -28,4 +28,14 @@ ClientInformation Client::info()
 	return m_info;
 }
 
+void Client::setConnection(Connection* conn)
+{
+	m_conn = conn;
+}
+
+void Client::setInfo(ClientInformation info)
+{
+	m_info = info;
+}
+
 }

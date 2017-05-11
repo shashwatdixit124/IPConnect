@@ -23,6 +23,9 @@ public:
 	IConnection* connection() override;
 	ClientInformation info() override;
 
+	void setConnection(Connection*);
+	void setInfo(ClientInformation);
+
 protected:
 	Connection* m_conn;
 	ClientInformation m_info;

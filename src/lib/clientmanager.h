@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QList>
 #include <QMap>
+#include <QThread>
 
 namespace IPConnect
 {
@@ -34,8 +35,9 @@ protected:
 	void closeAllConections();
 
 	QMap<qint16,Client*> m_clientList;
-	QList<ClientInformation> m_clients;
+	QMap<qint16,ClientInformation> m_clientsInfo;
 	qint16 m_clientCount;
+	QThread *m_clientThread ;
 
 };
 
