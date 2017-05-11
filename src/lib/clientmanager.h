@@ -11,8 +11,8 @@ namespace IPConnect
 {
 
 class IConnection;
-class IClient;
 class Client;
+class ClientInformation;
 
 class ClientManager : public IClientManager
 {
@@ -22,18 +22,20 @@ public:
 	explicit ClientManager(QObject* parent = nullptr);
 	~ClientManager();
 
-	QList<IClient*> getAllClients() override;
-	void removeClient(IClient*) override;
+	void shutdown() override;
+	QList<ClientInformation> clients() override;
 	void removeClient(qint16) override;
 	void removeAllClients() override;
-	void addConnection(IConnection*) override;
+	void addClient(IConnection*) override;
 	void refresh() override;
 
 protected:
-	void closeConnection(IClient*) override;
-	void closeAllConections() override;
+	void closeConnection(Client*);
+	void closeAllConections();
 
-	QMap<QString,Client*> m_clientList;
+	QMap<qint16,Client*> m_clientList;
+	QList<ClientInformation> m_clients;
+	qint16 m_clientCount;
 
 };
 
