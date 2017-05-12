@@ -46,12 +46,15 @@ void Client::setInfo(ClientInformation info)
 
 void Client::start()
 {
-	qCDebug(BASE) << "client started on " << thread() ;
+	qCDebug(BASE) << "Client started on " << thread() ;
+	sendDetail();
 }
 
 void Client::handleRead()
 {
-	qCDebug(BASE) << "Reading from Connection(" << m_conn->socketDescriptor() << ") => " << m_conn->readAll() ;
+	QByteArray data = m_conn->readAll();
+	qCDebug(BASE) << "Reading from Connection(" << m_conn->socketDescriptor() << ") => " << data ;
+	processRead(data);
 }
 
 void Client::processRead(QByteArray t_data)
@@ -115,6 +118,7 @@ void Client::handleRequest()
 						write(message);
 					}
 					m_detailAccepted = true;
+					emit infoRecieved(m_info);
 				}
 			}
 		}
@@ -124,8 +128,32 @@ void Client::handleRequest()
 
 void Client::write(QString t_message)
 {
-    m_conn->write(t_message.toUtf8());
-    m_conn->waitForBytesWritten();
+	if(m_conn){
+		m_conn->write(t_message.toUtf8());
+		m_conn->waitForBytesWritten();
+	}
+	else
+		qCDebug(BASE) << this << "Connection not available on write";
+}
+
+void Client::sendDetail()
+{
+	if(m_conn)
+	{
+		qCDebug(BASE) << this << "Sending Details" ;
+		m_detailSent = true;
+		QString myIp = ControlCenter::instance()->userSettings()->ip();
+		QString myName = ControlCenter::instance()->userSettings()->name();
+		QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
+		m_response.insert("app","IPC");
+		m_response.insert("method","CONNECT");
+		m_response.insert("option","REQUEST");
+		m_response.insert("data",myIp+":"+myName);
+		m_response.insert("message",message);
+		write(message);
+	}
+	else
+		qCDebug(BASE) << this << "Connection not available on greetings";
 }
 
 }

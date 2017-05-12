@@ -38,6 +38,7 @@ protected:
 	void processRead(QByteArray);
 	void handleRequest();
 	void write(QString);
+	void sendDetail();
 
 	Connection* m_conn;
 	ClientInformation m_info;
