@@ -25,6 +25,10 @@ public:
 
 	void setConnection(Connection*);
 	void setInfo(ClientInformation);
+	void start();
+
+public Q_SLOTS:
+	void handleRead();
 
 Q_SIGNALS:
 	void infoRecieved(ClientInformation);

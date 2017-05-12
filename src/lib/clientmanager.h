@@ -34,6 +34,7 @@ public Q_SLOTS:
 	void addClient(ClientInformation);
 
 protected:
+	Client* createClient(IConnection*);
 	void closeConnection(Client*);
 	void closeAllConections();
 

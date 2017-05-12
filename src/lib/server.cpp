@@ -17,9 +17,9 @@ Server::~Server(){}
 
 void Server::start()
 {
-    if(listen(QHostAddress::Any, 2424))
+	if(listen(QHostAddress::Any, 2424))
 		qCDebug(BASE) << "Server started on 2424";
-    else
+	else
 		qCDebug(BASE) << "Server could not start on 2424";
 }
 
@@ -29,7 +29,7 @@ void Server::incomingConnection(qintptr handle)
 	Connection *conn = new Connection();
 	conn->setSocketDescriptor(handle);
 	if(conn){
-		ControlCenter::instance()->clientManager()->addClient(conn);
+		ControlCenter::instance()->clientManager()->addConnection(conn);
 	}
 }
 

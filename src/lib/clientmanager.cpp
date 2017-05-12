@@ -17,8 +17,10 @@ namespace IPConnect
 
 ClientManager::ClientManager(QObject* parent) : IClientManager(parent) , m_clientCount(0) , m_clientThread(new QThread(this))
 {
+	qCDebug(BASE) << "ClientManager started on " << thread() ;
 	connect(m_clientThread,&QThread::finished,this,&ClientManager::shutdown,Qt::QueuedConnection);
 	m_clientThread->start();
+	qCDebug(BASE) << "Starting Client Thread " << m_clientThread ;
 }
 
 ClientManager::~ClientManager()
@@ -59,24 +61,17 @@ void ClientManager::removeAllClients()
 void ClientManager::addConnection(IConnection* connection)
 {
 	qCDebug(BASE) << "adding new Client with descriptor " <<  connection->socketDescriptor();
-	Client* client = new Client();
-	Connection *conn = dynamic_cast<Connection*>(connection);
-	if(!conn){
+	Client* client = createClient(connection);
+
+	if(!client){
 		qCDebug(BASE) << "cannot add Client with socket descriptor " << connection->socketDescriptor() ;
-		connection->deleteLater();
 		return;
 	}
-	client->setConnection(conn);
-
-	m_clientCount++;
-	m_clientList.insert(m_clientCount,client);
-	ClientInformation ci;
-	ci.setId(m_clientCount);
-	client->setInfo(ci);
 
 	connect(client,&Client::infoRecieved,this,&ClientManager::addClient,Qt::QueuedConnection);
 	connection->moveToThread(m_clientThread);
 	client->moveToThread(m_clientThread);
+	client->start();
 }
 
 void ClientManager::refresh()
@@ -90,6 +85,25 @@ void ClientManager::addClient(ClientInformation ci)
 	client->setInfo(ci);
 	m_clientsInfo.insert(id,ci);
 	emit clientAdded(ci);
+}
+
+Client* ClientManager::createClient(IConnection* connection)
+{
+	Connection *conn = dynamic_cast<Connection*>(connection);
+	if(!conn){
+		connection->deleteLater();
+		return nullptr;
+	}
+
+	Client* client = new Client();
+	client->setConnection(conn);
+
+	m_clientCount++;
+	m_clientList.insert(m_clientCount,client);
+	ClientInformation ci;
+	ci.setId(m_clientCount);
+	client->setInfo(ci);
+	return client;
 }
 
 void ClientManager::closeConnection(Client* client)
