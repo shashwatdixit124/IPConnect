@@ -5,6 +5,7 @@
 #include "clientinformation.h"
 
 #include <QObject>
+#include <QMap>
 
 namespace IPConnect
 {
@@ -34,9 +35,16 @@ Q_SIGNALS:
 	void infoRecieved(ClientInformation);
 
 protected:
+	void processRead(QByteArray);
+	void handleRequest();
+	void write(QString);
+
 	Connection* m_conn;
 	ClientInformation m_info;
-
+	QMap<QString,QString> m_request;
+	QMap<QString,QString> m_response;
+	bool m_detailAccepted;
+	bool m_detailSent;
 };
 
 }
