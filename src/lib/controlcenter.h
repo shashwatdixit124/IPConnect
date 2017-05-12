@@ -11,6 +11,7 @@ namespace IPConnect
 class IServer;
 class IClientManager;
 class ControlCenterPrivate;
+class IUserSettings;
 
 class ControlCenter : public IControlCenter
 {
@@ -23,6 +24,7 @@ public:
 
 	IServer* server() override;
 	IClientManager* clientManager() override;
+	IUserSettings* userSettings() override;
 
 public Q_SLOTS:
 	void shutdown();

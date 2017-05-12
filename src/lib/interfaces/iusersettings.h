@@ -6,8 +6,9 @@
 namespace IPConnect
 {
 
-class IUserSettings
+class IUserSettings : public QObject
 {
+	Q_OBJECT
 
 public:
 	virtual QString name() = 0;

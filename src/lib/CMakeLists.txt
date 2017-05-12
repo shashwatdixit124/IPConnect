@@ -4,6 +4,7 @@ set(IPConnectLibrary_SRS
     interfaces/iconnection.cpp
     interfaces/icontrolcenter.cpp
     interfaces/iserver.cpp
+    interfaces/iusersettings.cpp
     
     client.cpp
     clientinformation.cpp
@@ -13,6 +14,7 @@ set(IPConnectLibrary_SRS
     controlcenter_p.cpp
     debug.cpp
     server.cpp
+    usersettings.cpp
 )
 
 set(IPConnectLibrary_Interfaces_HEADERS
@@ -21,6 +23,7 @@ set(IPConnectLibrary_Interfaces_HEADERS
     interfaces/iconnection.h
     interfaces/icontrolcenter.h
     interfaces/iserver.h
+    interfaces/iusersettings.h
 )
 
 set(IPConnectLibrary_HEADERS
@@ -32,6 +35,7 @@ set(IPConnectLibrary_HEADERS
     controlcenter_p.h
     debug.h
     server.h
+    usersettings.h
 )
 
 add_library(IPConnect SHARED ${IPConnectLibrary_SRS})

@@ -3,9 +3,11 @@
 #include "interfaces/iclientmanager.h"
 #include "interfaces/icontrolcenter.h"
 #include "interfaces/iserver.h"
+#include "interfaces/iusersettings.h"
 #include "clientmanager.h"
 #include "controlcenter_p.h"
 #include "server.h"
+#include "usersettings.h"
 
 #include <QObject>
 
@@ -40,6 +42,11 @@ IServer* ControlCenter::server()
 IClientManager* ControlCenter::clientManager()
 {
 	return m_ccp->m_clientManager;
+}
+
+IUserSettings* ControlCenter::userSettings()
+{
+	return m_ccp->m_userSettings;
 }
 
 void ControlCenter::shutdown()

@@ -3,11 +3,14 @@
 
 #include "interfaces/iusersettings.h"
 
+#include <QObject>
+
 namespace IPConnect
 {
 
 class UserSettings : public IUserSettings
 {
+	Q_OBJECT
 
 public:
 	explicit UserSettings();
