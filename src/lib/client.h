@@ -26,6 +26,9 @@ public:
 	void setConnection(Connection*);
 	void setInfo(ClientInformation);
 
+Q_SIGNALS:
+	void infoRecieved(ClientInformation);
+
 protected:
 	Connection* m_conn;
 	ClientInformation m_info;

@@ -27,8 +27,11 @@ public:
 	QList<ClientInformation> clients() override;
 	void removeClient(qint16) override;
 	void removeAllClients() override;
-	void addClient(IConnection*) override;
+	void addConnection(IConnection*) override;
 	void refresh() override;
+
+public Q_SLOTS:
+	void addClient(ClientInformation);
 
 protected:
 	void closeConnection(Client*);

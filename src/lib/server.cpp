@@ -20,7 +20,7 @@ void Server::start()
     if(listen(QHostAddress::Any, 2424))
 		qCDebug(BASE) << "Server started on 2424";
     else
-		qCDebug(BASE) << "Server Could not start on 2424";
+		qCDebug(BASE) << "Server could not start on 2424";
 }
 
 void Server::incomingConnection(qintptr handle)

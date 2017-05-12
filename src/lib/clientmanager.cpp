@@ -56,9 +56,9 @@ void ClientManager::removeAllClients()
 	m_clientsInfo.clear();
 }
 
-void ClientManager::addClient(IConnection* connection)
+void ClientManager::addConnection(IConnection* connection)
 {
-	qCDebug(BASE) << "adding connection with descriptor " <<  connection->socketDescriptor();
+	qCDebug(BASE) << "adding new Client with descriptor " <<  connection->socketDescriptor();
 	Client* client = new Client();
 	Connection *conn = dynamic_cast<Connection*>(connection);
 	if(!conn){
@@ -67,15 +67,29 @@ void ClientManager::addClient(IConnection* connection)
 		return;
 	}
 	client->setConnection(conn);
-	connection->moveToThread(m_clientThread);
-	client->moveToThread(m_clientThread);
+
 	m_clientCount++;
 	m_clientList.insert(m_clientCount,client);
+	ClientInformation ci;
+	ci.setId(m_clientCount);
+	client->setInfo(ci);
 
+	connect(client,&Client::infoRecieved,this,&ClientManager::addClient,Qt::QueuedConnection);
+	connection->moveToThread(m_clientThread);
+	client->moveToThread(m_clientThread);
 }
 
 void ClientManager::refresh()
 {
+}
+
+void ClientManager::addClient(ClientInformation ci)
+{
+	qint16 id = ci.id();
+	Client* client = m_clientList.value(id);
+	client->setInfo(ci);
+	m_clientsInfo.insert(id,ci);
+	emit clientAdded(ci);
 }
 
 void ClientManager::closeConnection(Client* client)

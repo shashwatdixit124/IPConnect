@@ -17,7 +17,6 @@ public:
 protected:
 	explicit IServer(QObject* parent);
 	~IServer();
-	virtual void incomingConnection(qintptr handle) Q_DECL_OVERRIDE {};
 
 };
 

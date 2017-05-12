@@ -19,8 +19,11 @@ public:
 	virtual QList<ClientInformation> clients() = 0;
 	virtual void removeClient(qint16) = 0;
 	virtual void removeAllClients() = 0;
-	virtual void addClient(IConnection*) = 0;
+	virtual void addConnection(IConnection*) = 0;
 	virtual void refresh() = 0;
+
+Q_SIGNALS:
+	void clientAdded(ClientInformation);
 
 protected:
 	explicit IClientManager(QObject* parent = nullptr);
