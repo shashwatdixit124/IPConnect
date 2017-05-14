@@ -57,7 +57,7 @@ Item {
 
             Image {
                 id: minimizeBtn
-                source: "qrc:/min-"+ (item.dark ? "light" : "dark") + ".png"
+                source: "qrc:/resources/min-"+ (item.dark ? "light" : "dark") + ".png"
                 anchors.centerIn: parent
             }
 
@@ -77,7 +77,7 @@ Item {
 
             Image {
                 id: maximizeBtn
-                source: "qrc:/max-"+ (item.dark ? "light" : "dark") + ".png"
+                source: "qrc:/resources/max-"+ (item.dark ? "light" : "dark") + ".png"
                 anchors.centerIn: parent
             }
 
@@ -97,7 +97,7 @@ Item {
 
             Image {
                 id: closeBtn
-                source: "qrc:/close-"+ (item.dark ? "light" : "dark") + ".png"
+                source: "qrc:/resources/close-"+ (item.dark ? "light" : "dark") + ".png"
                 anchors.centerIn: parent
             }
 
