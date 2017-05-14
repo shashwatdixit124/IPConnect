@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>TitleBar.qml</file>
+    </qresource>
+</RCC>
