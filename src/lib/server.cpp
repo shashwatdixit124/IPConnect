@@ -23,6 +23,12 @@ void Server::start()
 		qCDebug(BASE) << "Server could not start on 2424";
 }
 
+void Server::shutdown()
+{
+	qCDebug(BASE) << "Server Stopped" ;
+	close();
+}
+
 void Server::incomingConnection(qintptr handle)
 {
 	qCDebug(BASE) << "handling connection with descriptor " << handle ;

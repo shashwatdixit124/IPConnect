@@ -34,6 +34,12 @@ void ControlCenter::init()
 	m_instance->m_ccp->init();
 }
 
+void ControlCenter::quit()
+{
+	m_instance->deleteLater();
+	m_instance = nullptr;
+}
+
 IServer* ControlCenter::server()
 {
 	return m_ccp->m_server;
@@ -52,6 +58,7 @@ IUserSettings* ControlCenter::userSettings()
 void ControlCenter::shutdown()
 {
 	m_instance->m_ccp->shutdown();
+	delete m_ccp;
 }
 
 }

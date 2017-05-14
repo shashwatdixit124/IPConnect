@@ -17,10 +17,9 @@ namespace IPConnect
 
 ClientManager::ClientManager(QObject* parent) : IClientManager(parent) , m_clientCount(0) , m_clientThread(new QThread(this))
 {
-	qCDebug(BASE) << "ClientManager started on " << thread() ;
+	qCDebug(BASE) << "ClientManager started";
 	connect(m_clientThread,&QThread::finished,this,&ClientManager::shutdown,Qt::QueuedConnection);
 	m_clientThread->start();
-	qCDebug(BASE) << "Starting Client Thread " << m_clientThread ;
 }
 
 ClientManager::~ClientManager()
@@ -29,8 +28,9 @@ ClientManager::~ClientManager()
 
 void ClientManager::shutdown()
 {
+	qCDebug(BASE) << "ClientManager Stopped" ;
 	removeAllClients();
-	m_clientThread->terminate();
+	m_clientThread->quit();
 	m_clientThread->deleteLater();
 }
 

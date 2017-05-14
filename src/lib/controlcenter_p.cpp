@@ -22,11 +22,15 @@ void ControlCenterPrivate::init()
 
 void ControlCenterPrivate::shutdown()
 {
-	if(m_server)
+	if(m_server) {
+		m_server->shutdown();
 		m_server->deleteLater();
+	}
 
-	if(m_clientManager)
+	if(m_clientManager) {
+		m_clientManager->shutdown();
 		m_clientManager->deleteLater();
+	}
 
 	if(m_userSettings)
 		m_userSettings->deleteLater();

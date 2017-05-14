@@ -21,6 +21,7 @@ public:
 	~ControlCenter();
 	static ControlCenter* instance();
 	static void init();
+	static void quit();
 
 	IServer* server() override;
 	IClientManager* clientManager() override;

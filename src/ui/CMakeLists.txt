@@ -14,5 +14,4 @@ add_library(IPConnectUI SHARED ${IPConnectUILibrary_SRS} ${IPConnectUILibrary_RC
 target_link_libraries(IPConnectUI Qt5::Core Qt5::Widgets Qt5::Quick)
 install(TARGETS IPConnectUI LIBRARY DESTINATION lib)
 install(FILES ${IPConnectUILibrary_HEADERS} DESTINATION include/ipconnect/ui)
-qt5_add_resources(RESOURCES window.qrc)
 target_include_directories(IPConnectUI SYSTEM PUBLIC ${CMAKE_SOURCE_DIR}/src/ui)

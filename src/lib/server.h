@@ -16,6 +16,7 @@ public:
 	explicit Server(QObject* parent);
 	~Server();
 	void start() override;
+	void shutdown();
 
 protected:
 	QTcpServer m_server;
