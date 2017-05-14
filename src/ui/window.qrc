@@ -1,8 +1,14 @@
 <RCC>
 	<qresource prefix="/">
-		<file>TitleBar.qml</file>
-		<file>StatusBar.qml</file>
-		<file>MainView.qml</file>
-		<file>MainWindow.qml</file>
+		<file>resources/TitleBar.qml</file>
+		<file>resources/StatusBar.qml</file>
+		<file>resources/MainView.qml</file>
+		<file>resources/MainWindow.qml</file>
+		<file>resources/close-light.png</file>
+		<file>resources/max-light.png</file>
+		<file>resources/min-light.png</file>
+		<file>resources/close-dark.png</file>
+		<file>resources/max-dark.png</file>
+		<file>resources/min-dark.png</file>
 	</qresource>
 </RCC>

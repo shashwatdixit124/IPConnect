@@ -15,6 +15,7 @@ IPConnectWindow::~IPConnectWindow()
 
 void IPConnectWindow::show()
 {
+	m_engine.load(QUrl(QLatin1String("qrc:/resources/MainWindow.qml")));
 }
 
 }
