@@ -3,5 +3,6 @@
 		<file>TitleBar.qml</file>
 		<file>StatusBar.qml</file>
 		<file>MainView.qml</file>
+		<file>MainWindow.qml</file>
 	</qresource>
 </RCC>
