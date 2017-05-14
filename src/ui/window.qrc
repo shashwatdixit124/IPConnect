@@ -1,6 +1,7 @@
 <RCC>
-    <qresource prefix="/">
-        <file>TitleBar.qml</file>
+	<qresource prefix="/">
+		<file>TitleBar.qml</file>
 		<file>StatusBar.qml</file>
-    </qresource>
+		<file>MainView.qml</file>
+	</qresource>
 </RCC>
