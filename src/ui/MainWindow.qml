@@ -33,7 +33,43 @@ ApplicationWindow {
             anchors.centerIn: parent
             color: root.rootBgColor
 
-            
+            TitleBar{
+                id: titleBar
+                width: parent.width
+                dark: root.dark
+                textColor: root.textColor
+                bgColor: root.rootBgColor
+                anchors.top:parent.top
+                onClose: Qt.quit()
+                onMaximized: root.showMaximized()
+                onMinimized: root.showMinimized()
+                onDrag: {
+                    root.x += dragX
+                    root.y += dragY
+                }
+            }
+
+            MainView{
+                id:mainView
+                width: parent.width
+                anchors.top: titleBar.bottom
+                anchors.bottom: statusBar.top
+            }
+
+            StatusBar{
+                id:statusBar
+                width:parent.width
+                height: 16
+                anchors.bottom: parent.bottom
+                text: qsTr("Server Not Running")
+                dark: root.dark
+                textColor: root.sbTextColor
+                bgColor: root.sbBgColor
+                onSizeChanged: {
+                    root.width += sizeX
+                    root.height += sizeY
+                }
+            }
         }
     }
 }
