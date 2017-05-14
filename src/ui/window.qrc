@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>TitleBar.qml</file>
+		<file>StatusBar.qml</file>
     </qresource>
 </RCC>
