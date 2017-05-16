@@ -1,28 +1,33 @@
 #include "uimanager.h"
 
 #include <interfaces/icontrolcenter.h>
-#include <interfaces/iusersettings.h>
-#include "uimanager.h"
+#include <interfaces/iclientmanager.h>
+#include <clientinformation.h>
+#include "userlist.h"
 
 #include <QObject>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QDebug>
 
 namespace IPConnect
 {
 
 UiManager::UiManager(IControlCenter* cc) : m_cc(cc)
 {
-	m_engine.rootContext()->setContextProperty("ipcUserSettings",m_cc->userSettings());
+	IClientManager* cm = cc->clientManager();
+	m_usersList = new UserList(cm->clients());
 }
 
 UiManager::~UiManager()
 {
+	if(m_usersList)
+		m_usersList->deleteLater();
 }
 
-void UiManager::load(QString file)
+void UiManager::updateUserList()
 {
-	m_engine.load(QUrl(file));
+	m_usersList->updateList(m_cc->clientManager()->clients());
 }
 
 }

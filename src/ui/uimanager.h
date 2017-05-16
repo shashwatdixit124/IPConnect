@@ -1,12 +1,15 @@
 #ifndef UIMANAGER_H
 #define UIMANAGER_H
 
+#include <clientinformation.h>
+
 #include <QObject>
-#include <QQmlApplicationEngine>
+#include <QAbstractListModel>
 
 namespace IPConnect
 {
 class IControlCenter;
+class UserList;
 
 class UiManager : public QObject
 {
@@ -14,11 +17,15 @@ class UiManager : public QObject
 public:
 	explicit UiManager(IControlCenter*);
 	~UiManager();
-	void load(QString);
+
+	Q_INVOKABLE QAbstractListModel* users();
+
+public Q_SLOTS:
+	void updateUserList();
 
 protected:
 	IControlCenter* m_cc;
-	QQmlApplicationEngine m_engine;
+	UserList* m_usersList;
 
 };
 

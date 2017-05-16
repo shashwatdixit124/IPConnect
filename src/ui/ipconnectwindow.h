@@ -1,12 +1,12 @@
 #ifndef IPCONNECTWINDOW_H
 #define IPCONNECTWINDOW_H
 
-#include "interfaces/icontrolcenter.h"
-
 #include <QQmlApplicationEngine>
 
 namespace IPConnect
 {
+class IControlCenter;
+class UiManager;
 
 class IPConnectWindow
 {
@@ -17,8 +17,8 @@ public:
 	void show();
 
 protected:
+	UiManager* m_manager;
 	QQmlApplicationEngine m_engine;
-	IControlCenter* m_cc;
 };
 
 }

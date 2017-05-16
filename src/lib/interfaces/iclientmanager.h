@@ -23,7 +23,7 @@ public:
 	virtual void refresh() = 0;
 
 Q_SIGNALS:
-	void clientAdded(ClientInformation);
+	void userListUpdated();
 
 protected:
 	explicit IClientManager(QObject* parent = nullptr);

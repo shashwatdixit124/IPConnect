@@ -85,7 +85,7 @@ void ClientManager::addClient(ClientInformation ci)
 	client->setInfo(ci);
 	m_clientsInfo.insert(id,ci);
 	qCDebug(BASE) << "Client (" << ci.name() << ") Added in ClientManager" ;
-	emit clientAdded(ci);
+	emit userListUpdated();
 }
 
 Client* ClientManager::createClient(IConnection* connection)
