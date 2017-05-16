@@ -5,11 +5,6 @@
 #include <clientinformation.h>
 #include "userlist.h"
 
-#include <QObject>
-#include <QQmlApplicationEngine>
-#include <QQmlContext>
-#include <QDebug>
-
 namespace IPConnect
 {
 
