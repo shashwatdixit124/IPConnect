@@ -26,6 +26,7 @@ ApplicationWindow {
 			id: titleBar
 			title: qsTr(" I P C O N N E C T ")
 			width: parent.width
+            height: 25
 			dark: root.dark
 			textColor: root.textColor
 			bgColor: root.rootBgColor
@@ -40,10 +41,14 @@ ApplicationWindow {
 		}
 
 		MainView{
-			id:mainView
-			width: parent.width
+            id:mainView
+            dark: root.dark
+            textColor: root.textColor
+            bgColor: root.rootBgColor
+            anchors.left: parent.left
+            anchors.right: parent.right
 			anchors.top: titleBar.bottom
-			anchors.bottom: statusBar.top
+            anchors.bottom: statusBar.top
 		}
 
 		StatusBar{

@@ -4,6 +4,7 @@
 		<file>resources/StatusBar.qml</file>
 		<file>resources/MainView.qml</file>
 		<file>resources/MainWindow.qml</file>
+		<file>resources/Messenger.qml</file>
 		<file>resources/close-light.png</file>
 		<file>resources/max-light.png</file>
 		<file>resources/min-light.png</file>

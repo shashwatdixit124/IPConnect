@@ -4,7 +4,7 @@ import QtQuick.Window 2.2
 
 Item {
 	id: item
-	property alias title : applicationNameText.text
+    property alias title : applicationNameText.text
 	property bool dark
 	property string textColor
 	property string bgColor
@@ -15,8 +15,8 @@ Item {
 	signal drag(real dragX,real dragY)
 
 	Item{
-		id: titleBar
-		height: 25
+        id: titleBar
+        height:item.height
 		width: parent.width
 
 		Item{
@@ -54,7 +54,7 @@ Item {
 
 			Image {
 				id: minimizeBtn
-				source: "qrc:/resources/min-"+ (item.dark ? "light" : "dark") + ".png"
+                source: "qrc:/resources/min-"+ (item.dark ? "light" : "dark") + ".png"
 				anchors.centerIn: parent
 			}
 
@@ -73,7 +73,7 @@ Item {
 
 			Image {
 				id: maximizeBtn
-				source: "qrc:/resources/max-"+ (item.dark ? "light" : "dark") + ".png"
+                source: "qrc:/resources/max-"+ (item.dark ? "light" : "dark") + ".png"
 				anchors.centerIn: parent
 			}
 
@@ -92,7 +92,7 @@ Item {
 
 			Image {
 				id: closeBtn
-				source: "qrc:/resources/close-"+ (item.dark ? "light" : "dark") + ".png"
+                source: "qrc:/resources/close-"+ (item.dark ? "light" : "dark") + ".png"
 				anchors.centerIn: parent
 			}
 
