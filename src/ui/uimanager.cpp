@@ -5,6 +5,8 @@
 #include <clientinformation.h>
 #include "userlist.h"
 
+#include <QAbstractListModel>
+
 namespace IPConnect
 {
 
@@ -23,6 +25,11 @@ UiManager::~UiManager()
 void UiManager::updateUserList()
 {
 	m_usersList->updateList(m_cc->clientManager()->clients());
+}
+
+QAbstractListModel* UiManager::users()
+{
+	return m_usersList;
 }
 
 }

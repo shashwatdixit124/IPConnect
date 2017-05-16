@@ -9,17 +9,17 @@ ClientInformation::ClientInformation(){}
 
 ClientInformation::~ClientInformation(){}
 
-qint16 ClientInformation::id()
+qint16 ClientInformation::id() const
 {
 	return m_id;
 }
 
-QString ClientInformation::name()
+QString ClientInformation::name() const
 {
 	return m_name;
 }
 
-QString ClientInformation::ip()
+QString ClientInformation::ip() const
 {
 	return m_ip;
 }
