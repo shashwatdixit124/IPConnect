@@ -13,9 +13,9 @@ public:
 	explicit ClientInformation();
 	~ClientInformation();
 
-	qint16 id();
-	QString name();
-	QString ip();
+	qint16 id() const;
+	QString name() const;
+	QString ip() const;
 
 	void setId(qint16);
 	void setName(QString);

@@ -1,11 +1,13 @@
 set(IPConnectUILibrary_SRS
     ipconnectwindow.cpp
     uimanager.cpp
+    userlist.cpp
 )
 
 set(IPConnectUILibrary_HEADERS
     ipconnectwindow.h
     uimanager.h
+    userlist.h
 )
 
 set(IPConnectUILibrary_RCC
