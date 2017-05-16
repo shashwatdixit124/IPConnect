@@ -14,6 +14,7 @@ UiManager::UiManager(IControlCenter* cc) : m_cc(cc)
 {
 	IClientManager* cm = cc->clientManager();
 	m_usersList = new UserList(cm->clients());
+	connect(cm,&IClientManager::userListUpdated,this,&UiManager::updateUserList);
 }
 
 UiManager::~UiManager()

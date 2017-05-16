@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QQmlApplicationEngine>
+#include <QAbstractListModel>
 #include <QQmlContext>
 
 namespace IPConnect
@@ -22,7 +23,7 @@ IPConnectWindow::~IPConnectWindow()
 
 void IPConnectWindow::show()
 {
-	m_engine.rootContext()->setContextProperty("_ipconnect",m_manager);
+	m_engine.rootContext()->setContextProperty("_users",m_manager->users());
 	m_engine.load(QUrl("qrc:/resources/MainWindow.qml"));
 }
 

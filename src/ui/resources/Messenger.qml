@@ -144,7 +144,7 @@ Item {
             id:userList
             anchors.fill: parent
 
-            model: _ipconnect.users()
+            model: _users
             delegate: userDelegate
 
             focus: true

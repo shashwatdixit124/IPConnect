@@ -18,7 +18,7 @@ public:
 	explicit UiManager(IControlCenter*);
 	~UiManager();
 
-	Q_INVOKABLE QAbstractListModel* users();
+	QAbstractListModel* users();
 
 public Q_SLOTS:
 	void updateUserList();
