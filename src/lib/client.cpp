@@ -140,17 +140,20 @@ void Client::sendDetail()
 {
 	if(m_conn)
 	{
-		qCDebug(BASE) << this << "Sending Details" ;
-		m_detailSent = true;
-		QString myIp = ControlCenter::instance()->userSettings()->ip();
-		QString myName = ControlCenter::instance()->userSettings()->name();
-		QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
-		m_response.insert("app","IPC");
-		m_response.insert("method","CONNECT");
-		m_response.insert("option","REQUEST");
-		m_response.insert("data",myIp+":"+myName);
-		m_response.insert("message",message);
-		write(message);
+		if(!m_detailSent)
+		{
+			qCDebug(BASE) << this << "Sending Details" ;
+			m_detailSent = true;
+			QString myIp = ControlCenter::instance()->userSettings()->ip();
+			QString myName = ControlCenter::instance()->userSettings()->name();
+			QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
+			m_response.insert("app","IPC");
+			m_response.insert("method","CONNECT");
+			m_response.insert("option","REQUEST");
+			m_response.insert("data",myIp+":"+myName);
+			m_response.insert("message",message);
+			write(message);
+		}
 	}
 	else
 		qCDebug(BASE) << this << "Connection not available on greetings";

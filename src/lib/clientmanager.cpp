@@ -28,10 +28,10 @@ ClientManager::~ClientManager()
 
 void ClientManager::shutdown()
 {
-	qCDebug(BASE) << "ClientManager Stopped" ;
 	removeAllClients();
 	m_clientThread->quit();
 	m_clientThread->deleteLater();
+	qCDebug(BASE) << "ClientManager Stopped" ;
 }
 
 QList<ClientInformation> ClientManager::clients()
@@ -46,6 +46,7 @@ void ClientManager::removeClient(qint16 id)
 	m_clientsInfo.remove(id);
 	closeConnection(client);
 	client->deleteLater();
+	emit userListUpdated();
 }
 
 void ClientManager::removeAllClients()
@@ -56,6 +57,7 @@ void ClientManager::removeAllClients()
 		c->deleteLater();
 	}
 	m_clientsInfo.clear();
+	emit userListUpdated();
 }
 
 void ClientManager::addConnection(IConnection* connection)
@@ -69,9 +71,9 @@ void ClientManager::addConnection(IConnection* connection)
 	}
 
 	connect(client,&Client::infoRecieved,this,&ClientManager::addClient,Qt::QueuedConnection);
+	client->start();
 	connection->moveToThread(m_clientThread);
 	client->moveToThread(m_clientThread);
-	client->start();
 }
 
 void ClientManager::refresh()
@@ -112,7 +114,7 @@ void ClientManager::closeConnection(Client* client)
 	IConnection* conn = client->connection();
 	if(conn){
 		if(conn->isValid())
-			conn->disconnectFromHost();
+			conn->close();
 		conn->deleteLater();
 	}
 }
