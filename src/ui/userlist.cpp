@@ -46,8 +46,14 @@ QVariant UserList::data(const QModelIndex& index, int role) const
 	return QVariant();
 }
 
-void UserList::updateList(QList<IPConnect::ClientInformation>)
+void UserList::updateList(QList<IPConnect::ClientInformation> ciList)
 {
+	beginRemoveRows(QModelIndex(),0,rowCount()-1);
+    m_users.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, ciList.count()-1);
+    m_users = ciList;
+    endInsertRows();
 }
 
 QHash<int, QByteArray> UserList::roleNames() const
