@@ -6,6 +6,7 @@
 #include "client.h"
 #include "connection.h"
 #include "clientinformation.h"
+#include "clientthreadmanager.h"
 #include "debug.h"
 
 #include <QObject>
@@ -15,10 +16,16 @@
 namespace IPConnect
 {
 
-ClientManager::ClientManager(QObject* parent) : IClientManager(parent) , m_clientCount(0) , m_clientThread(new QThread(this))
+ClientManager::ClientManager(QObject* parent)
+	: IClientManager(parent) , m_clientCount(0) , 
+	m_clientThread(new QThread(this)) , m_clientThreadManager(new ClientThreadManager())
 {
 	qCDebug(BASE) << "ClientManager started";
-	connect(m_clientThread,&QThread::finished,this,&ClientManager::shutdown,Qt::QueuedConnection);
+	connect(m_clientThreadManager,&ClientThreadManager::clientAdded,this,&ClientManager::clientAdded,Qt::QueuedConnection);
+	connect(m_clientThreadManager,&ClientThreadManager::clientRemoved,this,&ClientManager::clientRemoved,Qt::QueuedConnection);
+	connect(this,&ClientManager::clientCreated,m_clientThreadManager,&ClientThreadManager::clientCreated,Qt::QueuedConnection);
+	connect(this,&ClientManager::removeAllClients,m_clientThreadManager,&ClientThreadManager::removeAllClients,Qt::QueuedConnection);
+	m_clientThreadManager->moveToThread(m_clientThread);
 	m_clientThread->start();
 }
 
@@ -28,7 +35,7 @@ ClientManager::~ClientManager()
 
 void ClientManager::shutdown()
 {
-	removeAllClients();
+	emit removeAllClients();
 	m_clientThread->quit();
 	m_clientThread->deleteLater();
 	qCDebug(BASE) << "ClientManager Stopped" ;
@@ -39,30 +46,16 @@ QList<ClientInformation> ClientManager::clients()
 	return m_clientsInfo.values();
 }
 
-void ClientManager::removeClient(qint16 id)
+void ClientManager::clientRemoved(qint16 id)
 {
-	Client* client = m_clientList.value(id);
 	m_clientList.remove(id);
 	m_clientsInfo.remove(id);
-	closeConnection(client);
-	client->deleteLater();
-	emit userListUpdated();
-}
-
-void ClientManager::removeAllClients()
-{
-	QList<Client*> clients = m_clientList.values();
-	foreach(Client* c , clients){
-		closeConnection(c);
-		c->deleteLater();
-	}
-	m_clientsInfo.clear();
 	emit userListUpdated();
 }
 
 void ClientManager::addConnection(IConnection* connection)
 {
-	qCDebug(BASE) << "adding new Client with descriptor " <<  connection->socketDescriptor();
+	qCDebug(BASE) << this << " adding new Client with descriptor " <<  connection->socketDescriptor();
 	Client* client = createClient(connection);
 
 	if(!client){
@@ -70,23 +63,18 @@ void ClientManager::addConnection(IConnection* connection)
 		return;
 	}
 
-	connect(client,&Client::infoRecieved,this,&ClientManager::addClient,Qt::QueuedConnection);
-	client->start();
 	connection->moveToThread(m_clientThread);
 	client->moveToThread(m_clientThread);
+	emit clientCreated(client);
 }
 
-void ClientManager::refresh()
-{
-}
-
-void ClientManager::addClient(ClientInformation ci)
+void ClientManager::clientAdded(ClientInformation ci)
 {
 	qint16 id = ci.id();
 	Client* client = m_clientList.value(id);
 	client->setInfo(ci);
 	m_clientsInfo.insert(id,ci);
-	qCDebug(BASE) << "Client (" << ci.name() << ") Added in ClientManager" ;
+	qCDebug(BASE) << this << ci.name() << " Added in ClientManager" ;
 	emit userListUpdated();
 }
 
@@ -107,24 +95,6 @@ Client* ClientManager::createClient(IConnection* connection)
 	ci.setId(m_clientCount);
 	client->setInfo(ci);
 	return client;
-}
-
-void ClientManager::closeConnection(Client* client)
-{
-	IConnection* conn = client->connection();
-	if(conn){
-		if(conn->isValid())
-			conn->close();
-		conn->deleteLater();
-	}
-}
-
-void ClientManager::closeAllConections()
-{
-	QList<Client*> clients = m_clientList.values();
-	foreach(Client* c , clients){
-		closeConnection(c);
-	}
 }
 
 }

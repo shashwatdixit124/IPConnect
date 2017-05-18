@@ -14,6 +14,7 @@ namespace IPConnect
 class IConnection;
 class Client;
 class ClientInformation;
+class ClientThreadManager;
 
 class ClientManager : public IClientManager
 {
@@ -25,23 +26,24 @@ public:
 
 	void shutdown() override;
 	QList<ClientInformation> clients() override;
-	void removeClient(qint16) override;
-	void removeAllClients() override;
 	void addConnection(IConnection*) override;
-	void refresh() override;
+
+Q_SIGNALS:
+	void clientCreated(Client*);
+	void removeAllClients();
 
 public Q_SLOTS:
-	void addClient(ClientInformation);
+	void clientAdded(ClientInformation);
+	void clientRemoved(qint16);
 
 protected:
 	Client* createClient(IConnection*);
-	void closeConnection(Client*);
-	void closeAllConections();
 
 	QMap<qint16,Client*> m_clientList;
 	QMap<qint16,ClientInformation> m_clientsInfo;
 	qint16 m_clientCount;
-	QThread *m_clientThread ;
+	QThread *m_clientThread;
+	ClientThreadManager *m_clientThreadManager;
 
 };
 

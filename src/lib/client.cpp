@@ -34,9 +34,15 @@ ClientInformation Client::info()
 void Client::setConnection(Connection* conn)
 {
 	if(m_conn)
+	{
 		disconnect(m_conn,&Connection::readyRead,this,&Client::handleRead);
+		disconnect(m_conn,&Connection::disconnected,this,&Client::closeConnection);
+		disconnect(m_conn,static_cast<void (Connection::*)(QAbstractSocket::SocketError)>(&Connection::error),this,&Client::closeConnection);
+	}
 	m_conn = conn;
 	connect(m_conn,&Connection::readyRead,this,&Client::handleRead);
+	connect(m_conn,&Connection::disconnected,this,&Client::closeConnection);
+	connect(m_conn,static_cast<void (Connection::*)(QAbstractSocket::SocketError)>(&Connection::error),this,&Client::closeConnection);
 }
 
 void Client::setInfo(ClientInformation info)
@@ -46,21 +52,26 @@ void Client::setInfo(ClientInformation info)
 
 void Client::start()
 {
-	qCDebug(BASE) << "Client started on " << thread() ;
+// 	qCDebug(BASE) << "Client started on " << thread() ;
 	sendDetail();
 }
 
 void Client::handleRead()
 {
 	QByteArray data = m_conn->readAll();
-	qCDebug(BASE) << "Reading from Connection(" << m_conn->socketDescriptor() << ") => " << data ;
+// 	qCDebug(BASE) << "Reading from Connection(" << m_conn->socketDescriptor() << ") => " << data ;
 	processRead(data);
+}
+
+void Client::closeConnection()
+{
+	emit connectionClosed();
 }
 
 void Client::processRead(QByteArray t_data)
 {
 	QString header = t_data;
-	qCDebug(BASE) << this << "Processing GET header = "<<header;
+// 	qCDebug(BASE) << this << "Processing GET header = "<<header;
 	m_request.insert("request",header);
 
 	//Header has 4 values APP METHOD OPTION DATA(optional)
@@ -142,7 +153,7 @@ void Client::sendDetail()
 	{
 		if(!m_detailSent)
 		{
-			qCDebug(BASE) << this << "Sending Details" ;
+// 			qCDebug(BASE) << this << "Sending Details" ;
 			m_detailSent = true;
 			QString myIp = ControlCenter::instance()->userSettings()->ip();
 			QString myName = ControlCenter::instance()->userSettings()->name();

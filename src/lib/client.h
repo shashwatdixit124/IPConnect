@@ -30,9 +30,11 @@ public:
 
 public Q_SLOTS:
 	void handleRead();
+	void closeConnection();
 
 Q_SIGNALS:
 	void infoRecieved(ClientInformation);
+	void connectionClosed();
 
 protected:
 	void processRead(QByteArray);
