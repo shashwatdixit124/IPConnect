@@ -1,6 +1,7 @@
 set(IPConnectUILibrary_SRS
     ipconnectwindow.cpp
     messenger.cpp
+    messagelist.cpp
     uimanager.cpp
     userlist.cpp
 )
@@ -8,6 +9,7 @@ set(IPConnectUILibrary_SRS
 set(IPConnectUILibrary_HEADERS
     ipconnectwindow.h
     messenger.h
+    messagelist.h
     uimanager.h
     userlist.h
 )
