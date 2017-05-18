@@ -26,8 +26,6 @@ protected:
 	QString m_name;
 	QString m_ip;
 
-private:
-
 };
 
 }

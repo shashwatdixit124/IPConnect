@@ -8,6 +8,7 @@
 #include "clientinformation.h"
 #include "clientthreadmanager.h"
 #include "debug.h"
+#include "messageinformation.h"
 
 #include <QObject>
 #include <QList>
@@ -17,7 +18,7 @@ namespace IPConnect
 {
 
 ClientManager::ClientManager(QObject* parent)
-	: IClientManager(parent) , m_clientCount(0) , 
+	: IClientManager(parent) , m_clientCount(0) , m_messageCount(0) ,
 	m_clientThread(new QThread(this)) , m_clientThreadManager(new ClientThreadManager())
 {
 	qCDebug(BASE) << "ClientManager started";
@@ -47,6 +48,11 @@ QList<ClientInformation> ClientManager::clients()
 	return m_clientsInfo.values();
 }
 
+QList<MessageInformation> ClientManager::messages()
+{
+	return m_messages.values();
+}
+
 void ClientManager::clientRemoved(qint16 id)
 {
 	m_clientsInfo.remove(id);
@@ -70,7 +76,13 @@ void ClientManager::addConnection(IConnection* connection)
 
 void ClientManager::sendMessage(qint16 id,QString msg)
 {
+	MessageInformation mi;
+	mi.setSent(true);
+	mi.setUser(m_clientsInfo.value(id).name());
+	mi.setMsg(msg);
+	m_messages.insert(m_messageCount++,mi);
 	emit sendToClient(id,msg);
+	emit messageAdded(mi);
 }
 
 void ClientManager::clientAdded(ClientInformation ci)

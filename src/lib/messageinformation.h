@@ -26,8 +26,6 @@ protected:
 	QString m_user;
 	QString m_msg;
 
-private:
-
 };
 
 }
@@ -35,4 +33,3 @@ private:
 Q_DECLARE_METATYPE(IPConnect::MessageInformation);
 
 #endif
-
