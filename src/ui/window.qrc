@@ -11,5 +11,9 @@
 		<file>resources/close-dark.png</file>
 		<file>resources/max-dark.png</file>
 		<file>resources/min-dark.png</file>
+		<file>resources/message-dark-32.png</file>
+		<file>resources/message-light-32.png</file>
+		<file>resources/paper-plane-dark-32.png</file>
+		<file>resources/paper-plane-light-32.png</file>
 	</qresource>
 </RCC>
