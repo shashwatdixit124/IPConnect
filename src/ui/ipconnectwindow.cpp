@@ -2,6 +2,7 @@
 
 #include "interfaces/icontrolcenter.h"
 #include "uimanager.h"
+#include "messenger.h"
 
 #include <QObject>
 #include <QQmlApplicationEngine>
@@ -24,6 +25,7 @@ IPConnectWindow::~IPConnectWindow()
 void IPConnectWindow::show()
 {
 	m_engine.rootContext()->setContextProperty("_users",m_manager->users());
+	m_engine.rootContext()->setContextProperty("_messenger",m_manager->messenger());
 	m_engine.load(QUrl("qrc:/resources/MainWindow.qml"));
 }
 

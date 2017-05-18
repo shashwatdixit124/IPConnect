@@ -16,6 +16,7 @@ class IClient : public QObject
 public:
 	virtual IConnection* connection() = 0;
 	virtual ClientInformation info() = 0;
+	virtual void sendMessage(QString) = 0;
 
 protected:
 	IClient(QObject* parent = nullptr);

@@ -26,6 +26,7 @@ public Q_SLOTS:
 	void closeConnection(Client*);
 	void removeAllClients();
 	void removeClient();
+	void sendToClient(qint16,QString);
 
 protected:
 	QMap<qint16,Client*> m_clientList;

@@ -69,5 +69,15 @@ void ClientThreadManager::removeClient()
 	emit clientRemoved(id);
 }
 
+void ClientThreadManager::sendToClient(qint16 id, QString msg)
+{
+	Client* client = m_clientList.value(id);
+	if(!client)
+	{
+		qCDebug(BASE) << this << "sending message " << msg << " to client " << id  ;
+		return;
+	}
+	client->sendMessage(msg);
+}
 
 }

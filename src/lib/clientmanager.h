@@ -27,10 +27,12 @@ public:
 	void shutdown() override;
 	QList<ClientInformation> clients() override;
 	void addConnection(IConnection*) override;
+	void sendMessage(qint16,QString) override;
 
 Q_SIGNALS:
 	void clientCreated(Client*);
 	void removeAllClients();
+	void sendToClient(qint16,QString);
 
 public Q_SLOTS:
 	void clientAdded(ClientInformation);

@@ -23,6 +23,7 @@ public:
 
 	IConnection* connection() override;
 	ClientInformation info() override;
+	void sendMessage(QString ) override;
 
 	void setConnection(Connection*);
 	void setInfo(ClientInformation);

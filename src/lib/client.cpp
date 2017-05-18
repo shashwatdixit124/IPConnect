@@ -31,6 +31,12 @@ ClientInformation Client::info()
 	return m_info;
 }
 
+void Client::sendMessage(QString msg)
+{
+	msg = "IPC:MSG:TEXT:"+msg;
+	write(msg);
+}
+
 void Client::setConnection(Connection* conn)
 {
 	if(m_conn)

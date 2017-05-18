@@ -25,6 +25,7 @@ ClientManager::ClientManager(QObject* parent)
 	connect(m_clientThreadManager,&ClientThreadManager::clientRemoved,this,&ClientManager::clientRemoved,Qt::QueuedConnection);
 	connect(this,&ClientManager::clientCreated,m_clientThreadManager,&ClientThreadManager::clientCreated,Qt::QueuedConnection);
 	connect(this,&ClientManager::removeAllClients,m_clientThreadManager,&ClientThreadManager::removeAllClients,Qt::QueuedConnection);
+	connect(this,&ClientManager::sendToClient,m_clientThreadManager,&ClientThreadManager::sendToClient,Qt::QueuedConnection);
 	m_clientThreadManager->moveToThread(m_clientThread);
 	m_clientThread->start();
 }
@@ -67,6 +68,11 @@ void ClientManager::addConnection(IConnection* connection)
 	emit clientCreated(client);
 }
 
+void ClientManager::sendMessage(qint16 id,QString msg)
+{
+	emit sendToClient(id,msg);
+}
+
 void ClientManager::clientAdded(ClientInformation ci)
 {
 	m_clientsInfo.insert(ci.id(),ci);
@@ -85,9 +91,8 @@ Client* ClientManager::createClient(IConnection* connection)
 	Client* client = new Client();
 	client->setConnection(conn);
 
-	m_clientCount++;
 	ClientInformation ci;
-	ci.setId(m_clientCount);
+	ci.setId(m_clientCount++);
 	client->setInfo(ci);
 	return client;
 }
