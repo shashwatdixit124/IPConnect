@@ -47,11 +47,8 @@ QVariant MessageList::data(const QModelIndex& index, int role) const
 void MessageList::updateList()
 {
 	QList<MessageInformation> miList = m_cm->messages();
-	beginRemoveRows(QModelIndex(),0,rowCount()-1);
-	m_messages.clear();
-	endRemoveRows();
-	beginInsertRows(QModelIndex(), 0, miList.count()-1);
-	m_messages = miList;
+	beginInsertRows(QModelIndex(), rowCount(), rowCount());
+	m_messages.append(miList.last());
 	endInsertRows();
 }
 
