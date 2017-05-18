@@ -32,6 +32,9 @@ void ClientThreadManager::clientCreated(Client* client)
 
 void ClientThreadManager::addClient(ClientInformation ci)
 {
+	qint16 id = ci.id();
+	Client* client = m_clientList.value(id);
+	client->setInfo(ci);
 	emit clientAdded(ci);
 }
 

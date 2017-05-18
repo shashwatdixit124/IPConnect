@@ -39,7 +39,6 @@ public Q_SLOTS:
 protected:
 	Client* createClient(IConnection*);
 
-	QMap<qint16,Client*> m_clientList;
 	QMap<qint16,ClientInformation> m_clientsInfo;
 	qint16 m_clientCount;
 	QThread *m_clientThread;

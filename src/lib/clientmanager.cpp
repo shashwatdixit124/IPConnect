@@ -48,14 +48,13 @@ QList<ClientInformation> ClientManager::clients()
 
 void ClientManager::clientRemoved(qint16 id)
 {
-	m_clientList.remove(id);
 	m_clientsInfo.remove(id);
 	emit userListUpdated();
 }
 
 void ClientManager::addConnection(IConnection* connection)
 {
-	qCDebug(BASE) << this << " adding new Client with descriptor " <<  connection->socketDescriptor();
+	qCDebug(BASE) << this << "adding new Client with descriptor " <<  connection->socketDescriptor();
 	Client* client = createClient(connection);
 
 	if(!client){
@@ -70,11 +69,8 @@ void ClientManager::addConnection(IConnection* connection)
 
 void ClientManager::clientAdded(ClientInformation ci)
 {
-	qint16 id = ci.id();
-	Client* client = m_clientList.value(id);
-	client->setInfo(ci);
-	m_clientsInfo.insert(id,ci);
-	qCDebug(BASE) << this << ci.name() << " Added in ClientManager" ;
+	m_clientsInfo.insert(ci.id(),ci);
+	qCDebug(BASE) << this << "Added " << ci.name() << " in ClientManager" ;
 	emit userListUpdated();
 }
 
@@ -90,7 +86,6 @@ Client* ClientManager::createClient(IConnection* connection)
 	client->setConnection(conn);
 
 	m_clientCount++;
-	m_clientList.insert(m_clientCount,client);
 	ClientInformation ci;
 	ci.setId(m_clientCount);
 	client->setInfo(ci);
