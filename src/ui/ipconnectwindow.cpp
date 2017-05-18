@@ -26,6 +26,7 @@ void IPConnectWindow::show()
 {
 	m_engine.rootContext()->setContextProperty("_users",m_manager->users());
 	m_engine.rootContext()->setContextProperty("_messenger",m_manager->messenger());
+	m_engine.rootContext()->setContextProperty("_messages",m_manager->messages());
 	m_engine.load(QUrl("qrc:/resources/MainWindow.qml"));
 }
 

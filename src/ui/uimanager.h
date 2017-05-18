@@ -11,6 +11,7 @@ namespace IPConnect
 class IControlCenter;
 class UserList;
 class Messenger;
+class MessageList;
 
 class UiManager : public QObject
 {
@@ -21,11 +22,13 @@ public:
 
 	QAbstractListModel* users();
 	Messenger* messenger();
+	QAbstractListModel* messages();
 
 protected:
 	IControlCenter* m_cc;
 	UserList* m_usersList;
 	Messenger* m_messenger;
+	MessageList* m_messages;
 
 };
 
