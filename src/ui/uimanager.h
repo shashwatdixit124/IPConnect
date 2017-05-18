@@ -10,6 +10,7 @@ namespace IPConnect
 {
 class IControlCenter;
 class UserList;
+class Messenger;
 
 class UiManager : public QObject
 {
@@ -19,6 +20,7 @@ public:
 	~UiManager();
 
 	QAbstractListModel* users();
+	Messenger* messenger();
 
 public Q_SLOTS:
 	void updateUserList();
@@ -26,6 +28,7 @@ public Q_SLOTS:
 protected:
 	IControlCenter* m_cc;
 	UserList* m_usersList;
+	Messenger* m_messenger;
 
 };
 
