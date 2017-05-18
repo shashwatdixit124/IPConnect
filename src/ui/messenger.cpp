@@ -7,7 +7,7 @@
 namespace IPConnect
 {
 
-Messenger::Messenger(IClientManager* cc) : m_cc(cc)
+Messenger::Messenger(IClientManager* cc) : m_cm(cc)
 {
 }
 

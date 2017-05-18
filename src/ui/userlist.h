@@ -7,6 +7,7 @@
 
 namespace IPConnect
 {
+class IClientManager;
 class ClientInformation;
 
 class UserList : public QAbstractListModel
@@ -19,17 +20,17 @@ public:
 		Ip
 	};
 
-	explicit UserList(QObject* parent = nullptr);
-	UserList(QList<ClientInformation>,QObject* parent = nullptr);
+	explicit UserList(IClientManager* cm, QObject* parent = nullptr);
 	~UserList();
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public Q_SLOTS:
-	void updateList(QList<ClientInformation>);
+	void updateList();
 
 protected:
 	QHash<int, QByteArray> roleNames() const;
+	IClientManager *m_cm;
 
 private:
 	QList<ClientInformation> m_users;

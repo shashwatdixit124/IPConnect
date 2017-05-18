@@ -1,5 +1,6 @@
 #include "userlist.h"
 
+#include <interfaces/iclientmanager.h>
 #include <clientinformation.h>
 
 #include <QObject>
@@ -9,13 +10,10 @@
 namespace IPConnect
 {
 
-UserList::UserList(QObject* parent) : QAbstractListModel(parent)
+IPConnect::UserList::UserList(IClientManager* cm, QObject* parent) : QAbstractListModel(parent) , m_cm(cm)
 {
-}
-
-UserList::UserList(QList<IPConnect::ClientInformation> ciList, QObject* parent) 
-	: QAbstractListModel(parent)
-{
+	connect(cm,&IClientManager::userListUpdated,this,&UserList::updateList);
+	QList<ClientInformation> ciList = cm->clients();
 	beginInsertRows(QModelIndex(), 0, ciList.count()-1);
 	m_users = ciList;
 	endInsertRows();
@@ -46,14 +44,15 @@ QVariant UserList::data(const QModelIndex& index, int role) const
 	return QVariant();
 }
 
-void UserList::updateList(QList<IPConnect::ClientInformation> ciList)
+void UserList::updateList()
 {
+	QList<ClientInformation> ciList = m_cm->clients();
 	beginRemoveRows(QModelIndex(),0,rowCount()-1);
-    m_users.clear();
-    endRemoveRows();
-    beginInsertRows(QModelIndex(), 0, ciList.count()-1);
-    m_users = ciList;
-    endInsertRows();
+	m_users.clear();
+	endRemoveRows();
+	beginInsertRows(QModelIndex(), 0, ciList.count()-1);
+	m_users = ciList;
+	endInsertRows();
 }
 
 QHash<int, QByteArray> UserList::roleNames() const

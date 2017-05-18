@@ -22,9 +22,6 @@ public:
 	QAbstractListModel* users();
 	Messenger* messenger();
 
-public Q_SLOTS:
-	void updateUserList();
-
 protected:
 	IControlCenter* m_cc;
 	UserList* m_usersList;
