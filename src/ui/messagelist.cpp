@@ -12,7 +12,7 @@ namespace IPConnect
 
 MessageList::MessageList(IClientManager* cm, QObject* parent) : QAbstractListModel(parent) , m_cm(cm)
 {
-	connect(cm,&IClientManager::userListUpdated,this,&MessageList::updateList);
+	connect(cm,&IClientManager::messageAdded,this,&MessageList::updateList);
 	QList<MessageInformation> miList = cm->messages();
 	beginInsertRows(QModelIndex(), 0, miList.count()-1);
 	m_messages = miList;
@@ -44,11 +44,10 @@ QVariant MessageList::data(const QModelIndex& index, int role) const
 	return QVariant();
 }
 
-void MessageList::updateList()
+void MessageList::updateList(MessageInformation mi)
 {
-	QList<MessageInformation> miList = m_cm->messages();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	m_messages.append(miList.last());
+	m_messages.append(mi);
 	endInsertRows();
 }
 

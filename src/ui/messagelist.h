@@ -1,6 +1,8 @@
 #ifndef MESSAGELIST_H
 #define MESSAGELIST_H
 
+#include <messageinformation.h>
+
 #include <QObject>
 #include <QAbstractListModel>
 #include <QList>
@@ -8,7 +10,6 @@
 namespace IPConnect
 {
 class IClientManager;
-class MessageInformation;
 
 class MessageList : public QAbstractListModel
 {
@@ -26,7 +27,7 @@ public:
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public Q_SLOTS:
-	void updateList();
+	void updateList(MessageInformation);
 
 protected:
 	QHash<int, QByteArray> roleNames() const;
