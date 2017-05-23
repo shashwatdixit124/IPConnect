@@ -72,7 +72,7 @@ Item { id: item
 							anchors.verticalCenter: parent.verticalCenter
 							x: 10
 							width: implicitWidth > msgViewBox.width*2/3 ? msgViewBox.width*2/3 : implicitWidth
-							text: msg//"orem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in mollis purus Etiam sagittis fringilla quam, eget accumsan libero pulvinar ac."
+							text: message
 							wrapMode: Text.Wrap
 							color: sent? "#fdfdfd" : "#333"
 							font.pixelSize: 16
@@ -103,7 +103,7 @@ Item { id: item
 					anchors.fill: parent
 					anchors.topMargin: 5
 					delegate: msgDelegate
-					model: msgModel
+					model: _messages//msgModel
 					spacing: 5
 				}
 			}
@@ -158,7 +158,7 @@ Item { id: item
 				onAccepted:{
 					if(userList.currentIndex >= 0)
 					{
-						_messenger.sendMessage(userList.currentItem.id,text);
+						_messenger.sendMessage(userList.currentItem.idno,text);
 						text = ""
 					}
 				}
@@ -192,7 +192,7 @@ Item { id: item
 					onClicked: {
 						if(userList.currentIndex >= 0)
 						{
-							_messenger.sendMessage(userList.currentItem.id,msgInput.text);
+							_messenger.sendMessage(userList.currentItem.idno,msgInput.text);
 							msgInput.text = ""
 						}
 					}
