@@ -18,11 +18,13 @@ public:
 
 Q_SIGNALS:
 	void clientAdded(ClientInformation);
+	void messageAdded(qint16,QString);
 	void clientRemoved(qint16);
 
 public Q_SLOTS:
 	void clientCreated(Client*);
 	void addClient(ClientInformation);
+	void messageRecieved(qint16,QString);
 	void closeConnection(Client*);
 	void removeAllClients();
 	void removeClient();

@@ -140,6 +140,13 @@ void Client::handleRequest()
 			}
 		}
 	}
+	if(method == "MSG")
+    {
+		if(!m_detailSent)
+			return;
+
+		if(m_request.value("option") == "TEXT") emit messageRecieved(m_info.id(),m_request.value("data"));
+	}
 	return;
 }
 

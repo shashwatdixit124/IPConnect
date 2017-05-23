@@ -35,6 +35,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
 	void infoRecieved(ClientInformation);
+	void messageRecieved(qint16,QString);
 	void connectionClosed();
 
 protected:

@@ -24,6 +24,7 @@ ClientManager::ClientManager(QObject* parent)
 	qCDebug(BASE) << "ClientManager started";
 	connect(m_clientThreadManager,&ClientThreadManager::clientAdded,this,&ClientManager::clientAdded,Qt::QueuedConnection);
 	connect(m_clientThreadManager,&ClientThreadManager::clientRemoved,this,&ClientManager::clientRemoved,Qt::QueuedConnection);
+	connect(m_clientThreadManager,&ClientThreadManager::messageAdded,this,&ClientManager::addMessage,Qt::QueuedConnection);
 	connect(this,&ClientManager::clientCreated,m_clientThreadManager,&ClientThreadManager::clientCreated,Qt::QueuedConnection);
 	connect(this,&ClientManager::removeAllClients,m_clientThreadManager,&ClientThreadManager::removeAllClients,Qt::QueuedConnection);
 	connect(this,&ClientManager::sendToClient,m_clientThreadManager,&ClientThreadManager::sendToClient,Qt::QueuedConnection);
@@ -90,6 +91,16 @@ void ClientManager::clientAdded(ClientInformation ci)
 	m_clientsInfo.insert(ci.id(),ci);
 	qCDebug(BASE) << this << "Added " << ci.name() << " in ClientManager" ;
 	emit userListUpdated();
+}
+
+void ClientManager::addMessage(qint16 id, QString msg)
+{
+	MessageInformation mi;
+	mi.setSent(false);
+	mi.setUser(m_clientsInfo.value(id).name());
+	mi.setMsg(msg);
+	m_messages.insert(m_messageCount++,mi);
+	emit messageAdded(mi);
 }
 
 Client* ClientManager::createClient(IConnection* connection)

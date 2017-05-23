@@ -38,6 +38,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 	void clientAdded(ClientInformation);
+	void addMessage(qint16,QString);
 	void clientRemoved(qint16);
 
 protected:

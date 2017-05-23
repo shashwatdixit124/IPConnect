@@ -25,6 +25,7 @@ void ClientThreadManager::clientCreated(Client* client)
 	qint16 id = client->info().id();
 	m_clientList.insert(id,client);
 	connect(client,&Client::infoRecieved,this,&ClientThreadManager::addClient);
+	connect(client,&Client::messageRecieved,this,&ClientThreadManager::messageRecieved);
 	connect(client,&Client::connectionClosed,this,&ClientThreadManager::removeClient);
 	qCDebug(BASE) << this << "Client Added with id " << id ;
 	client->start();
@@ -36,6 +37,11 @@ void ClientThreadManager::addClient(ClientInformation ci)
 	Client* client = m_clientList.value(id);
 	client->setInfo(ci);
 	emit clientAdded(ci);
+}
+
+void ClientThreadManager::messageRecieved(qint16 id, QString msg)
+{
+	emit messageAdded(id,msg);
 }
 
 void ClientThreadManager::removeAllClients()
