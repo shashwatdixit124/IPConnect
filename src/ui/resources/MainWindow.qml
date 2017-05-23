@@ -1,70 +1,87 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.2
+import QtGraphicalEffects 1.0
 
-ApplicationWindow {
-	id:root
+ApplicationWindow { id:root
 	visible: true
-	minimumWidth: 640
-	minimumHeight: 480
+	minimumWidth: 800
+	minimumHeight: 600
+	x:(Screen.width-800)/2
+	y:(Screen.height-600)/2
 	flags: Qt.FramelessWindowHint
 
-	property bool dark : true
-	property string textColor : dark? "#fdfdfd" : "#333"
-	property string rootBgColor : dark? "#434347" : "#fdfdfd"
-	property string sbBgColor : "#333"
-	property string sbTextColor: "#fdfdfd"
+	property string theme: "#c0392b"
+	property string textColor:  "#333"
+	property string rootBgColor: "#fcfcfc"
+	property string sbBgColor: "#f6f6f6"
+	property string sbTextColor: "#333"
 
-	Rectangle{
-		id:window
-		anchors.fill:parent
-		border.width: 1.5
-		border.color: "#333"
-		color: root.rootBgColor
+	Item {
+		anchors.fill: parent
 
-		TitleBar{
-			id: titleBar
-			title: qsTr(" I P C O N N E C T ")
-			width: parent.width
-            height: 25
-			dark: root.dark
-			textColor: root.textColor
-			bgColor: root.rootBgColor
-			anchors.top:parent.top
-			onClose: Qt.quit()
-			onMaximized: root.showMaximized()
-			onMinimized: root.showMinimized()
-			onDrag: {
-				root.x += dragX
-				root.y += dragY
+		SideBar{ id:sideBar
+			title: qsTr("𝓲𝓹𝓬")
+			theme: root.theme
+		}
+
+		Rectangle { id:window
+			height: parent.height
+			anchors.left: sideBar.right
+			anchors.right: parent.right
+			color: root.rootBgColor
+
+			AppControls { id: appControls
+				anchors.top:parent.top
+				width: parent.width
+				height: 40
+				theme: root.theme
+				onClose: Qt.quit()
+				onMaximized: root.showMaximized()
+				onMinimized: root.showMinimized()
+				onDrag: {
+					root.x += dragX
+					root.y += dragY
+				}
+			}
+
+			MainView { id:mainView
+				theme: root.theme
+				textColor: root.textColor
+				bgColor: root.rootBgColor
+				anchors.left: parent.left
+				anchors.right: parent.right
+				anchors.top: appControls.bottom
+				anchors.bottom: statusBar.top
+			}
+
+			StatusBar { id:statusBar
+				theme: root.theme
+				width:parent.width
+				height: 24
+				anchors.bottom: parent.bottom
+				text: qsTr("Server Not Running")
+				textColor: root.sbTextColor
+				bgColor: root.sbBgColor
+				onSizeChanged: {
+					root.width += sizeX
+					root.height += sizeY
+				}
 			}
 		}
 
-		MainView{
-            id:mainView
-            dark: root.dark
-            textColor: root.textColor
-            bgColor: root.rootBgColor
-            anchors.left: parent.left
-            anchors.right: parent.right
-			anchors.top: titleBar.bottom
-            anchors.bottom: statusBar.top
+		InnerShadow {
+			anchors.fill: window
+			cached: true
+			horizontalOffset: 1
+			verticalOffset: 0
+			radius: 4
+			samples: 32
+			color: "#10000000"
+			smooth: true
+			source: window
 		}
 
-		StatusBar{
-			id:statusBar
-			width:parent.width
-			height: 20
-			anchors.bottom: parent.bottom
-			text: qsTr("Server Not Running")
-			dark: root.dark
-			textColor: root.sbTextColor
-			bgColor: root.sbBgColor
-			onSizeChanged: {
-				root.width += sizeX
-				root.height += sizeY
-			}
-		}
 	}
 }
 

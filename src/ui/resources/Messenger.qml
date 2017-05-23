@@ -1,56 +1,160 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+import QtGraphicalEffects 1.0
 
-Item {
-	id:item
-	property bool dark
-	property string textColor
-	property string bgColor
-	Item{
-		id:messageBox
+Item { id: item
+
+	property string theme: "crimson"
+	property string textColor: "#333"
+	property string bgColor: "#f7f7f7"
+	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
+
+	Item { id: messageBox
 		height: parent.height
 		anchors.left: parent.left
 		anchors.right: userListBox.left
 
-		Rectangle{
-			id:msgViewBox
+		Rectangle { id: msgViewBox
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.top: parent.top
 			anchors.bottom: msgInputBox.top
-			color: item.bgColor
-			anchors.margins: 5
+			color: "#f9f9f9"
+			anchors.bottomMargin: 20
+			anchors.rightMargin: 20
+			clip: true
 
-			ListView{
+			Component { id: msgDelegate
+
+				Rectangle { id: msgWrapper
+					color: sent ? item.theme : "#fdfdfd"
+					border.width: 1
+					border.color: "#10000000"
+					anchors.margins: 5
+					height: userNameItem.height + messageItem.height
+					width: userNameItem.width > messageItem.width ? userNameItem.width : messageItem.width
+
+					Component.onCompleted: {
+						if(sent)
+							anchors.right = parent.right
+						else
+							anchors.left = parent.left
+					}
+
+					Item { id:userNameItem
+						anchors.top: parent.top
+						anchors.left: parent.left
+						height: userName.height + 20
+						width: userName.width + 20
+						clip: true
+
+						Text { id: userName
+							anchors.verticalCenter: parent.verticalCenter
+							x: 10
+							width: implicitWidth > msgViewBox.width*2/3 ? msgViewBox.width*2/3 : implicitWidth
+							text: (sent? "To : " : "From : ") + "<b>" + user + "</b>"
+							color: sent? "#fdfdfd" : "#333"
+							font.pixelSize: 12
+							wrapMode: Text.Wrap
+						}
+					}
+
+					Item { id:messageItem
+						anchors.top: userNameItem.bottom
+						anchors.left: parent.left
+						height: msgbody.height + 20
+						width: msgbody.width + 20
+						clip: true
+
+						Text {
+							id: msgbody
+							anchors.verticalCenter: parent.verticalCenter
+							x: 10
+							width: implicitWidth > msgViewBox.width*2/3 ? msgViewBox.width*2/3 : implicitWidth
+							text: msg//"orem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in mollis purus Etiam sagittis fringilla quam, eget accumsan libero pulvinar ac."
+							wrapMode: Text.Wrap
+							color: sent? "#fdfdfd" : "#333"
+							font.pixelSize: 16
+						}
+					}
+				}
+			}
+
+			ScrollView {
 				anchors.fill: parent
-				id:msgView
-				delegate: Text{ text:qsTr("Shashwat: Hi How are You ? ") }
-				model: 5
+				flickableItem.interactive: true
+
+				style: ScrollViewStyle {
+					transientScrollBars: true
+					handle: Item {
+						implicitWidth: 14
+						implicitHeight: 26
+						Rectangle {
+							color: "#50000000"
+							anchors.fill: parent
+							anchors.margins: 4
+							radius: 4
+						}
+					}
+				}
+
+				ListView { id:msgView
+					anchors.fill: parent
+					anchors.topMargin: 5
+					delegate: msgDelegate
+					model: msgModel
+					spacing: 5
+				}
+			}
+
+			ListModel { id: msgModel
+				ListElement{user:"Shyam";msg:"Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ?Hi How are you ?";sent:true}
+				ListElement{user:"Shyam";msg:"I am Great, How are you ? ";sent:false}
+				ListElement{user:"Shyam";msg:"fine thanks";sent:true}
+				ListElement{user:"Shyam";msg:"How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? ";sent:true}
+				ListElement{user:"Shyam";msg:"Good ";sent:false}
+				ListElement{user:"Shyam";msg:"which year are you in ?";sent:true}
+				ListElement{user:"Shyam";msg:"Pre Final Year";sent:false}
+				ListElement{user:"Shyam";msg:"Going Great ? ";sent:true}
+				ListElement{user:"Shyam";msg:"Awesome";sent:false}
+				ListElement{user:"Shyam";msg:"Alright See You Soon";sent:true}
 			}
 		}
 
-		Rectangle{
-			id:msgInputBox
+		DropShadow { id: dropMsgViewBox
+			anchors.fill: msgViewBox
+			source: msgViewBox
+			horizontalOffset: 0
+			verticalOffset: 0
+			radius: 7
+			samples: 32
+			color: "#20000000"
+			transparentBorder: true
+		}
+
+		Rectangle { id:msgInputBox
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.bottom: parent.bottom
 			height: 40
-			anchors.margins: 5
-//            color: item.bgColor
-			color: "#fdfdfd"
+			anchors.topMargin: 20
+			anchors.rightMargin: 20
+			color: "#f9f9f9"
 
-
-			TextField{
-				id:msgInput
+			TextField { id:msgInput
 				height: parent.height
 				anchors.left: parent.left
 				anchors.right: sendBtn.left
 				font.pixelSize: 14
 
 				style: TextFieldStyle {
-					background: Item {}
+					background: Rectangle{
+						id:msgInputStyle
+						color:"transparent"
+					}
 				}
+
 				onAccepted:{
 					if(userList.currentIndex >= 0)
 					{
@@ -58,81 +162,102 @@ Item {
 						text = ""
 					}
 				}
+
+				onFocusChanged: {
+					if(activeFocus)
+					{
+						dropMsgInputBox.radius = 16
+						msgInputBox.color = "#fff"
+					}
+				}
 			}
 
-			Rectangle{
-				id: sendBtn
+			Rectangle { id: sendBtn
 				width: parent.height
 				height: parent.height
 				anchors.right: parent.right
 				color: item.bgColor
-				Image{
-					id: sendBtnImage
-					source: item.dark ? qsTr("qrc:/resources/paper-plane-light-32.png") : qsTr("qrc:/resources/paper-plane-dark-32.png")
+
+				Text { id: sendBtnImage
+					font.family: awesome.name
+					font.pixelSize: 24
+					text: "\uf1d8"
+					color: item.theme
 					anchors.centerIn: parent
-					MouseArea{
-						anchors.fill: parent
-						onClicked: {
-							if(userList.currentIndex >= 0)
-							{
-								_messenger.sendMessage(userList.currentItem.id,msgInput.text);
-								msgInput.text = ""
-							}
+				}
+
+				MouseArea{
+					anchors.fill: parent
+					cursorShape: Qt.PointingHandCursor
+					onClicked: {
+						if(userList.currentIndex >= 0)
+						{
+							_messenger.sendMessage(userList.currentItem.id,msgInput.text);
+							msgInput.text = ""
 						}
 					}
 				}
 			}
 		}
+
+		DropShadow { id: dropMsgInputBox
+			anchors.fill: msgInputBox
+			source: msgInputBox
+			horizontalOffset: 0
+			verticalOffset: 0
+			radius: 7
+			samples: 32
+			color: "#20000000"
+			transparentBorder: true
+		}
 	}
 
-	Rectangle{
-		id:userListBox
-		anchors.top: parent.top
-		anchors.bottom: parent.bottom
+	Rectangle { id:userListBox
+		height: parent.height
 		anchors.right: parent.right
-		anchors.margins: 5
+		anchors.leftMargin: 20
 		width: 250
-		color: item.bgColor
+		color: "#f9f9f9"
+		clip: true
 
+		Component { id: userDelegate
 
-		Component {
-			id: userDelegate
-			Item {
-				id: wrapper
-				width: userList.width; height: 40
-				Item{
-					id:status
+			Item { id: wrapper
+				width: parent.width
+				height: 40
+
+				property int idno : id
+
+				Item { id:status
 					width: parent.height
 					height: parent.height
 					visible: false
 
-					Rectangle{
-						id: statusLight
+					Rectangle { id: statusLight
 						height: parent.height/5
 						width: parent.width/5
 						anchors.centerIn: parent
-						color: "green"
+						color: item.theme
 						radius: width*0.5
 					}
 				}
 
-				Text {
+				Text { id: user
 					anchors.left: status.right
 					anchors.right: parent.right
 					anchors.verticalCenter: parent.verticalCenter
-					id: user
 					text: name
-					color: item.textColor
+					color: "#666"
 				}
 
 				states: State {
 					name: "Current"
 					when: wrapper.ListView.isCurrentItem
-					PropertyChanges { target: wrapper; x: 5 }
 					PropertyChanges { target: status; visible: true }
+					PropertyChanges { target: user; color: item.theme }
 				}
 				transitions: Transition {
-					NumberAnimation { properties: "x"; duration: 100 }
+					NumberAnimation { properties: "visible"; duration: 50 }
 				}
 				MouseArea {
 					anchors.fill: parent
@@ -141,26 +266,53 @@ Item {
 			}
 		}
 
-		Component {
-			id: highlightBar
-			Rectangle {
-				width: userList.width; height: 40
-				color: "#333"
+		Component { id: highlightBar
+
+			Rectangle{
+				width: userList.width;
+				height: 40
 				y: userList.currentItem.y;
-				Behavior on y { NumberAnimation { duration: 100 } }
+				Behavior on y { NumberAnimation { duration: 50 } }
+				color: "#fff"
 			}
 		}
 
-		ListView{
-			id:userList
-			width: parent.width
+		ScrollView{
+			anchors.fill: parent
+			flickableItem.interactive: true
 
-			model: _users
-			delegate: userDelegate
+			style: ScrollViewStyle {
+				transientScrollBars: true
+				handle: Item {
+					implicitWidth: 14
+					implicitHeight: 26
+					Rectangle {
+						color: "#50000000"
+						anchors.fill: parent
+						anchors.margins: 4
+						radius: 4
+					}
+				}
+			}
 
-			focus: true
-			highlight: highlightBar
-			highlightFollowsCurrentItem: false
+			ListView { id:userList
+				anchors.fill: parent
+				model: _users
+				delegate: userDelegate
+				highlight: highlightBar
+				highlightFollowsCurrentItem: false
+			}
 		}
+	}
+
+	DropShadow { id: dropUserListBox
+		anchors.fill: userListBox
+		source: userListBox
+		horizontalOffset: 0
+		verticalOffset: 0
+		radius: 7
+		samples: 32
+		color: "#20000000"
+		transparentBorder: true
 	}
 }

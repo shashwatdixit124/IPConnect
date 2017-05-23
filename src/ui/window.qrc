@@ -1,19 +1,12 @@
 <RCC>
-	<qresource prefix="/">
-		<file>resources/TitleBar.qml</file>
-		<file>resources/StatusBar.qml</file>
-		<file>resources/MainView.qml</file>
-		<file>resources/MainWindow.qml</file>
-		<file>resources/Messenger.qml</file>
-		<file>resources/close-light.png</file>
-		<file>resources/max-light.png</file>
-		<file>resources/min-light.png</file>
-		<file>resources/close-dark.png</file>
-		<file>resources/max-dark.png</file>
-		<file>resources/min-dark.png</file>
-		<file>resources/message-dark-32.png</file>
-		<file>resources/message-light-32.png</file>
-		<file>resources/paper-plane-dark-32.png</file>
-		<file>resources/paper-plane-light-32.png</file>
-	</qresource>
+    <qresource prefix="/">
+        <file>resources/AppControls.qml</file>
+        <file>resources/StatusBar.qml</file>
+        <file>resources/MainView.qml</file>
+        <file>resources/MainWindow.qml</file>
+        <file>resources/Messenger.qml</file>
+        <file>resources/SideBar.qml</file>
+        <file>resources/triangle-32.png</file>
+        <file>resources/fontawesome-webfont.ttf</file>
+    </qresource>
 </RCC>
