@@ -2,6 +2,7 @@
 
 #include <interfaces/icontrolcenter.h>
 #include <interfaces/iclientmanager.h>
+#include <interfaces/iusersettings.h>
 #include "userlist.h"
 #include "messenger.h"
 #include "messagelist.h"
@@ -17,6 +18,7 @@ UiManager::UiManager(IControlCenter* cc) : m_cc(cc)
 	m_usersList = new UserList(cm);
 	m_messenger = new Messenger(cm);
 	m_messages = new MessageList(cm);
+	m_settings = cc->userSettings();
 }
 
 UiManager::~UiManager()
@@ -44,6 +46,11 @@ Messenger* UiManager::messenger()
 QAbstractListModel* UiManager::messages()
 {
 	return m_messages;
+}
+
+IUserSettings* UiManager::settings()
+{
+	return m_settings;
 }
 
 }

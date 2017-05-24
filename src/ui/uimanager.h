@@ -12,6 +12,7 @@ class IControlCenter;
 class UserList;
 class Messenger;
 class MessageList;
+class IUserSettings;
 
 class UiManager : public QObject
 {
@@ -23,12 +24,14 @@ public:
 	QAbstractListModel* users();
 	Messenger* messenger();
 	QAbstractListModel* messages();
+	IUserSettings* settings();
 
 protected:
 	IControlCenter* m_cc;
 	UserList* m_usersList;
 	Messenger* m_messenger;
 	MessageList* m_messages;
+	IUserSettings* m_settings;
 
 };
 
