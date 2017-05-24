@@ -19,13 +19,16 @@ public:
 	QString name() override;
 	QString ip() override;
 	QString downloadDir() override;
+	QString theme() override;
 	void setName(QString) override;
 	void setDownloadDir(QString) override;
+	void setTheme(QString) override;
 
 protected:
 	QString m_name;
 	QString m_ip;
 	QString m_downloadDir;
+	QString m_theme;
 	bool m_set;
 
 };

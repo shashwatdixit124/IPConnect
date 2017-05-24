@@ -14,8 +14,10 @@ public:
 	Q_INVOKABLE virtual QString name() = 0;
 	Q_INVOKABLE virtual QString ip() = 0;
 	Q_INVOKABLE virtual QString downloadDir() = 0;
+	Q_INVOKABLE virtual QString theme() = 0;
 	Q_INVOKABLE virtual void setName(QString) = 0;
 	Q_INVOKABLE virtual void setDownloadDir(QString) = 0;
+	Q_INVOKABLE virtual void setTheme(QString) = 0;
 
 protected:
 	explicit IUserSettings();

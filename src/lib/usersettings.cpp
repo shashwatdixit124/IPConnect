@@ -43,6 +43,11 @@ QString UserSettings::downloadDir()
 	return m_downloadDir;
 }
 
+QString UserSettings::theme()
+{
+	return m_theme;
+}
+
 void UserSettings::setName(QString name)
 {
 	m_name = name;
@@ -51,6 +56,11 @@ void UserSettings::setName(QString name)
 void UserSettings::setDownloadDir(QString dd)
 {
 	m_downloadDir = dd;
+}
+
+void UserSettings::setTheme(QString theme)
+{
+	m_theme = theme;
 }
 
 }
