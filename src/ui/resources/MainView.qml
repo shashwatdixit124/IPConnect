@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.0
+import QtQuick 2.5
+import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
 
 Item { id:item
@@ -21,6 +21,7 @@ Item { id:item
 		width: 400
 		x: (parent.width - width)/2
 		y: (parent.height - height)/2
+		closePolicy: Popup.NoAutoClose
 		Component.onCompleted: open()
 		contentItem: Rectangle{
 			Text { id: settingsTitle
@@ -37,6 +38,8 @@ Item { id:item
 				anchors.top: settingsTitle.bottom
 				anchors.bottom: btngrp1.top
 				width: parent.width
+				interactive: false
+
 				Page{
 					TextField { id: userName
 						anchors.centerIn: parent
@@ -135,8 +138,15 @@ Item { id:item
 
 					onClicked: {
 						if(!disable)
+						{
 							if(page < 2)
 								inputs.setCurrentIndex(page + 1)
+							else if(page == 2)
+							{
+								//TODO save settings
+								setting.close()
+							}
+						}
 					}
 				}
 			}
