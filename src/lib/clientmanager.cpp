@@ -89,11 +89,17 @@ void ClientManager::sendMessage(qint16 id,QString msg)
 void ClientManager::connectManualy(QString url)
 {
 	Connection* con = new Connection();
+	connect(con,&Connection::connected,this,&ClientManager::addManualConnection);
 	con->connectToHost(url,2424);
-	if(con->isValid() && con->isOpen())
-		addConnection(con);
-	else
-		con->deleteLater();
+}
+
+void ClientManager::addManualConnection()
+{
+	if(!sender())
+		return;
+
+	Connection* con = dynamic_cast<Connection*>(sender());
+	addConnection(con);
 }
 
 void ClientManager::clientAdded(ClientInformation ci)

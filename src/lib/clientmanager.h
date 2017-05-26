@@ -44,6 +44,7 @@ public Q_SLOTS:
 
 protected:
 	Client* createClient(IConnection*);
+	void addManualConnection();
 
 	QMap<qint16,ClientInformation> m_clientsInfo;
 	QMap<qint16,MessageInformation> m_messages;

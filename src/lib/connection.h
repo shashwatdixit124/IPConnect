@@ -15,6 +15,12 @@ class Connection : public IConnection
 public:
 	explicit Connection();
 	~Connection();
+
+protected:
+	void isError();
+
+	bool isInUse;
+
 };
 
 }

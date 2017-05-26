@@ -10,6 +10,9 @@ class IConnection : public QTcpSocket
 {
 	Q_OBJECT
 
+Q_SIGNALS:
+	void errorOccurred();
+
 protected:
 	explicit IConnection();
 	~IConnection();
