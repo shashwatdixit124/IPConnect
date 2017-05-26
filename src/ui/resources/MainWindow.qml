@@ -17,6 +17,8 @@ ApplicationWindow { id:root
 	property string sbBgColor: "#f6f6f6"
 	property string sbTextColor: "#333"
 
+	Welcome{}
+
 	Item {
 		anchors.fill: parent
 
@@ -27,7 +29,7 @@ ApplicationWindow { id:root
 
 		Rectangle { id:window
 			height: parent.height
-			anchors.left: sideBar.right
+			anchors.left: sb.right
 			anchors.right: parent.right
 			color: root.rootBgColor
 
