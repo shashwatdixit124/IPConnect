@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
+import api.ui.ipconnect 2.0
 
 ApplicationWindow { id:root
 	visible: true
@@ -16,7 +17,13 @@ ApplicationWindow { id:root
 	property string sbBgColor: "#f6f6f6"
 	property string sbTextColor: "#333"
 
-	Welcome{}
+	Welcome{
+		onUpdated: {
+			IPConnect.userName = username
+			IPConnect.downloadDir = ddir
+			IPConnect.theme = themeColor
+		}
+	}
 
 	Item {
 		anchors.fill: parent

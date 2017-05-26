@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.1
+import api.ui.ipconnect 2.0
 
 Item { id:item
 	property string textColor
@@ -31,5 +32,10 @@ Item { id:item
 		textColor: item.textColor
 		bgColor: item.bgColor
 		visible: false
+		onUpdated:{
+			IPConnect.userName = username
+			IPConnect.downloadDir = ddir
+			IPConnect.theme = themeColor
+		}
 	}
 }
