@@ -1,12 +1,13 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
+import api.ui.ipconnect 2.0
 
 Item { id: item
 	width: 60
 	height: parent.height
 	anchors.left: parent.left
 
-	property string theme: "#16a085"
+	property string theme: IPConnect.theme
 	property alias title : applicationNameText.text
 	property real tabHeight : 60
 

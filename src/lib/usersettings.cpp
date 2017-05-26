@@ -10,9 +10,11 @@ UserSettings::UserSettings() : m_set(false)
 {
 	if(!m_set){
 		m_set = true;
-		m_name = QString("Shashwat");
+		m_name = QString("Pilot");
+		m_theme = "#16a085";
 		m_downloadDir = QString("~/Downloads");
 	}
+	
 	QString ip;
 	QList<QHostAddress> list = QNetworkInterface::allAddresses();
 	for(int nIter=0; nIter<list.count(); nIter++)

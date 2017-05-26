@@ -11,22 +11,18 @@ ApplicationWindow { id:root
 	y:(Screen.height-600)/2
 	flags: Qt.FramelessWindowHint
 
-	property string theme: "#16a085"
 	property string textColor:  "#333"
 	property string rootBgColor: "#fcfcfc"
 	property string sbBgColor: "#f6f6f6"
 	property string sbTextColor: "#333"
 
-	Welcome{
-		theme: root.theme
-	}
+	Welcome{}
 
 	Item {
 		anchors.fill: parent
 
 		SideBar{ id: sb
 			title: qsTr("𝓲𝓹𝓬")
-			theme: root.theme
 		}
 
 		Rectangle { id:window
@@ -39,7 +35,6 @@ ApplicationWindow { id:root
 				anchors.top:parent.top
 				width: parent.width
 				height: 40
-				theme: root.theme
 				onClose: Qt.quit()
 				onMaximized: root.showMaximized()
 				onMinimized: root.showMinimized()
@@ -50,7 +45,6 @@ ApplicationWindow { id:root
 			}
 
 			MainView { id:mainView
-				theme: root.theme
 				textColor: root.textColor
 				bgColor: root.rootBgColor
 				sideBar: sb
@@ -61,7 +55,6 @@ ApplicationWindow { id:root
 			}
 
 			StatusBar { id:statusBar
-				theme: root.theme
 				width:parent.width
 				height: 24
 				anchors.bottom: parent.bottom

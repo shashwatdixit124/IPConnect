@@ -2,10 +2,11 @@ import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
 import QtQml 2.2
+import api.ui.ipconnect 2.0
 
 Popup { id: setting
 
-	property string theme: "#16a085"
+	property string theme: IPConnect.theme
 	property alias username: userName.text
 	property alias ddir: downloadDirVal.text
 	property alias themeColor: colorDialog.color
@@ -36,7 +37,7 @@ Popup { id: setting
 
 		Text { id: welcomeText
 			text: qsTr("Welcome To IPConnect")
-			color: root.theme
+			color: setting.theme
 			font.pixelSize: 30
 			anchors.centerIn: parent
 			Behavior on opacity { NumberAnimation { duration: 500 } }
@@ -53,7 +54,7 @@ Popup { id: setting
 				anchors.top: parent.top
 				anchors.horizontalCenter: parent.horizontalCenter
 				font.pixelSize: 20
-				color: root.theme
+				color: setting.theme
 				text: qsTr("Configure Settings")
 			}
 

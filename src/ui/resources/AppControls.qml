@@ -1,9 +1,10 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.2
+import api.ui.ipconnect 2.0
 
 Item { id: root
-	property string theme: "orange"
+	property string theme: IPConnect.theme
 	property string textColor : "#333"
 	property string bgColor : "#fdfdfd"
 

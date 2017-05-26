@@ -6,7 +6,7 @@ import api.ui.ipconnect 2.0
 
 Item { id: item
 
-	property string theme: "crimson"
+	property string theme: IPConnect.theme
 	property string textColor: "#333"
 	property string bgColor: "#f7f7f7"
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }

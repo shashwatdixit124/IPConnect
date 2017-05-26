@@ -2,11 +2,12 @@ import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
 import QtQml 2.2
+import api.ui.ipconnect 2.0
 
 Item { id: item
     clip: true
 
-    property string theme: "#16a085"
+    property string theme: IPConnect.theme
     property string textColor: "#333"
     property string bgColor: "#f7f7f7"
 
