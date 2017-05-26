@@ -17,6 +17,9 @@ Item { id:item
 			messenger.visible = false
 			appSettings.visible = true
 		}
+		onQuickConnectClicked: {
+			quickConnect.open()
+		}
 	}
 
 	Messenger { id: messenger
@@ -38,4 +41,6 @@ Item { id:item
 			IPConnect.theme = themeColor
 		}
 	}
+
+	QuickConnect{ id: quickConnect }
 }

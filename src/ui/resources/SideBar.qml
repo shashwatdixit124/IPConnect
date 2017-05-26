@@ -13,6 +13,7 @@ Item { id: item
 
 	signal messengerClicked
 	signal settingsClicked
+	signal quickConnectClicked
 
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
@@ -67,6 +68,24 @@ Item { id: item
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
 					onClicked: settingsClicked()
+				}
+			}
+
+			Item { id: quickConnect
+				width: parent.width
+				height: item.tabHeight
+
+				Text { id: quickConnectIcon
+					anchors.centerIn: parent
+					text: qsTr("\uf0c1")
+					color: item.theme
+					font.pixelSize: 24
+				}
+
+				MouseArea{
+					anchors.fill: parent
+					cursorShape: Qt.PointingHandCursor
+					onClicked: quickConnectClicked()
 				}
 			}
 		}

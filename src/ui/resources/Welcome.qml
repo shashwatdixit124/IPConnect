@@ -18,6 +18,8 @@ Popup { id: setting
 	width: parent.width
 	closePolicy: Popup.NoAutoClose
 
+	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
+
 	Component.onCompleted: {
 		open()
 		welcomeTimer.start()
