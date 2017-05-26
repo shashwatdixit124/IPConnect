@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
+import api.ui.ipconnect 2.0
 
 Item { id: item
 
@@ -103,7 +104,7 @@ Item { id: item
 					anchors.fill: parent
 					anchors.topMargin: 5
 					delegate: msgDelegate
-					model: _messages//msgModel
+					model: IPConnect.messages//_messages//msgModel
 					spacing: 5
 				}
 			}
@@ -158,7 +159,7 @@ Item { id: item
 				onAccepted:{
 					if(userList.currentIndex >= 0)
 					{
-						_messenger.sendMessage(userList.currentItem.idno,text);
+						IPConnect.sendMessage(userList.currentItem.idno,text);
 						text = ""
 					}
 				}
@@ -297,7 +298,7 @@ Item { id: item
 
 			ListView { id:userList
 				anchors.fill: parent
-				model: _users
+				model: IPConnect.users//_users
 				delegate: userDelegate
 				highlight: highlightBar
 				highlightFollowsCurrentItem: false
