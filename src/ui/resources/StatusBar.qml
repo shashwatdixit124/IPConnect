@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Window 2.2
 
 Item { id:item
-	property string theme: "orange"
+	property string theme: "#16a085"
 	property alias text : statusText.text
 	property string textColor
 	property string bgColor

@@ -17,7 +17,9 @@ ApplicationWindow { id:root
 	property string sbBgColor: "#f6f6f6"
 	property string sbTextColor: "#333"
 
-	Welcome{}
+	Welcome{
+		theme: root.theme
+	}
 
 	Item {
 		anchors.fill: parent
