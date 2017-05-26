@@ -6,7 +6,7 @@ import QtQml 2.2
 Item { id: item
     clip: true
 
-    property string theme: "crimson"
+    property string theme: "#16a085"
     property string textColor: "#333"
     property string bgColor: "#f7f7f7"
 

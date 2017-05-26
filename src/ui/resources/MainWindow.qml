@@ -11,7 +11,7 @@ ApplicationWindow { id:root
 	y:(Screen.height-600)/2
 	flags: Qt.FramelessWindowHint
 
-	property string theme: "#c0392b"
+	property string theme: "#16a085"
 	property string textColor:  "#333"
 	property string rootBgColor: "#fcfcfc"
 	property string sbBgColor: "#f6f6f6"
@@ -20,7 +20,7 @@ ApplicationWindow { id:root
 	Item {
 		anchors.fill: parent
 
-		SideBar{ id:sideBar
+		SideBar{ id: sb
 			title: qsTr("𝓲𝓹𝓬")
 			theme: root.theme
 		}
@@ -49,6 +49,7 @@ ApplicationWindow { id:root
 				theme: root.theme
 				textColor: root.textColor
 				bgColor: root.rootBgColor
+				sideBar: sb
 				anchors.left: parent.left
 				anchors.right: parent.right
 				anchors.top: appControls.bottom
