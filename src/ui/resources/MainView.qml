@@ -35,11 +35,6 @@ Item { id:item
 		textColor: item.textColor
 		bgColor: item.bgColor
 		visible: false
-		onUpdated:{
-			IPConnect.userName = username
-			IPConnect.downloadDir = ddir
-			IPConnect.theme = themeColor
-		}
 	}
 
 	QuickConnect{ id: quickConnect }

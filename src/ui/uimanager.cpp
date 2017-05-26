@@ -45,7 +45,8 @@ QString UiManager::theme()
 
 void UiManager::setTheme(QString color)
 {
-	m_settings->setTheme(color);
+	if(color != theme())
+		m_settings->setTheme(color);
 	emit themeChanged();
 }
 
@@ -56,7 +57,8 @@ QString UiManager::userName()
 
 void UiManager::setUserName(QString name)
 {
-	m_settings->setName(name);
+	if(name != userName() && !name.isEmpty() && !name.isNull())
+		m_settings->setName(name);
 	emit userNameChanged();
 }
 
@@ -67,7 +69,8 @@ QString UiManager::downloadDir()
 
 void UiManager::setDownloadDir(QString ddir)
 {
-	m_settings->setDownloadDir(ddir);
+	if(ddir != downloadDir() && !ddir.isEmpty() && !ddir.isNull())
+		m_settings->setDownloadDir(ddir);
 	emit downloadDirChanged();
 }
 

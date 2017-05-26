@@ -124,9 +124,6 @@ Popup { id: setting
 									height: parent.height
 									placeholderText: qsTr("ex: ~/Downloads")
 									text: dirDialog.folder
-									onActiveFocusChanged:
-										if(downloadDirLabel.font.pixelSize != 20)
-											downloadDirLabel.font.pixelSize = 20
 								}
 
 								Button { id: selectBtn
