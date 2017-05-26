@@ -38,6 +38,39 @@ QAbstractListModel* UiManager::messages()
 	return m_messages;
 }
 
+QString UiManager::theme()
+{
+	return m_settings->theme();
+}
+
+void UiManager::setTheme(QString color)
+{
+	m_settings->setTheme(color);
+	emit themeChanged();
+}
+
+QString UiManager::userName()
+{
+	return m_settings->name();
+}
+
+void UiManager::setUserName(QString name)
+{
+	m_settings->setName(name);
+	emit userNameChanged();
+}
+
+QString UiManager::downloadDir()
+{
+	return m_settings->downloadDir();
+}
+
+void UiManager::setDownloadDir(QString ddir)
+{
+	m_settings->setDownloadDir(ddir);
+	emit downloadDirChanged();
+}
+
 void UiManager::sendMessage(int id,QString msg)
 {
 	m_messenger->sendMessage(id,msg);
