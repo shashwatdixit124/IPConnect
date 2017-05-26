@@ -5,10 +5,13 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include <QPointer>
+#include <QQmlEngine>
+#include <QJSEngine>
 
 namespace IPConnect
 {
-class IControlCenter;
+class ControlCenter;
 class UserList;
 class Messenger;
 class MessageList;
@@ -17,21 +20,26 @@ class IUserSettings;
 class UiManager : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY(QAbstractListModel* users READ users)
+	Q_PROPERTY(QAbstractListModel* messages READ messages)
+
 public:
-	explicit UiManager(IControlCenter*);
+	UiManager();
 	~UiManager();
 
 	QAbstractListModel* users();
-	Messenger* messenger();
 	QAbstractListModel* messages();
-	IUserSettings* settings();
+
+	Q_INVOKABLE void sendMessage(int,QString);
+
+	static QObject* uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 protected:
-	IControlCenter* m_cc;
-	UserList* m_usersList;
-	Messenger* m_messenger;
-	MessageList* m_messages;
-	IUserSettings* m_settings;
+	ControlCenter* m_cc;
+	QPointer<UserList> m_usersList;
+	QPointer<Messenger> m_messenger;
+	QPointer<MessageList> m_messages;
+	QPointer<IUserSettings> m_settings;
 
 };
 

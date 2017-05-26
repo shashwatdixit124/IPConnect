@@ -14,7 +14,7 @@ public:
 	explicit Messenger(IClientManager *cm);
 	~Messenger();
 
-	Q_INVOKABLE void sendMessage(int,QString);
+	void sendMessage(int,QString);
 
 protected:
 	IClientManager* m_cm;

@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
 	ControlCenter::init();
 	QObject::connect(&a,&QApplication::aboutToQuit,ControlCenter::instance(),&ControlCenter::shutdown);
-	IPConnectWindow w(ControlCenter::instance());
+	IPConnectWindow w;
 	w.show();
 
 	a.exec();

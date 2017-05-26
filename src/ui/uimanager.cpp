@@ -1,5 +1,6 @@
 #include "uimanager.h"
 
+#include <controlcenter.h>
 #include <interfaces/icontrolcenter.h>
 #include <interfaces/iclientmanager.h>
 #include <interfaces/iusersettings.h>
@@ -8,29 +9,23 @@
 #include "messagelist.h"
 
 #include <QAbstractListModel>
+#include <QQmlEngine>
+#include <QJSEngine>
 
 namespace IPConnect
 {
 
-UiManager::UiManager(IControlCenter* cc) : m_cc(cc)
+UiManager::UiManager() : m_cc(ControlCenter::instance())
 {
-	IClientManager* cm = cc->clientManager();
+	IClientManager* cm = m_cc->clientManager();
 	m_usersList = new UserList(cm);
 	m_messenger = new Messenger(cm);
 	m_messages = new MessageList(cm);
-	m_settings = cc->userSettings();
+	m_settings = m_cc->userSettings();
 }
 
 UiManager::~UiManager()
 {
-	if(m_usersList)
-		m_usersList->deleteLater();
-
-	if(m_messenger)
-		m_messenger->deleteLater();
-
-	if(m_messages)
-		m_messages->deleteLater();
 }
 
 QAbstractListModel* UiManager::users()
@@ -38,19 +33,23 @@ QAbstractListModel* UiManager::users()
 	return m_usersList;
 }
 
-Messenger* UiManager::messenger()
-{
-	return m_messenger;
-}
-
 QAbstractListModel* UiManager::messages()
 {
 	return m_messages;
 }
 
-IUserSettings* UiManager::settings()
+void UiManager::sendMessage(int id,QString msg)
 {
-	return m_settings;
+	m_messenger->sendMessage(id,msg);
+}
+
+QObject* UiManager::uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+	Q_UNUSED(engine)
+	Q_UNUSED(scriptEngine)
+
+	UiManager *manager = new UiManager();
+	return manager;
 }
 
 }

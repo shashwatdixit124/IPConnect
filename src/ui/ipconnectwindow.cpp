@@ -13,22 +13,17 @@
 namespace IPConnect
 {
 
-IPConnectWindow::IPConnectWindow(IControlCenter* cc) : m_manager(new UiManager(cc))
+IPConnectWindow::IPConnectWindow()
 {
+	qmlRegisterSingletonType<UiManager>("api.ui.ipconnect",2,0,"IPConnect",UiManager::uimanager_singleton);
 }
 
 IPConnectWindow::~IPConnectWindow()
 {
-	if(m_manager)
-		m_manager->deleteLater();
 }
 
 void IPConnectWindow::show()
 {
-	m_engine.rootContext()->setContextProperty("_users",m_manager->users());
-	m_engine.rootContext()->setContextProperty("_messenger",m_manager->messenger());
-	m_engine.rootContext()->setContextProperty("_messages",m_manager->messages());
-	m_engine.rootContext()->setContextProperty("_settings",m_manager->settings());
 	m_engine.load(QUrl("qrc:/resources/MainWindow.qml"));
 }
 

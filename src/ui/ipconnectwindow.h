@@ -12,12 +12,11 @@ class IPConnectWindow
 {
 
 public:
-	explicit IPConnectWindow(IControlCenter* cc);
+	explicit IPConnectWindow();
 	~IPConnectWindow();
 	void show();
 
 protected:
-	UiManager* m_manager;
 	QQmlApplicationEngine m_engine;
 };
 
