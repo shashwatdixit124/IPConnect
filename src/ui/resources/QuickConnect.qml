@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.1
+import api.ui.ipconnect 2.0
 
 Popup { id: item
 	height: 200
@@ -36,6 +37,11 @@ Popup { id: item
 					height: parent.height
 					width: height
 					text: qsTr("\uf0c1")
+					onClicked:{
+						IPConnect.quickConnect(quickConnectUrl.text)
+						quickConnectUrl.text = ""
+						close()
+					}
 				}
 			}
 		}

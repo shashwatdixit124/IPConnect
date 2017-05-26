@@ -21,6 +21,7 @@ public:
 	virtual QList<MessageInformation> messages() = 0;
 	virtual void addConnection(IConnection*) = 0;
 	virtual void sendMessage(qint16,QString) = 0;
+	virtual void connectManualy(QString) = 0;
 
 Q_SIGNALS:
 	void userListUpdated();

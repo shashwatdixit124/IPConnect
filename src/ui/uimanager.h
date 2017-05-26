@@ -43,6 +43,7 @@ public:
 	void setDownloadDir(QString);
 
 	Q_INVOKABLE void sendMessage(int,QString);
+	Q_INVOKABLE void quickConnect(QString);
 
 	static QObject* uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine);
 

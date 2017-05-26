@@ -30,6 +30,7 @@ public:
 	QList<MessageInformation> messages() override;
 	void addConnection(IConnection*) override;
 	void sendMessage(qint16,QString) override;
+	void connectManualy(QString) override;
 
 Q_SIGNALS:
 	void clientCreated(Client*);

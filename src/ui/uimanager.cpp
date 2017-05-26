@@ -76,6 +76,14 @@ void UiManager::sendMessage(int id,QString msg)
 	m_messenger->sendMessage(id,msg);
 }
 
+void UiManager::quickConnect(QString url)
+{
+	if(url.isEmpty() || url.isNull())
+		return;
+
+	m_cc->clientManager()->connectManualy(url);
+}
+
 QObject* UiManager::uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
 	Q_UNUSED(engine)

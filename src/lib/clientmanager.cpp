@@ -86,6 +86,16 @@ void ClientManager::sendMessage(qint16 id,QString msg)
 	emit messageAdded(mi);
 }
 
+void ClientManager::connectManualy(QString url)
+{
+	Connection* con = new Connection();
+	con->connectToHost(url,2424);
+	if(con->isValid() && con->isOpen())
+		addConnection(con);
+	else
+		con->deleteLater();
+}
+
 void ClientManager::clientAdded(ClientInformation ci)
 {
 	m_clientsInfo.insert(ci.id(),ci);
