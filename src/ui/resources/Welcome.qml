@@ -21,8 +21,11 @@ Popup { id: setting
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
 	Component.onCompleted: {
-		open()
-		welcomeTimer.start()
+		if(IPConnect.runningFirstTime)
+		{
+			open()
+			welcomeTimer.start()
+		}
 	}
 
 	contentItem: Rectangle{

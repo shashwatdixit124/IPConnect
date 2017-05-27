@@ -38,6 +38,11 @@ QAbstractListModel* UiManager::messages()
 	return m_messages;
 }
 
+bool UiManager::runningFirstTime()
+{
+	return m_settings->runningFirstTime();
+}
+
 QString UiManager::theme()
 {
 	return m_settings->theme();

@@ -22,6 +22,7 @@ class UiManager : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QAbstractListModel* users READ users)
 	Q_PROPERTY(QAbstractListModel* messages READ messages)
+	Q_PROPERTY(bool runningFirstTime READ runningFirstTime)
 	Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged)
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
 	Q_PROPERTY(QString downloadDir READ downloadDir WRITE setDownloadDir NOTIFY downloadDirChanged)
@@ -32,6 +33,7 @@ public:
 
 	QAbstractListModel* users();
 	QAbstractListModel* messages();
+	bool runningFirstTime();
 
 	QString theme();
 	void setTheme(QString);

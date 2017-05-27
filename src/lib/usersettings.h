@@ -4,6 +4,7 @@
 #include "interfaces/iusersettings.h"
 
 #include <QObject>
+#include <QSettings>
 
 namespace IPConnect
 {
@@ -16,8 +17,9 @@ public:
 	explicit UserSettings();
 	~UserSettings();
 
-	QString name() override;
 	QString ip() override;
+	bool runningFirstTime() override;
+	QString name() override;
 	QString downloadDir() override;
 	QString theme() override;
 	void setName(QString) override;
@@ -30,6 +32,8 @@ protected:
 	QString m_downloadDir;
 	QString m_theme;
 	bool m_set;
+	bool m_first;
+	QSettings m_config;
 
 };
 
