@@ -32,6 +32,11 @@ Popup { id: item
 					height: parent.height
 					width: 300
 					placeholderText: qsTr(" URL")
+					onAccepted:{
+						IPConnect.quickConnect(quickConnectUrl.text)
+						quickConnectUrl.text = ""
+						close()
+					}
 				}
 				Button { id: quickConnectBtn
 					height: parent.height

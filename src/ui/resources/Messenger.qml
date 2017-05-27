@@ -164,11 +164,16 @@ Item { id: item
 					}
 				}
 
-				onFocusChanged: {
+				onActiveFocusChanged: {
 					if(activeFocus)
 					{
 						dropMsgInputBox.radius = 16
 						msgInputBox.color = "#fff"
+					}
+					else
+					{
+						dropMsgInputBox.radius = 7
+						msgInputBox.color = "#f9f9f9"
 					}
 				}
 			}
