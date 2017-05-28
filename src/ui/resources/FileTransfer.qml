@@ -21,6 +21,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
+import QtGraphicalEffects 1.0
 
 Popup { id: item
 	height: 200
@@ -30,6 +31,24 @@ Popup { id: item
 	modal: true
 
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
+
+	background: Item{
+		implicitHeight: 200
+		implicitWidth: 400
+		Rectangle { id: popupBack
+			anchors.fill: parent
+		}
+		DropShadow { 
+			anchors.fill: popupBack
+			source: popupBack
+			horizontalOffset: 0
+			verticalOffset: 0
+			radius: 16
+			samples: 32
+			color: "#60000000"
+			transparentBorder: true
+		}
+	}
 
 	contentItem: Item{
 		anchors.fill: parent
