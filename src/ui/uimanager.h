@@ -47,6 +47,8 @@ class UiManager : public QObject
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
 	Q_PROPERTY(QString downloadDir READ downloadDir WRITE setDownloadDir NOTIFY downloadDirChanged)
 	Q_PROPERTY(qint16 selectedUser READ selectedUser WRITE setSelectedUser NOTIFY selectedUserChanged)
+	Q_PROPERTY(QString notificationMsg READ notificationMsg WRITE setNotificationMsg NOTIFY notificationMsgChanged)
+	Q_PROPERTY(QString notificationStatus READ notificationStatus WRITE setNotificationStatus NOTIFY notificationStatusChanged)
 
 public:
 	UiManager();
@@ -68,16 +70,27 @@ public:
 	qint16 selectedUser();
 	void setSelectedUser(qint16);
 
+	QString notificationMsg();
+	void setNotificationMsg(QString);
+
+	QString notificationStatus();
+	void setNotificationStatus(QString);
+
 	Q_INVOKABLE void sendMessage(QString);
 	Q_INVOKABLE void quickConnect(QString);
 
 	static QObject* uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine);
+
+protected Q_SLOTS:
+	void manualConnectionFailed(QString);
 
 Q_SIGNALS:
 	void themeChanged();
 	void userNameChanged();
 	void downloadDirChanged();
 	void selectedUserChanged();
+	void notificationMsgChanged();
+	void notificationStatusChanged();
 
 protected:
 	ControlCenter* m_cc;
@@ -85,6 +98,8 @@ protected:
 	QPointer<Messenger> m_messenger;
 	QPointer<MessageList> m_messages;
 	QPointer<IUserSettings> m_settings;
+	QString m_notificationMsg;
+	QString m_notificationStatus;
 	qint16 m_selectedUser;
 
 };

@@ -35,13 +35,15 @@
 namespace IPConnect
 {
 
-UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
+UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1) ,
+	m_notificationMsg("Welcome to IPConnect") , m_notificationStatus("Active")
 {
 	IClientManager* cm = m_cc->clientManager();
 	m_usersList = new UserList(cm);
 	m_messenger = new Messenger(cm);
 	m_messages = new MessageList(cm);
 	m_settings = m_cc->userSettings();
+	connect(cm,&IClientManager::manualConnectionFailed,this,&UiManager::manualConnectionFailed);
 }
 
 UiManager::~UiManager()
@@ -110,6 +112,28 @@ void UiManager::setSelectedUser(qint16 id)
 	emit selectedUserChanged();
 }
 
+QString UiManager::notificationMsg()
+{
+	return m_notificationMsg;
+}
+
+void UiManager::setNotificationMsg(QString msg)
+{
+	m_notificationMsg = msg;
+	emit notificationMsgChanged();
+}
+
+QString UiManager::notificationStatus()
+{
+	return m_notificationStatus;
+}
+
+void UiManager::setNotificationStatus(QString status)
+{
+	m_notificationStatus = status;
+	emit notificationStatusChanged();
+}
+
 void UiManager::sendMessage(QString msg)
 {
 	m_messenger->sendMessage(m_selectedUser,msg);
@@ -121,6 +145,12 @@ void UiManager::quickConnect(QString url)
 		return;
 
 	m_cc->clientManager()->connectManualy(url);
+}
+
+void UiManager::manualConnectionFailed(QString url)
+{
+	setNotificationMsg("Can't Connect to "+url);
+	setNotificationStatus("Active");
 }
 
 QObject* UiManager::uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine)
