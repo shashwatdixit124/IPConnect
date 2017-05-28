@@ -1,3 +1,23 @@
+/*
+ *   This file is part of IPConnect
+ *   Copyright 2017 Shashwat Dixit <shashwatdixit124@gmail.com>
+ * 
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as
+ *   published by the Free Software Foundation; either version 3 of the
+ *   License, or (at your option) any later version.
+ * 
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ * 
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the
+ *   Free Software Foundation, Inc.,
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
@@ -30,7 +50,6 @@ Popup { id: item
 				id: sendFileDialog
 				selectFolder: false
 				selectExisting: true
-				onFileUrlChanged: console.log("file selected : "+fileUrl)
 			}
 
 			Column{
@@ -50,7 +69,6 @@ Popup { id: item
 						width: height
 						text: qsTr("\uf15b")
 						onClicked:{
-							fileTransferUrl.text = ""
 							sendFileDialog.open()
 						}
 					}
@@ -67,6 +85,7 @@ Popup { id: item
 						text: qsTr("\uf1d8  Send")
 						onClicked: {
 							//TODO Connect API send function
+							fileTransferUrl.text = ""
 							item.close()
 						}
 					}
