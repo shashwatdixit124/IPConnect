@@ -29,9 +29,8 @@ Item { id: item
 			Component { id: msgDelegate
 
 				Rectangle { id: msgWrapper
-					color: sent ? item.theme : "#fdfdfd"
 					border.width: 1
-					border.color: "#10000000"
+					border.color: item.theme
 					anchors.margins: 5
 					height: userNameItem.height + messageItem.height
 					width: userNameItem.width > messageItem.width ? userNameItem.width : messageItem.width
@@ -55,7 +54,8 @@ Item { id: item
 							x: 10
 							width: implicitWidth > msgViewBox.width*2/3 ? msgViewBox.width*2/3 : implicitWidth
 							text: (sent? "To : " : "From : ") + "<b>" + user + "</b>"
-							color: sent? "#fdfdfd" : "#333"
+							color: item.theme
+							font.weight: Font.Bold
 							font.pixelSize: 12
 							wrapMode: Text.Wrap
 						}
@@ -75,7 +75,7 @@ Item { id: item
 							width: implicitWidth > msgViewBox.width*2/3 ? msgViewBox.width*2/3 : implicitWidth
 							text: message
 							wrapMode: Text.Wrap
-							color: sent? "#fdfdfd" : "#333"
+							color: "#333"
 							font.pixelSize: 16
 						}
 					}
@@ -104,22 +104,9 @@ Item { id: item
 					anchors.fill: parent
 					anchors.topMargin: 5
 					delegate: msgDelegate
-					model: IPConnect.messages//_messages//msgModel
+					model: IPConnect.messages
 					spacing: 5
 				}
-			}
-
-			ListModel { id: msgModel
-				ListElement{user:"Shyam";msg:"Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ? Hi How are you ?Hi How are you ?";sent:true}
-				ListElement{user:"Shyam";msg:"I am Great, How are you ? ";sent:false}
-				ListElement{user:"Shyam";msg:"fine thanks";sent:true}
-				ListElement{user:"Shyam";msg:"How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? How's College ? ";sent:true}
-				ListElement{user:"Shyam";msg:"Good ";sent:false}
-				ListElement{user:"Shyam";msg:"which year are you in ?";sent:true}
-				ListElement{user:"Shyam";msg:"Pre Final Year";sent:false}
-				ListElement{user:"Shyam";msg:"Going Great ? ";sent:true}
-				ListElement{user:"Shyam";msg:"Awesome";sent:false}
-				ListElement{user:"Shyam";msg:"Alright See You Soon";sent:true}
 			}
 		}
 
@@ -303,7 +290,7 @@ Item { id: item
 
 			ListView { id:userList
 				anchors.fill: parent
-				model: IPConnect.users//_users
+				model: IPConnect.users
 				delegate: userDelegate
 				highlight: highlightBar
 				highlightFollowsCurrentItem: false
