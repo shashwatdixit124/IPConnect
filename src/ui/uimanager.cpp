@@ -35,8 +35,7 @@
 namespace IPConnect
 {
 
-UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1) ,
-	m_notificationMsg("Welcome to IPConnect") , m_notificationStatus("Active")
+UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
 {
 	IClientManager* cm = m_cc->clientManager();
 	m_usersList = new UserList(cm);
@@ -44,6 +43,8 @@ UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1) ,
 	m_messages = new MessageList(cm);
 	m_settings = m_cc->userSettings();
 	connect(cm,&IClientManager::manualConnectionFailed,this,&UiManager::manualConnectionFailed);
+	m_notificationMsg = "Welcome to IPConnect";
+	m_notificationStatus = runningFirstTime() ? "Inactive" : "Active" ; 
 }
 
 UiManager::~UiManager()

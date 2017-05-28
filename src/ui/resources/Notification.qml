@@ -31,8 +31,8 @@ Item { id: notification
 
 	Behavior on visible {NumberAnimation {duration: 300} }
 	Behavior on opacity {NumberAnimation {duration: 200} }
-	clip: true
 
+	clip: true
 	height: 220
 	width: 320
 	x: parent.width - width - 20
