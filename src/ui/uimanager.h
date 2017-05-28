@@ -26,6 +26,7 @@ class UiManager : public QObject
 	Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged)
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
 	Q_PROPERTY(QString downloadDir READ downloadDir WRITE setDownloadDir NOTIFY downloadDirChanged)
+	Q_PROPERTY(qint16 selectedUser READ selectedUser WRITE setSelectedUser NOTIFY selectedUserChanged)
 
 public:
 	UiManager();
@@ -44,7 +45,10 @@ public:
 	QString downloadDir();
 	void setDownloadDir(QString);
 
-	Q_INVOKABLE void sendMessage(int,QString);
+	qint16 selectedUser();
+	void setSelectedUser(qint16);
+
+	Q_INVOKABLE void sendMessage(QString);
 	Q_INVOKABLE void quickConnect(QString);
 
 	static QObject* uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine);
@@ -53,6 +57,7 @@ Q_SIGNALS:
 	void themeChanged();
 	void userNameChanged();
 	void downloadDirChanged();
+	void selectedUserChanged();
 
 protected:
 	ControlCenter* m_cc;
@@ -60,6 +65,7 @@ protected:
 	QPointer<Messenger> m_messenger;
 	QPointer<MessageList> m_messages;
 	QPointer<IUserSettings> m_settings;
+	qint16 m_selectedUser;
 
 };
 

@@ -146,7 +146,7 @@ Item { id: item
 				onAccepted:{
 					if(userList.currentIndex >= 0)
 					{
-						IPConnect.sendMessage(userList.currentItem.idno,text);
+						IPConnect.sendMessage(text);
 						text = ""
 					}
 				}
@@ -254,7 +254,9 @@ Item { id: item
 				}
 				MouseArea {
 					anchors.fill: parent
-					onClicked: wrapper.ListView.view.currentIndex = index
+					onClicked: {
+						wrapper.ListView.view.currentIndex = index
+					}
 				}
 			}
 		}
@@ -294,6 +296,7 @@ Item { id: item
 				delegate: userDelegate
 				highlight: highlightBar
 				highlightFollowsCurrentItem: false
+				onCurrentIndexChanged: IPConnect.selectedUser = currentItem.idno
 			}
 		}
 	}

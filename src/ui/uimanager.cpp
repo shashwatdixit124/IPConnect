@@ -15,7 +15,7 @@
 namespace IPConnect
 {
 
-UiManager::UiManager() : m_cc(ControlCenter::instance())
+UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
 {
 	IClientManager* cm = m_cc->clientManager();
 	m_usersList = new UserList(cm);
@@ -79,9 +79,20 @@ void UiManager::setDownloadDir(QString ddir)
 	emit downloadDirChanged();
 }
 
-void UiManager::sendMessage(int id,QString msg)
+qint16 UiManager::selectedUser()
 {
-	m_messenger->sendMessage(id,msg);
+	return m_selectedUser;
+}
+
+void UiManager::setSelectedUser(qint16 id)
+{
+	m_selectedUser = id;
+	emit selectedUserChanged();
+}
+
+void UiManager::sendMessage(QString msg)
+{
+	m_messenger->sendMessage(m_selectedUser,msg);
 }
 
 void UiManager::quickConnect(QString url)
