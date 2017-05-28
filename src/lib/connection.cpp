@@ -34,7 +34,10 @@ Connection::~Connection(){}
 
 void Connection::isError()
 {
-	emit errorOccurred();
+	if(error() == QAbstractSocket::HostNotFoundError || error() == QAbstractSocket::ConnectionRefusedError)
+		emit hostNotFound();
+	else
+		emit errorOccurred();
 }
 
 }

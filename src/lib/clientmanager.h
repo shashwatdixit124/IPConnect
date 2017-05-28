@@ -33,6 +33,7 @@ namespace IPConnect
 {
 
 class IConnection;
+class Connection;
 class Client;
 class ClientInformation;
 class ClientThreadManager;
@@ -65,9 +66,11 @@ public Q_SLOTS:
 protected:
 	Client* createClient(IConnection*);
 	void addManualConnection();
+	void noManualConnection();
 
 	QMap<qint16,ClientInformation> m_clientsInfo;
 	QMap<qint16,MessageInformation> m_messages;
+	QMap<Connection*,QString> m_pendingManualConnection;
 	qint16 m_clientCount;
 	qint16 m_messageCount;
 	QThread *m_clientThread;

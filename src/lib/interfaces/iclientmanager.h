@@ -46,6 +46,7 @@ public:
 Q_SIGNALS:
 	void userListUpdated();
 	void messageAdded(MessageInformation);
+	void manualConnectionFailed(QString);
 
 protected:
 	explicit IClientManager(QObject* parent = nullptr);

@@ -109,7 +109,9 @@ void ClientManager::sendMessage(qint16 id,QString msg)
 void ClientManager::connectManualy(QString url)
 {
 	Connection* con = new Connection();
+	m_pendingManualConnection.insert(con,url);
 	connect(con,&Connection::connected,this,&ClientManager::addManualConnection);
+	connect(con,&Connection::hostNotFound,this,&ClientManager::noManualConnection);
 	con->connectToHost(url,2424);
 }
 
@@ -119,7 +121,23 @@ void ClientManager::addManualConnection()
 		return;
 
 	Connection* con = dynamic_cast<Connection*>(sender());
+	m_pendingManualConnection.remove(con);
 	addConnection(con);
+}
+
+void ClientManager::noManualConnection()
+{
+	if(!sender())
+		return;
+
+	Connection* con = dynamic_cast<Connection*>(sender());
+	QString url = m_pendingManualConnection.value(con);
+	m_pendingManualConnection.remove(con);
+
+	if(url.isEmpty() || url.isNull())
+		return;
+
+	emit manualConnectionFailed(url);
 }
 
 void ClientManager::clientAdded(ClientInformation ci)

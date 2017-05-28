@@ -32,6 +32,7 @@ class IConnection : public QTcpSocket
 
 Q_SIGNALS:
 	void errorOccurred();
+	void hostNotFound();
 
 protected:
 	explicit IConnection();
