@@ -20,6 +20,9 @@ Item { id:item
 		onQuickConnectClicked: {
 			quickConnect.open()
 		}
+		onFileTransferClicked: {
+			fileTransfer.open()
+		}
 	}
 
 	Messenger { id: messenger
@@ -38,4 +41,6 @@ Item { id:item
 	}
 
 	QuickConnect{ id: quickConnect }
+
+	FileTransfer{ id: fileTransfer }
 }

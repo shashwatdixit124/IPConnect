@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>resources/AppControls.qml</file>
         <file>resources/AppSettings.qml</file>
+        <file>resources/FileTransfer.qml</file>
         <file>resources/StatusBar.qml</file>
         <file>resources/MainView.qml</file>
         <file>resources/MainWindow.qml</file>

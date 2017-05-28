@@ -14,6 +14,7 @@ Item { id: item
 	signal messengerClicked
 	signal settingsClicked
 	signal quickConnectClicked
+	signal fileTransferClicked
 
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
@@ -86,6 +87,24 @@ Item { id: item
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
 					onClicked: quickConnectClicked()
+				}
+			}
+
+			Item { id: fileTransfer
+				width: parent.width
+				height: item.tabHeight
+
+				Text { id: fileTransferIcon
+					anchors.centerIn: parent
+					text: qsTr("\uf15b")
+					color: item.theme
+					font.pixelSize: 24
+				}
+
+				MouseArea{
+					anchors.fill: parent
+					cursorShape: Qt.PointingHandCursor
+					onClicked: fileTransferClicked()
 				}
 			}
 		}
