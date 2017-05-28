@@ -21,6 +21,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtGraphicalEffects 1.0
+import QtQml 2.2
 import api.ui.ipconnect 2.0
 
 Item { id: notification
@@ -47,6 +48,10 @@ Item { id: notification
 				opacity: 1
 				visible: true
 			}
+			PropertyChanges {
+				target: notificationTimer
+				running: true
+			}
 		},
 		State {
 			name: "Inactive"
@@ -57,6 +62,15 @@ Item { id: notification
 			}
 		}
 	]
+
+	Timer { id: notificationTimer
+		running: false
+		interval: 5000
+		repeat: false
+		onTriggered: {
+			IPConnect.notificationStatus = "Inactive"
+		}
+	}
 
 	Rectangle { id: notificationItem
 		radius: 5
@@ -80,7 +94,10 @@ Item { id: notification
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: IPConnect.notificationStatus = "Inactive"
+					onClicked: {
+						IPConnect.notificationStatus = "Inactive"
+						notificationTimer.stop()
+					}
 				}
 			}
 			TextArea { id: notificationMsg
