@@ -63,4 +63,9 @@ Item { id:item
 	QuickConnect{ id: quickConnect }
 
 	FileTransfer{ id: fileTransfer }
+
+	Notification{ 
+		id: notification
+		text: qsTr("Testing Notification \n Hello There Welcome To IPConnect")
+	}
 }

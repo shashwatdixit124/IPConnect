@@ -7,6 +7,7 @@
         <file>resources/MainView.qml</file>
         <file>resources/MainWindow.qml</file>
         <file>resources/Messenger.qml</file>
+        <file>resources/Notification.qml</file>
         <file>resources/QuickConnect.qml</file>
         <file>resources/SideBar.qml</file>
         <file>resources/Welcome.qml</file>
