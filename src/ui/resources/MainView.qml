@@ -64,8 +64,8 @@ Item { id:item
 
 	FileTransfer{ id: fileTransfer }
 
-	Notification{ 
-		id: notification
-		text: qsTr("Testing Notification \n Hello There Welcome To IPConnect")
+	Notification { id: notification
+		text: IPConnect.notificationMsg
+		status: IPConnect.notificationStatus
 	}
 }

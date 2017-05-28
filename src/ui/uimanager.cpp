@@ -149,7 +149,7 @@ void UiManager::quickConnect(QString url)
 
 void UiManager::manualConnectionFailed(QString url)
 {
-	setNotificationMsg("Can't Connect to "+url);
+	setNotificationMsg("Can't Connect to \""+url+"\"");
 	setNotificationStatus("Active");
 }
 

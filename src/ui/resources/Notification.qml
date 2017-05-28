@@ -21,10 +21,12 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtGraphicalEffects 1.0
+import api.ui.ipconnect 2.0
 
 Item { id: notification
 
 	property alias text: notificationMsg.text
+	property alias status: notification.state
 
 	Behavior on visible {NumberAnimation {duration: 300} }
 	Behavior on opacity {NumberAnimation {duration: 200} }
@@ -78,7 +80,7 @@ Item { id: notification
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: notification.state = "Inactive"
+					onClicked: IPConnect.notificationStatus = "Inactive"
 				}
 			}
 			TextArea { id: notificationMsg
