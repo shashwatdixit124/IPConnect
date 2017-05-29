@@ -3,6 +3,7 @@ set(IPConnectLibrary_SRS
     interfaces/iclientmanager.cpp
     interfaces/iconnection.cpp
     interfaces/icontrolcenter.cpp
+    interfaces/idownloader.cpp
     interfaces/iserver.cpp
     interfaces/iusersettings.cpp
     
@@ -25,6 +26,7 @@ set(IPConnectLibrary_Interfaces_HEADERS
     interfaces/iclientmanager.h
     interfaces/iconnection.h
     interfaces/icontrolcenter.h
+    interfaces/idownloader.h
     interfaces/iserver.h
     interfaces/iusersettings.h
 )
