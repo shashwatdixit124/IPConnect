@@ -15,6 +15,7 @@ set(IPConnectLibrary_SRS
     controlcenter.cpp
     controlcenter_p.cpp
     debug.cpp
+    downloader.cpp
     file.cpp
     messageinformation.cpp
     server.cpp
@@ -40,6 +41,7 @@ set(IPConnectLibrary_HEADERS
     controlcenter.h
     controlcenter_p.h
     debug.h
+    downloader.h
     file.h
     messageinformation.h
     server.h

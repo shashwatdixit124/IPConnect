@@ -18,31 +18,48 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef IDOWNLOADER_H
-#define IDOWNLOADER_H
+#include "downloader.h"
+
+#include "interfaces/idownloader.h"
+#include "connection.h"
+#include "file.h"
 
 #include <QObject>
 
 namespace IPConnect
 {
 
-class File;
-
-class IDownloader : public QObject
+Downloader::Downloader(QObject* parent) : IDownloader(parent) , 
+	m_file(File()) , m_rate(5*1024*1024) , m_source(nullptr) , m_destination(nullptr)
 {
-	Q_OBJECT
-
-public:
-	virtual void start() = 0;
-	virtual File file() = 0;
-	virtual int rate() = 0;
-
-protected:
-	explicit IDownloader(QObject* parent = nullptr);
-	~IDownloader();
-
-};
-
 }
 
-#endif
+Downloader::~Downloader()
+{
+}
+
+void Downloader::start()
+{
+}
+
+File Downloader::file()
+{
+	return m_file;
+}
+
+void Downloader::setFile(File file)
+{
+	m_file = file;
+}
+
+int Downloader::rate()
+{
+	return m_rate;
+}
+
+void Downloader::setRate(int rate)
+{
+	m_rate = rate;
+}
+
+}
