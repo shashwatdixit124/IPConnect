@@ -42,6 +42,7 @@ public:
 	~Transfer();
 
 	void start() override;
+	void stop() override;
 	void setDefaults();
 
 	File file() override;
@@ -60,12 +61,18 @@ protected:
 	QIODevice* m_source;
 	QIODevice* m_destination;
 	QTimer m_timer;
+	bool m_scheduled;
 	bool m_isSender;
 	bool m_transfering;
 	qint32 m_transfered;
 	qint32 m_transferInCycle;
 
+	void bytesWritten(qint32);
+	void readyRead();
 	bool checkDevices();
+	bool checkTransfer();
+	void scheduleTransfer();
+	void transfer();
 
 };
 

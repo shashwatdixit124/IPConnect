@@ -34,8 +34,13 @@ class ITransfer : public QObject
 
 public:
 	virtual void start() = 0;
+	virtual void stop() = 0;
 	virtual File file() = 0;
 	virtual int rate() = 0;
+
+Q_SIGNALS:
+	void error();
+	void finished();
 
 protected:
 	explicit ITransfer(QObject* parent = nullptr);
