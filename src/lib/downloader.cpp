@@ -22,15 +22,18 @@
 
 #include "interfaces/idownloader.h"
 #include "connection.h"
+#include "debugdownload.h"
 #include "file.h"
 
 #include <QObject>
+#include <QFile>
 
 namespace IPConnect
 {
 
 Downloader::Downloader(QObject* parent) : IDownloader(parent) , 
-	m_file(File()) , m_rate(5*1024*1024) , m_source(nullptr) , m_destination(nullptr)
+	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) ,
+	m_destination(nullptr) , m_isSender(false) , m_transfering(false)
 {
 }
 
@@ -40,6 +43,23 @@ Downloader::~Downloader()
 
 void Downloader::start()
 {
+	if(m_file.action() == File::UNKNOWN){
+		qCDebug(DOWNLOAD) << this << "( ERROR ) File Not Set";
+		return;
+	}
+
+	if(m_file.action() == File::SEND){
+		m_source = new QFile(m_file.path() + "/" + m_file.name());
+		m_destination = m_conn;
+		m_isSender = true;
+	}
+
+	if(m_file.action() == File::RECIEVE){
+		m_source = m_conn;
+		m_destination = new QFile(m_file.path() + "/" + m_file.name());
+		m_isSender = false;
+	}
+
 }
 
 File Downloader::file()
@@ -60,6 +80,44 @@ int Downloader::rate()
 void Downloader::setRate(int rate)
 {
 	m_rate = rate;
+}
+
+void Downloader::setChunkSize(int cs)
+{
+	m_chunkSize = cs;
+}
+
+bool Downloader::checkDevices()
+{
+    if(!m_source)
+    {
+        m_transfering = false;
+        qCDebug(DOWNLOAD) << this << "No source device!";
+        return false;
+    }
+
+    if(!m_destination)
+    {
+        m_transfering = false;
+        qCDebug(DOWNLOAD) << this << "No destination device!";
+        return false;
+    }
+
+    if(!m_source->isOpen() || !m_source->isReadable())
+    {
+        m_transfering = false;
+        qCDebug(DOWNLOAD) << this << "Source device is not open or is not readable!";
+        return false;
+    }
+
+    if(!m_destination->isOpen() || !m_destination->isWritable())
+    {
+        m_transfering = false;
+        qCDebug(DOWNLOAD) << this << "Destination device is not open or is not writable!";
+        return false;
+    }
+
+    return true;
 }
 
 }

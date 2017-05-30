@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QIODevice>
+#include <QTimer>
 
 namespace IPConnect
 {
@@ -49,13 +50,22 @@ public:
 	int rate() override;
 	void setRate(int);
 
+	void setChunkSize(int);
+
 protected:
 	File m_file;
 	Connection* m_conn;
 	int m_rate;
+	int m_chunkSize;
 	QIODevice* m_source;
 	QIODevice* m_destination;
-	bool m_sender;
+	QTimer m_timer;
+	bool m_isSender;
+	bool m_transfering;
+	qint32 m_transfered;
+	qint32 m_transferInCycle;
+
+	bool checkDevices();
 
 };
 
