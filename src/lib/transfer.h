@@ -18,10 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_H
-#define DOWNLOADER_H
+#ifndef TRANSFER_H
+#define TRANSFER_H
 
-#include "interfaces/idownloader.h"
+#include "interfaces/itransfer.h"
 #include "file.h"
 
 #include <QObject>
@@ -33,13 +33,13 @@ namespace IPConnect
 
 class Connection;
 
-class Downloader : public IDownloader
+class Transfer : public ITransfer
 {
 	Q_OBJECT
 
 public:
-	explicit Downloader(QObject* parent = nullptr);
-	~Downloader();
+	explicit Transfer(QObject* parent = nullptr);
+	~Transfer();
 
 	void start() override;
 	void setDefaults();

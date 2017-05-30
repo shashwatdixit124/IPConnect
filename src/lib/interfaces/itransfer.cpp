@@ -18,8 +18,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "debugdownload.h"
+#include "itransfer.h"
 
-Q_LOGGING_CATEGORY(DOWNLOAD, "ipconnect.download")
- 
+#include <QObject>
 
+namespace IPConnect
+{
+
+ITransfer::ITransfer(QObject* parent) : QObject(parent)
+{
+}
+
+ITransfer::~ITransfer()
+{
+}
+
+}

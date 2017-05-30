@@ -18,11 +18,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "downloader.h"
+#include "transfer.h"
 
-#include "interfaces/idownloader.h"
+#include "interfaces/itransfer.h"
 #include "connection.h"
-#include "debugdownload.h"
+#include "debugtransfer.h"
 #include "file.h"
 
 #include <QObject>
@@ -31,20 +31,20 @@
 namespace IPConnect
 {
 
-Downloader::Downloader(QObject* parent) : IDownloader(parent) , 
+Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
 	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) ,
 	m_destination(nullptr) , m_isSender(false) , m_transfering(false)
 {
 }
 
-Downloader::~Downloader()
+Transfer::~Transfer()
 {
 }
 
-void Downloader::start()
+void Transfer::start()
 {
 	if(m_file.action() == File::UNKNOWN){
-		qCDebug(DOWNLOAD) << this << "( ERROR ) File Not Set";
+		qCDebug(TRANSFER) << this << "( ERROR ) File Not Set";
 		return;
 	}
 
@@ -62,58 +62,58 @@ void Downloader::start()
 
 }
 
-File Downloader::file()
+File Transfer::file()
 {
 	return m_file;
 }
 
-void Downloader::setFile(File file)
+void Transfer::setFile(File file)
 {
 	m_file = file;
 }
 
-int Downloader::rate()
+int Transfer::rate()
 {
 	return m_rate;
 }
 
-void Downloader::setRate(int rate)
+void Transfer::setRate(int rate)
 {
 	m_rate = rate;
 }
 
-void Downloader::setChunkSize(int cs)
+void Transfer::setChunkSize(int cs)
 {
 	m_chunkSize = cs;
 }
 
-bool Downloader::checkDevices()
+bool Transfer::checkDevices()
 {
     if(!m_source)
     {
         m_transfering = false;
-        qCDebug(DOWNLOAD) << this << "No source device!";
+        qCDebug(TRANSFER) << this << "No source device!";
         return false;
     }
 
     if(!m_destination)
     {
         m_transfering = false;
-        qCDebug(DOWNLOAD) << this << "No destination device!";
+        qCDebug(TRANSFER) << this << "No destination device!";
         return false;
     }
 
     if(!m_source->isOpen() || !m_source->isReadable())
     {
         m_transfering = false;
-        qCDebug(DOWNLOAD) << this << "Source device is not open or is not readable!";
+        qCDebug(TRANSFER) << this << "Source device is not open or is not readable!";
         return false;
     }
 
     if(!m_destination->isOpen() || !m_destination->isWritable())
     {
         m_transfering = false;
-        qCDebug(DOWNLOAD) << this << "Destination device is not open or is not writable!";
+        qCDebug(TRANSFER) << this << "Destination device is not open or is not writable!";
         return false;
     }
 

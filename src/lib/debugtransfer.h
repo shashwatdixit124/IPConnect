@@ -18,11 +18,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef DEBUGTRANSFER_H
+#define DEBUGTRANSFER_H
 
 #include <QLoggingCategory>
-Q_DECLARE_LOGGING_CATEGORY(DOWNLOAD)
+Q_DECLARE_LOGGING_CATEGORY(TRANSFER)
 
 #endif
 

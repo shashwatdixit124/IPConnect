@@ -3,7 +3,7 @@ set(IPConnectLibrary_SRS
     interfaces/iclientmanager.cpp
     interfaces/iconnection.cpp
     interfaces/icontrolcenter.cpp
-    interfaces/idownloader.cpp
+    interfaces/itransfer.cpp
     interfaces/iserver.cpp
     interfaces/iusersettings.cpp
     
@@ -15,11 +15,11 @@ set(IPConnectLibrary_SRS
     controlcenter.cpp
     controlcenter_p.cpp
     debug.cpp
-    debugdownload.cpp
-    downloader.cpp
+    debugtransfer.cpp
     file.cpp
     messageinformation.cpp
     server.cpp
+    transfer.cpp
     usersettings.cpp
 )
 
@@ -28,7 +28,7 @@ set(IPConnectLibrary_Interfaces_HEADERS
     interfaces/iclientmanager.h
     interfaces/iconnection.h
     interfaces/icontrolcenter.h
-    interfaces/idownloader.h
+    interfaces/itransfer.h
     interfaces/iserver.h
     interfaces/iusersettings.h
 )
@@ -42,11 +42,11 @@ set(IPConnectLibrary_HEADERS
     controlcenter.h
     controlcenter_p.h
     debug.h
-    debugdownload.h
-    downloader.h
+    debugtransfer.h
     file.h
     messageinformation.h
     server.h
+    transfer.h
     usersettings.h
 )
 

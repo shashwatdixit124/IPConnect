@@ -18,19 +18,31 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "idownloader.h"
+#ifndef IDOWNLOADER_H
+#define IDOWNLOADER_H
 
 #include <QObject>
 
 namespace IPConnect
 {
 
-IDownloader::IDownloader(QObject* parent) : QObject(parent)
+class File;
+
+class ITransfer : public QObject
 {
+	Q_OBJECT
+
+public:
+	virtual void start() = 0;
+	virtual File file() = 0;
+	virtual int rate() = 0;
+
+protected:
+	explicit ITransfer(QObject* parent = nullptr);
+	~ITransfer();
+
+};
+
 }
 
-IDownloader::~IDownloader()
-{
-}
-
-}
+#endif
