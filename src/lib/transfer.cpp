@@ -74,6 +74,15 @@ void Transfer::start()
 		m_isSender = false;
 	}
 
+	m_transfering = true;
+	m_transfered = 0;
+
+	if(m_file.action() == File::SEND && m_source->bytesAvailable() > 0)
+	{
+		qDebug() << this <<"started the transfer";
+		scheduleTransfer();
+	}
+
 }
 
 void Transfer::stop()
