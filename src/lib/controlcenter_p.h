@@ -21,12 +21,10 @@
 #ifndef CONTROLCENTERPRIVATE_H
 #define CONTROLCENTERPRIVATE_H
 
-//#include "controlcenter.h"
-
 namespace IPConnect
 {
 
-class Server;
+class MessageServer;
 class ClientManager;
 class TransferManager;
 class UserSettings;
@@ -40,7 +38,7 @@ public:
 	void init();
 	void shutdown();
 
-	Server* m_server;
+	MessageServer* m_server;
 	ClientManager* m_clientManager;
 	TransferManager* m_transferManager;
 	UserSettings* m_userSettings;

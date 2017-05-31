@@ -18,34 +18,46 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef SERVER_H
-#define SERVER_H
+#include "messageserver.h"
 
+#include "controlcenter.h"
+#include "connection.h"
+#include "debug.h"
+#include "interfaces/iclientmanager.h"
 #include "interfaces/iserver.h"
 
 #include <QObject>
+#include <QTcpServer>
 
 namespace IPConnect
 {
 
-class Server : public IServer
+MessageServer::MessageServer(QObject* parent) : IServer(parent){}
+
+MessageServer::~MessageServer(){}
+
+void MessageServer::start()
 {
-	Q_OBJECT
-
-public:
-	explicit Server(QObject* parent);
-	~Server();
-	void start() override;
-	void shutdown();
-
-protected:
-	QTcpServer m_server;
-
-	void incomingConnection(qintptr handle) override;
-
-};
-
+	if(listen(QHostAddress::Any, 2424))
+		qCDebug(BASE) << "Server started on 2424";
+	else
+		qCDebug(BASE) << "Server could not start on 2424";
 }
 
-#endif
- 
+void MessageServer::shutdown()
+{
+	qCDebug(BASE) << "Server Stopped" ;
+	close();
+}
+
+void MessageServer::incomingConnection(qintptr handle)
+{
+	qCDebug(BASE) << "handling connection with descriptor " << handle ;
+	Connection *conn = new Connection();
+	conn->setSocketDescriptor(handle);
+	if(conn){
+		ControlCenter::instance()->clientManager()->addConnection(conn);
+	}
+}
+
+}

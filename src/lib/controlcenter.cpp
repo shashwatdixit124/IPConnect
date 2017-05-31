@@ -27,7 +27,7 @@
 #include "interfaces/iusersettings.h"
 #include "clientmanager.h"
 #include "controlcenter_p.h"
-#include "server.h"
+#include "messageserver.h"
 #include "transfermanager.h"
 #include "usersettings.h"
 
@@ -62,7 +62,7 @@ void ControlCenter::quit()
 	m_instance = nullptr;
 }
 
-IServer* ControlCenter::server()
+IServer* ControlCenter::messageServer()
 {
 	return m_ccp->m_server;
 }

@@ -44,7 +44,7 @@ public:
 	static void init();
 	static void quit();
 
-	IServer* server() override;
+	IServer* messageServer() override;
 	IClientManager* clientManager() override;
 	ITransferManager* transferManager() override;
 	IUserSettings* userSettings() override;
@@ -54,7 +54,7 @@ public Q_SLOTS:
 
 protected:
 	friend ControlCenterPrivate;
-	IPConnect::ControlCenterPrivate* m_ccp;
+	ControlCenterPrivate* m_ccp;
 	static ControlCenter* m_instance;
 
 };

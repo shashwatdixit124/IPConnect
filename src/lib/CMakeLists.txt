@@ -3,8 +3,9 @@ set(IPConnectLibrary_SRS
     interfaces/iclientmanager.cpp
     interfaces/iconnection.cpp
     interfaces/icontrolcenter.cpp
-    interfaces/itransfer.cpp
     interfaces/iserver.cpp
+    interfaces/itransfer.cpp
+    interfaces/itransfermanager.cpp
     interfaces/iusersettings.cpp
     
     client.cpp
@@ -18,8 +19,10 @@ set(IPConnectLibrary_SRS
     debugtransfer.cpp
     file.cpp
     messageinformation.cpp
-    server.cpp
+    messageserver.cpp
     transfer.cpp
+    transfermanager.cpp
+    transferserver.cpp
     usersettings.cpp
 )
 
@@ -28,8 +31,9 @@ set(IPConnectLibrary_Interfaces_HEADERS
     interfaces/iclientmanager.h
     interfaces/iconnection.h
     interfaces/icontrolcenter.h
-    interfaces/itransfer.h
     interfaces/iserver.h
+    interfaces/itransfer.h
+    interfaces/itransfermanager.h
     interfaces/iusersettings.h
 )
 
@@ -45,8 +49,10 @@ set(IPConnectLibrary_HEADERS
     debugtransfer.h
     file.h
     messageinformation.h
-    server.h
+    messageserver.h
     transfer.h
+    transfermanager.h
+    transferserver.h
     usersettings.h
 )
 

@@ -22,7 +22,7 @@
 
 #include "clientmanager.h"
 #include "controlcenter.h"
-#include "server.h"
+#include "messageserver.h"
 #include "transfermanager.h"
 #include "usersettings.h"
 
@@ -38,7 +38,7 @@ void ControlCenterPrivate::init()
 	m_userSettings = new UserSettings();
 	m_clientManager = new ClientManager(m_cc);
 	m_transferManager = new TransferManager(m_cc);
-	m_server = new Server(m_cc);
+	m_server = new MessageServer(m_cc);
 	m_server->start();
 }
 
