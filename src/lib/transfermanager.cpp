@@ -20,6 +20,7 @@
 
 #include "transfermanager.h"
 
+#include "interfaces/iconnection.h"
 #include "interfaces/itransfermanager.h"
 
 #include <QObject>
@@ -32,6 +33,14 @@ TransferManager::TransferManager(QObject* parent) : ITransferManager(parent)
 }
 
 TransferManager::~TransferManager()
+{
+}
+
+void TransferManager::shutdown()
+{	
+}
+
+void TransferManager::addConnection(IConnection*)
 {
 }
 

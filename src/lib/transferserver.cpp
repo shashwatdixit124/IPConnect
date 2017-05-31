@@ -18,30 +18,46 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef TRANSFERMANAGER_H
-#define TRANSFERMANAGER_H
+#include "transferserver.h"
 
+#include "controlcenter.h"
+#include "connection.h"
+#include "debug.h"
 #include "interfaces/itransfermanager.h"
 
 #include <QObject>
+#include <QTcpServer>
 
 namespace IPConnect
 {
 
-class IConnection;
+TransferServer::TransferServer(QObject* parent) : IServer(parent){}
 
-class TransferManager : public ITransferManager
+TransferServer::~TransferServer(){}
+
+void TransferServer::start()
 {
-	Q_OBJECT
+	if(listen(QHostAddress::Any, 2423))
+		qCDebug(BASE) << this << "started on 2423";
+	else
+		qCDebug(BASE) << this << "could not start on 2423";
+}
 
-public:
-	explicit TransferManager(QObject* parent = nullptr);
-	~TransferManager();
+void TransferServer::shutdown()
+{
+	qCDebug(BASE) << this << "Stopped" ;
+	close();
+}
 
-	void shutdown() override;
-	void addConnection(IConnection*) override;
-};
+void TransferServer::incomingConnection(qintptr handle)
+{
+	qCDebug(BASE) << this << "handling connection with descriptor " << handle ;
+	Connection *conn = new Connection();
+	conn->setSocketDescriptor(handle);
+	if(conn){
+		ControlCenter::instance()->transferManager()->addConnection(conn);
+	}
+}
 
 }
 
-#endif

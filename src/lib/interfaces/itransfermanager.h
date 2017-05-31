@@ -26,9 +26,15 @@
 namespace IPConnect
 {
 
+class IConnection;
+
 class ITransferManager : public QObject
 {
 	Q_OBJECT
+
+public:
+	virtual void shutdown() = 0;
+	virtual void addConnection(IConnection*) = 0;
 
 protected:
 	explicit ITransferManager(QObject* parent = nullptr);

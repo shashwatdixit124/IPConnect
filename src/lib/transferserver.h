@@ -18,30 +18,35 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef TRANSFERMANAGER_H
-#define TRANSFERMANAGER_H
+#ifndef TRANSFERSERVER_H
+#define TRANSFERSERVER_H
 
-#include "interfaces/itransfermanager.h"
+#include "interfaces/iserver.h"
 
 #include <QObject>
 
 namespace IPConnect
 {
 
-class IConnection;
-
-class TransferManager : public ITransferManager
+class TransferServer : public IServer
 {
 	Q_OBJECT
 
 public:
-	explicit TransferManager(QObject* parent = nullptr);
-	~TransferManager();
+	explicit TransferServer(QObject* parent);
+	~TransferServer();
+	void start() override;
+	void shutdown();
 
-	void shutdown() override;
-	void addConnection(IConnection*) override;
+protected:
+	QTcpServer m_server;
+
+	void incomingConnection(qintptr handle) override;
+
 };
 
 }
 
 #endif
+ 
+
