@@ -57,6 +57,7 @@ public:
 	void setChunkSize(int);
 
 Q_SIGNALS:
+	void requested();
 	void destroyTransfer();
 
 protected:

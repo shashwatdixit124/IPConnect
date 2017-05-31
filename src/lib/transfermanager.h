@@ -24,11 +24,15 @@
 #include "interfaces/itransfermanager.h"
 
 #include <QObject>
+#include <QList>
+#include <QMap>
+#include <QThread>
 
 namespace IPConnect
 {
 
 class IConnection;
+class Transfer;
 
 class TransferManager : public ITransferManager
 {
@@ -40,6 +44,20 @@ public:
 
 	void shutdown() override;
 	void addConnection(IConnection*) override;
+
+public Q_SLOTS:
+	void removeTransfer();
+	void addToPending();
+
+Q_SIGNALS:
+	void pendingTransfersUpdated();
+
+protected:
+	QMap<Transfer*,int> m_pendingTransfers;
+	QMap<Transfer*,QThread*> m_runningTransfers;
+	QList<Transfer*> m_allTransfers;
+	QThread* m_thread;
+
 };
 
 }

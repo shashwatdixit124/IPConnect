@@ -22,6 +22,8 @@
 
 #include "interfaces/iconnection.h"
 #include "interfaces/itransfermanager.h"
+#include "connection.h"
+#include "transfer.h"
 
 #include <QObject>
 
@@ -37,11 +39,71 @@ TransferManager::~TransferManager()
 }
 
 void TransferManager::shutdown()
-{	
+{
+	foreach(Transfer* t , m_runningTransfers.keys())
+	{
+		t->moveToThread(thread());
+		t->stop();
+		t->deleteLater();
+	}
+
+	foreach(QThread* t , m_runningTransfers.values())
+	{
+		t->exit();
+		t->deleteLater();
+	}
+
+	foreach(Transfer* t , m_allTransfers)
+	{
+		t->moveToThread(thread());
+		t->deleteLater();
+	}
+
+	m_thread->exit();
+	m_thread->deleteLater();
 }
 
-void TransferManager::addConnection(IConnection*)
+void TransferManager::addConnection(IConnection* conn)
 {
+	Connection* c = dynamic_cast<Connection*>(conn);
+	if(!c)
+		return;
+
+	Transfer* t = new Transfer();
+	connect(t,&Transfer::destroyTransfer,this,&TransferManager::removeTransfer);
+	connect(t,&Transfer::requested,this,&TransferManager::addToPending);
+	t->setConnection(c);
+	m_allTransfers.push_back(t);
+	t->moveToThread(m_thread);
+}
+
+void TransferManager::removeTransfer()
+{
+	if(!sender())
+		return;
+
+	Transfer* t = dynamic_cast<Transfer*>(sender());
+	if(!t)
+		return;
+
+	t->moveToThread(thread());
+	t->deleteLater();
+	QThread* thr = m_runningTransfers.value(t);
+	thr->exit();
+	thr->deleteLater();
+}
+
+void TransferManager::addToPending()
+{
+	if(!sender())
+		return;
+
+	Transfer* t = dynamic_cast<Transfer*>(sender());
+	if(!t)
+		return;
+
+	m_pendingTransfers.insert(t,0);
+	emit pendingTransfersUpdated();
 }
 
 }

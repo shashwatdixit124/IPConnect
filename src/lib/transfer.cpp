@@ -359,6 +359,7 @@ void Transfer::handleRequest()
 			m_file.setAction(File::RECIEVE);
 			m_file.setUrl(clientName);
 			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());
+			emit requested();
 		}
 		if(m_request.value("option") == "RAF")
 		{
