@@ -34,7 +34,7 @@
 namespace IPConnect
 {
 
-TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) , m_transferCount(0) , m_thread(new QThread())
+TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) , m_transferCount(0) , m_thread(new QThread(this))
 {
 }
 
@@ -150,6 +150,33 @@ void TransferManager::addToPending()
 
 	m_pendingTransfers.insert(t->id(),t);
 	emit pendingTransfersUpdated();
+}
+
+void TransferManager::acceptTransfer(int id)
+{
+	Transfer* t = m_pendingTransfers.value(id);
+	if(!t)
+		return;
+
+	t->moveToThread(thread());
+	m_pendingTransfers.remove(t->id());
+	QThread* thr = new QThread(this);
+	m_runningThreads.insert(t->id(),thr);
+	t->moveToThread(thr);
+	
+	QMetaObject::invokeMethod(t,"accept",Qt::QueuedConnection);
+}
+
+void TransferManager::rejectTransfer(int id)
+{
+	
+	Transfer* t = m_pendingTransfers.value(id);
+	if(!t)
+		return;
+
+	t->moveToThread(thread());
+	m_pendingTransfers.remove(t->id());
+	t->reject();
 }
 
 }

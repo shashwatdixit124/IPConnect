@@ -47,6 +47,8 @@ public:
 	void addConnection(IConnection*) override;
 	QList<Transfer*> pendingTransfers() override;
 	void sendFile(File,QString) override;
+	void acceptTransfer(int) override;
+	void rejectTransfer(int) override;
 
 public Q_SLOTS:
 	void removeTransfer();
