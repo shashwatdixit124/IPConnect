@@ -297,6 +297,22 @@ void Transfer::handleWrite(qint32)
 		return;
 }
 
+void Transfer::accept()
+{
+	QByteArray message = "IPC:FILE:RAF:"+m_file.name().toUtf8();
+	m_conn->write(message);
+	disconnect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
+	disconnect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+	start();
+}
+
+void Transfer::reject()
+{
+	QByteArray message = "IPC:FILE:REJ:"+m_file.name().toUtf8();
+	m_conn->write(message);
+	stop();
+}
+
 void Transfer::processRead(QByteArray data)
 {
 	QString header = data;
@@ -334,13 +350,12 @@ void Transfer::handleRequest()
 			QString data = m_request.value("data");
 			QStringList options = data.split(":");
 			QString clientName = options.at(0).trimmed();
-			qint32 filesize = options.at(1).trimmed().toInt();
-			int pos = data.indexOf(":");
-			QString filedata = data.mid(pos + 1);
-			int pos2 = filedata.indexOf(":");
-			QString filename = filedata.mid(pos2 + 1);
+			QString filesize = options.at(1).trimmed();
+			int pos = data.indexOf(":") + filesize.size() + 1 ;
+			QString filename = data.mid(pos + 1);
+
 			m_file.setName(filename);
-			m_file.setSize(filesize);
+			m_file.setSize(filesize.toInt());
 			m_file.setAction(File::RECIEVE);
 			m_file.setUrl(clientName);
 			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());

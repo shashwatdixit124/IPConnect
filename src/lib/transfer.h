@@ -44,6 +44,8 @@ public:
 
 	void start() override;
 	void stop() override;
+	void accept() override;
+	void reject() override;
 	void setConnection(Connection*);
 
 	File file() override;
