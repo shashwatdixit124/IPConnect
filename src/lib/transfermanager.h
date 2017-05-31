@@ -32,6 +32,7 @@ namespace IPConnect
 {
 
 class IConnection;
+class Connection;
 class Transfer;
 
 class TransferManager : public ITransferManager
@@ -45,10 +46,13 @@ public:
 	void shutdown() override;
 	void addConnection(IConnection*) override;
 	QList<Transfer*> pendingTransfers() override;
+	void sendFile(File,QString) override;
 
 public Q_SLOTS:
 	void removeTransfer();
 	void addToPending();
+	void createManualTransfer();
+	void removeManualTransfer();
 
 Q_SIGNALS:
 	void pendingTransfersUpdated();
@@ -56,6 +60,7 @@ Q_SIGNALS:
 protected:
 	QMap<int,Transfer*> m_pendingTransfers;
 	QMap<int,QThread*> m_runningThreads;
+	QMap<Connection*,File> m_pendingConnections;
 	QList<Transfer*> m_allTransfers;
 	QThread* m_thread;
 	int m_transferCount;

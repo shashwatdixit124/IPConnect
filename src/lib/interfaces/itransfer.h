@@ -36,6 +36,7 @@ public:
 	virtual int id() = 0;
 	virtual void accept() = 0;
 	virtual void reject() = 0;
+	virtual void sendFile() = 0;
 	virtual File file() = 0;
 	virtual int rate() = 0;
 

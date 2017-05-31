@@ -22,6 +22,8 @@
 
 #include "interfaces/iconnection.h"
 #include "interfaces/itransfermanager.h"
+#include "interfaces/iusersettings.h"
+#include "controlcenter.h"
 #include "connection.h"
 #include "transfer.h"
 
@@ -76,6 +78,47 @@ void TransferManager::addConnection(IConnection* conn)
 QList<Transfer*> TransferManager::pendingTransfers()
 {
 	return m_pendingTransfers.values();
+}
+
+void TransferManager::sendFile(File f,QString url)
+{
+	Connection* c = new Connection();
+	m_pendingConnections.insert(c,f);
+	connect(c,&Connection::connected,this,&TransferManager::createManualTransfer);
+	connect(c,&Connection::errorOccurred,this,&TransferManager::removeManualTransfer);
+	c->connectToHost(url,2423);
+}
+
+void TransferManager::createManualTransfer()
+{
+	if(!sender())
+		return;
+
+	Connection* c = dynamic_cast<Connection*>(sender());
+	if(!c)
+		return;
+
+	File f = m_pendingConnections.value(c);
+	m_pendingConnections.remove(c);
+
+	Transfer* t = new Transfer();
+	t->setConnection(c);
+	t->setFile(f);
+	t->sendFile();
+	t->moveToThread(m_thread);
+}
+
+void TransferManager::removeManualTransfer()
+{
+	if(!sender())
+		return;
+
+	Connection* c = dynamic_cast<Connection*>(sender());
+	if(!c)
+		return;
+
+	c->close();
+	m_pendingConnections.remove(c);
 }
 
 void TransferManager::removeTransfer()

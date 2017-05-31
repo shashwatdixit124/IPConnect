@@ -104,6 +104,16 @@ void Transfer::setConnection(Connection* conn)
 	m_conn = conn;
 	connect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
 	connect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+	connect(m_conn,&Connection::errorOccurred,this,&Transfer::stop);
+}
+
+void Transfer::sendFile()
+{
+	if(m_file.action() == File::UNKNOWN)
+		return;
+
+	QString username = ControlCenter::instance()->userSettings()->name();
+	m_conn->write("IPC:FILE:SFI:"+username.toUtf8()+QString::number(m_file.size()).toUtf8()+m_file.name().toUtf8());
 }
 
 int Transfer::id()

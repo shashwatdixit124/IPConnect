@@ -29,6 +29,7 @@ namespace IPConnect
 
 class IConnection;
 class Transfer;
+class File;
 
 class ITransferManager : public QObject
 {
@@ -38,6 +39,7 @@ public:
 	virtual void shutdown() = 0;
 	virtual void addConnection(IConnection*) = 0;
 	virtual QList<Transfer*> pendingTransfers() = 0;
+	virtual void sendFile(File,QString) = 0;
 
 protected:
 	explicit ITransferManager(QObject* parent = nullptr);
