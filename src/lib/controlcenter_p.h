@@ -26,8 +26,9 @@
 namespace IPConnect
 {
 
-class ClientManager;
 class Server;
+class ClientManager;
+class TransferManager;
 class UserSettings;
 class ControlCenter;
 
@@ -41,6 +42,7 @@ public:
 
 	Server* m_server;
 	ClientManager* m_clientManager;
+	TransferManager* m_transferManager;
 	UserSettings* m_userSettings;
 
 	ControlCenter* m_cc;

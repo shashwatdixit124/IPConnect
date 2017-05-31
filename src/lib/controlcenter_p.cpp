@@ -23,6 +23,7 @@
 #include "clientmanager.h"
 #include "controlcenter.h"
 #include "server.h"
+#include "transfermanager.h"
 #include "usersettings.h"
 
 namespace IPConnect
@@ -36,6 +37,7 @@ void ControlCenterPrivate::init()
 {
 	m_userSettings = new UserSettings();
 	m_clientManager = new ClientManager(m_cc);
+	m_transferManager = new TransferManager(m_cc);
 	m_server = new Server(m_cc);
 	m_server->start();
 }
@@ -50,6 +52,11 @@ void ControlCenterPrivate::shutdown()
 	if(m_clientManager) {
 		m_clientManager->shutdown();
 		m_clientManager->deleteLater();
+	}
+
+	if(m_transferManager) {
+		m_transferManager->shutdown();
+		m_transferManager->deleteLater();
 	}
 
 	if(m_userSettings)

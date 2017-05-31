@@ -30,6 +30,7 @@ namespace IPConnect
 
 class IServer;
 class IClientManager;
+class ITransferManager;
 class ControlCenterPrivate;
 class IUserSettings;
 
@@ -45,6 +46,7 @@ public:
 
 	IServer* server() override;
 	IClientManager* clientManager() override;
+	ITransferManager* transferManager() override;
 	IUserSettings* userSettings() override;
 
 public Q_SLOTS:
