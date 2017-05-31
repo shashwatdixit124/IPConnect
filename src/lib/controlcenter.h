@@ -45,6 +45,7 @@ public:
 	static void quit();
 
 	IServer* messageServer() override;
+	IServer* transferServer() override;
 	IClientManager* clientManager() override;
 	ITransferManager* transferManager() override;
 	IUserSettings* userSettings() override;

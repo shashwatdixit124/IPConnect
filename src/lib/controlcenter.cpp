@@ -29,6 +29,7 @@
 #include "controlcenter_p.h"
 #include "messageserver.h"
 #include "transfermanager.h"
+#include "transferserver.h"
 #include "usersettings.h"
 
 #include <QObject>
@@ -64,7 +65,12 @@ void ControlCenter::quit()
 
 IServer* ControlCenter::messageServer()
 {
-	return m_ccp->m_server;
+	return m_ccp->m_messageServer;
+}
+
+IServer* ControlCenter::transferServer()
+{
+	return m_ccp->m_transferServer;
 }
 
 IClientManager* ControlCenter::clientManager()

@@ -27,6 +27,7 @@ namespace IPConnect
 class MessageServer;
 class ClientManager;
 class TransferManager;
+class TransferServer;
 class UserSettings;
 class ControlCenter;
 
@@ -38,7 +39,8 @@ public:
 	void init();
 	void shutdown();
 
-	MessageServer* m_server;
+	MessageServer* m_messageServer;
+	TransferServer* m_transferServer;
 	ClientManager* m_clientManager;
 	TransferManager* m_transferManager;
 	UserSettings* m_userSettings;

@@ -38,6 +38,7 @@ class IControlCenter : public QObject
 public:
 	static IControlCenter* instance();
 	virtual IServer* messageServer() = 0;
+	virtual IServer* transferServer() = 0;
 	virtual IClientManager* clientManager() = 0;
 	virtual ITransferManager* transferManager() = 0;
 	virtual IUserSettings* userSettings() = 0;
