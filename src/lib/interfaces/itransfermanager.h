@@ -22,11 +22,13 @@
 #define ITRANSFERMANAGER_H
 
 #include <QObject>
+#include <QList>
 
 namespace IPConnect
 {
 
 class IConnection;
+class Transfer;
 
 class ITransferManager : public QObject
 {
@@ -35,6 +37,7 @@ class ITransferManager : public QObject
 public:
 	virtual void shutdown() = 0;
 	virtual void addConnection(IConnection*) = 0;
+	virtual QList<Transfer*> pendingTransfers() = 0;
 
 protected:
 	explicit ITransferManager(QObject* parent = nullptr);

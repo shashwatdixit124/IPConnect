@@ -26,11 +26,13 @@
 #include "transfer.h"
 
 #include <QObject>
+#include <QList>
+#include <QMap>
 
 namespace IPConnect
 {
 
-TransferManager::TransferManager(QObject* parent) : ITransferManager(parent)
+TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) , m_transferCount(0) , m_thread(new QThread())
 {
 }
 
@@ -40,14 +42,7 @@ TransferManager::~TransferManager()
 
 void TransferManager::shutdown()
 {
-	foreach(Transfer* t , m_runningTransfers.keys())
-	{
-		t->moveToThread(thread());
-		t->stop();
-		t->deleteLater();
-	}
-
-	foreach(QThread* t , m_runningTransfers.values())
+	foreach(QThread* t , m_runningThreads.values())
 	{
 		t->exit();
 		t->deleteLater();
@@ -72,9 +67,15 @@ void TransferManager::addConnection(IConnection* conn)
 	Transfer* t = new Transfer();
 	connect(t,&Transfer::destroyTransfer,this,&TransferManager::removeTransfer);
 	connect(t,&Transfer::requested,this,&TransferManager::addToPending);
+	t->setId(m_transferCount++);
 	t->setConnection(c);
 	m_allTransfers.push_back(t);
 	t->moveToThread(m_thread);
+}
+
+QList<Transfer*> TransferManager::pendingTransfers()
+{
+	return m_pendingTransfers.values();
 }
 
 void TransferManager::removeTransfer()
@@ -88,9 +89,11 @@ void TransferManager::removeTransfer()
 
 	t->moveToThread(thread());
 	t->deleteLater();
-	QThread* thr = m_runningTransfers.value(t);
-	thr->exit();
-	thr->deleteLater();
+	QThread* thr = m_runningThreads.value(t->id());
+	if(thr) {
+		thr->exit();
+		thr->deleteLater();
+	}
 }
 
 void TransferManager::addToPending()
@@ -102,7 +105,7 @@ void TransferManager::addToPending()
 	if(!t)
 		return;
 
-	m_pendingTransfers.insert(t,0);
+	m_pendingTransfers.insert(t->id(),t);
 	emit pendingTransfersUpdated();
 }
 

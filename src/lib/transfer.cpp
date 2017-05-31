@@ -36,7 +36,7 @@ namespace IPConnect
 
 Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
 	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) ,
-	m_scheduled(false) , m_isSender(false) , m_transfering(false)
+	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0)
 {
 }
 
@@ -104,6 +104,16 @@ void Transfer::setConnection(Connection* conn)
 	m_conn = conn;
 	connect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
 	connect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+}
+
+int Transfer::id()
+{
+	return m_id;
+}
+
+void Transfer::setId(int id)
+{
+	m_id = id;
 }
 
 File Transfer::file()

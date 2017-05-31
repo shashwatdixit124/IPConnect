@@ -42,11 +42,12 @@ public:
 	explicit Transfer(QObject* parent = nullptr);
 	~Transfer();
 
-	void start() override;
-	void stop() override;
 	void accept() override;
 	void reject() override;
 	void setConnection(Connection*);
+
+	int id() override;
+	void setId(int);
 
 	File file() override;
 	void setFile(File);
@@ -73,6 +74,7 @@ protected:
 	bool m_transfering;
 	qint32 m_transfered;
 	qint32 m_transferInCycle;
+	int m_id;
 
 	void bytesWritten(qint32);
 	void readyRead();
@@ -85,6 +87,8 @@ protected:
 	QMap<QString,QString> m_response;
 	bool m_transferStarted;
 
+	void start();
+	void stop();
 	void handleRead();
 	void handleWrite(qint32);
 	void processRead(QByteArray);

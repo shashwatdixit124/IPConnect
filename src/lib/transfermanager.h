@@ -44,6 +44,7 @@ public:
 
 	void shutdown() override;
 	void addConnection(IConnection*) override;
+	QList<Transfer*> pendingTransfers() override;
 
 public Q_SLOTS:
 	void removeTransfer();
@@ -53,10 +54,11 @@ Q_SIGNALS:
 	void pendingTransfersUpdated();
 
 protected:
-	QMap<Transfer*,int> m_pendingTransfers;
-	QMap<Transfer*,QThread*> m_runningTransfers;
+	QMap<int,Transfer*> m_pendingTransfers;
+	QMap<int,QThread*> m_runningThreads;
 	QList<Transfer*> m_allTransfers;
 	QThread* m_thread;
+	int m_transferCount;
 
 };
 
