@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QIODevice>
+#include <QMap>
 #include <QTimer>
 
 namespace IPConnect
@@ -43,7 +44,7 @@ public:
 
 	void start() override;
 	void stop() override;
-	void setDefaults();
+	void setConnection(Connection*);
 
 	File file() override;
 	void setFile(File);
@@ -52,6 +53,9 @@ public:
 	void setRate(int);
 
 	void setChunkSize(int);
+
+Q_SIGNALS:
+	void destroyTransfer();
 
 protected:
 	File m_file;
@@ -73,6 +77,15 @@ protected:
 	bool checkTransfer();
 	void scheduleTransfer();
 	void transfer();
+
+	QMap<QString,QString> m_request;
+	QMap<QString,QString> m_response;
+	bool m_transferStarted;
+
+	void handleRead();
+	void handleWrite(qint32);
+	void processRead(QByteArray);
+	void handleRequest();
 
 };
 

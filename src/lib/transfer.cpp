@@ -21,6 +21,8 @@
 #include "transfer.h"
 
 #include "interfaces/itransfer.h"
+#include "interfaces/iusersettings.h"
+#include "controlcenter.h"
 #include "connection.h"
 #include "debugtransfer.h"
 #include "file.h"
@@ -74,12 +76,13 @@ void Transfer::start()
 		m_isSender = false;
 	}
 
+	m_transferStarted = true;
 	m_transfering = true;
 	m_transfered = 0;
 
 	if(m_file.action() == File::SEND && m_source->bytesAvailable() > 0)
 	{
-		qDebug() << this <<"started the transfer";
+		qCDebug(TRANSFER) << this <<"started the transfer";
 		scheduleTransfer();
 	}
 
@@ -87,11 +90,21 @@ void Transfer::start()
 
 void Transfer::stop()
 {
-	qDebug() << this << "Stopping the transfer";
+	qCDebug(TRANSFER) << this << "Stopping the transfer";
 	m_timer.stop();
 	m_transfering = false;
+	emit destroyTransfer();
 }
 
+void Transfer::setConnection(Connection* conn)
+{
+	if(!conn)
+		return;
+
+	m_conn = conn;
+	connect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
+	connect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+}
 
 File Transfer::file()
 {
@@ -215,8 +228,8 @@ void Transfer::scheduleTransfer()
 	{
 		int current = QTime::currentTime().msec();
 		int delay = 1000 - current;
-		qCDebug(TRANSFER) << this << "Rate limit (" << m_rate << ") exeeded in prediction (" << m_transfered << " to " <<  prediction << "), delaying transfer for " << delay << "ms";
-		m_transfered = 0;
+		qCDebug(TRANSFER) << this << "Rate limit (" << m_rate << ") exeeded in prediction (" << m_transferInCycle << " to " <<  prediction << "), delaying transfer for " << delay << "ms";
+		m_transferInCycle = 0;
 		m_scheduled = true;
 		m_timer.singleShot(delay,this,&Transfer::transfer);
 	}
@@ -268,6 +281,82 @@ void Transfer::transfer()
 		qCDebug(TRANSFER) << this << "Source still has bytes, scheduling a transfer";
 		scheduleTransfer();
 	}
+}
+
+void Transfer::handleRead()
+{
+	if(m_transferStarted)
+		return;
+
+	processRead(m_conn->readAll());
+}
+
+void Transfer::handleWrite(qint32)
+{
+	if(m_transferStarted)
+		return;
+}
+
+void Transfer::processRead(QByteArray data)
+{
+	QString header = data;
+	m_request.insert("request",header);
+
+	QStringList options = header.split(":");
+
+	if(options.count() >= 1) m_request.insert("app", options.at(0).trimmed());
+
+	if(options.count() >= 2) m_request.insert("method", options.at(1).trimmed());
+
+	if(options.count() >= 3) m_request.insert("option", options.at(2).trimmed());
+
+	if(options.count() >= 4)
+	{
+		int pos = header.indexOf(":") + m_request.value("method","").size() + m_request.value("option","").size() + 2;
+		m_request.insert("data", header.mid(pos + 1));
+	}
+
+	handleRequest();
+}
+
+void Transfer::handleRequest()
+{
+	QString method = m_request.value("method","");
+	QString option = m_request.value("option","");
+
+	if(method == "FILE")
+	{
+		m_response.insert("app","IPC");
+		m_response.insert("method","FILE");
+
+		if(m_request.value("option") == "RSF")
+		{
+			QString data = m_request.value("data");
+			QStringList options = data.split(":");
+			QString clientName = options.at(0).trimmed();
+			qint32 filesize = options.at(1).trimmed().toInt();
+			int pos = data.indexOf(":");
+			QString filedata = data.mid(pos + 1);
+			int pos2 = filedata.indexOf(":");
+			QString filename = filedata.mid(pos2 + 1);
+			m_file.setName(filename);
+			m_file.setSize(filesize);
+			m_file.setAction(File::RECIEVE);
+			m_file.setUrl(clientName);
+			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());
+		}
+		if(m_request.value("option") == "RAF")
+		{
+			disconnect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
+			disconnect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+			start();
+		}
+		if(m_request.value("option") == "REJ")
+		{
+			stop();
+		}
+	}
+	return;
 }
 
 }
