@@ -35,6 +35,7 @@ class ControlCenter;
 class UserList;
 class Messenger;
 class MessageList;
+class PendingTransfers;
 class IClientManager;
 class IUserSettings;
 class ITransferManager;
@@ -44,6 +45,7 @@ class UiManager : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QAbstractListModel* users READ users)
 	Q_PROPERTY(QAbstractListModel* messages READ messages)
+	Q_PROPERTY(QAbstractListModel* pendingTransfers READ pendingTransfers)
 	Q_PROPERTY(bool runningFirstTime READ runningFirstTime)
 	Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged)
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
@@ -58,6 +60,8 @@ public:
 
 	QAbstractListModel* users();
 	QAbstractListModel* messages();
+	QAbstractListModel* pendingTransfers();
+	
 	bool runningFirstTime();
 
 	QString theme();
@@ -100,6 +104,7 @@ protected:
 	QPointer<UserList> m_usersList;
 	QPointer<Messenger> m_messenger;
 	QPointer<MessageList> m_messages;
+	QPointer<PendingTransfers> m_pendingTransfersList;
 	IClientManager* m_clientManager;
 	IUserSettings* m_settings;
 	ITransferManager* m_transferManager;
