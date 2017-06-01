@@ -205,7 +205,7 @@ Item { id: item
 					onClicked: {
 						if(userList.currentIndex >= 0)
 						{
-							_messenger.sendMessage(userList.currentItem.idno,msgInput.text);
+							IPConnect.sendMessage(text);
 							msgInput.text = ""
 						}
 					}
