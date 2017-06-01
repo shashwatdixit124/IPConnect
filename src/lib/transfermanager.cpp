@@ -80,13 +80,13 @@ QList<Transfer*> TransferManager::pendingTransfers()
 	return m_pendingTransfers.values();
 }
 
-void TransferManager::sendFile(File f,QString url)
+void TransferManager::sendFile(File f)
 {
 	Connection* c = new Connection();
 	m_pendingConnections.insert(c,f);
 	connect(c,&Connection::connected,this,&TransferManager::createManualTransfer);
 	connect(c,&Connection::errorOccurred,this,&TransferManager::removeManualTransfer);
-	c->connectToHost(url,2423);
+	c->connectToHost(f.url(),2423);
 }
 
 void TransferManager::createManualTransfer()
@@ -105,6 +105,7 @@ void TransferManager::createManualTransfer()
 	t->setConnection(c);
 	t->setFile(f);
 	t->sendFile();
+	c->moveToThread(m_thread);
 	t->moveToThread(m_thread);
 }
 
@@ -118,6 +119,7 @@ void TransferManager::removeManualTransfer()
 		return;
 
 	c->close();
+	c->deleteLater();
 	m_pendingConnections.remove(c);
 }
 
@@ -131,6 +133,7 @@ void TransferManager::removeTransfer()
 		return;
 
 	t->moveToThread(thread());
+	t->connection()->moveToThread(thread());
 	t->deleteLater();
 	QThread* thr = m_runningThreads.value(t->id());
 	if(thr) {
@@ -159,22 +162,24 @@ void TransferManager::acceptTransfer(int id)
 		return;
 
 	t->moveToThread(thread());
+	t->connection()->moveToThread(thread());
 	m_pendingTransfers.remove(t->id());
 	QThread* thr = new QThread(this);
 	m_runningThreads.insert(t->id(),thr);
+	t->connection()->moveToThread(thr);
 	t->moveToThread(thr);
-	
+
 	QMetaObject::invokeMethod(t,"accept",Qt::QueuedConnection);
 }
 
 void TransferManager::rejectTransfer(int id)
 {
-	
 	Transfer* t = m_pendingTransfers.value(id);
 	if(!t)
 		return;
 
 	t->moveToThread(thread());
+	t->connection()->moveToThread(thread());
 	m_pendingTransfers.remove(t->id());
 	t->reject();
 }

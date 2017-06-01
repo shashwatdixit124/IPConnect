@@ -45,6 +45,8 @@ public:
 	void accept() override;
 	void reject() override;
 	void sendFile() override;
+
+	Connection* connection();
 	void setConnection(Connection*);
 
 	int id() override;

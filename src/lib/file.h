@@ -44,12 +44,14 @@ public:
 	qint32 size() const;
 	Action action() const;
 	QString url() const;
+	QString userName() const;
 
 	void setName(QString);
 	void setPath(QString);
 	void setSize(qint32);
 	void setAction(Action);
 	void setUrl(QString);
+	void setUserName(QString);
 
 protected:
 	QString m_name;
@@ -57,6 +59,7 @@ protected:
 	qint32 m_size;
 	Action m_action;
 	QString m_url;
+	QString m_userName;
 
 };
 

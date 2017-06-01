@@ -23,7 +23,7 @@
 namespace IPConnect
 {
 
-File::File() : m_name(QString()) , m_path(QString()) , m_size(0) , m_action(UNKNOWN) , m_url(QString())
+File::File() : m_name(QString()) , m_path(QString()) , m_size(0) , m_action(UNKNOWN) , m_url(QString()) , m_userName(QString())
 {
 }
 
@@ -56,6 +56,11 @@ QString File::url() const
 	return m_url;
 }
 
+QString File::userName() const
+{
+	return m_userName;
+}
+
 void File::setName(QString name)
 {
 	m_name = name;
@@ -79,6 +84,11 @@ void File::setAction(Action action)
 void File::setUrl(QString url)
 {
 	m_url = url;
+}
+
+void File::setUserName(QString name)
+{
+	m_userName  = name;
 }
 
 }

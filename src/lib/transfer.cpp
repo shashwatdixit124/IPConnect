@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QFile>
 #include <QTime>
+#include <QHostAddress>
 
 namespace IPConnect
 {
@@ -94,6 +95,11 @@ void Transfer::stop()
 	m_timer.stop();
 	m_transfering = false;
 	emit destroyTransfer();
+}
+
+Connection* Transfer::connection()
+{
+	return m_conn;
 }
 
 void Transfer::setConnection(Connection* conn)
@@ -377,7 +383,8 @@ void Transfer::handleRequest()
 			m_file.setName(filename);
 			m_file.setSize(filesize.toInt());
 			m_file.setAction(File::RECIEVE);
-			m_file.setUrl(clientName);
+			m_file.setUserName(clientName);
+			m_file.setUrl(m_conn->peerAddress().toString());
 			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());
 			emit requested();
 		}

@@ -39,7 +39,7 @@ public:
 	virtual void shutdown() = 0;
 	virtual void addConnection(IConnection*) = 0;
 	virtual QList<Transfer*> pendingTransfers() = 0;
-	virtual void sendFile(File,QString) = 0;
+	virtual void sendFile(File) = 0;
 	virtual void acceptTransfer(int) = 0;
 	virtual void rejectTransfer(int) = 0;
 
