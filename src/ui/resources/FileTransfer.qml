@@ -22,6 +22,7 @@ import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
 import QtGraphicalEffects 1.0
+import api.ui.ipconnect 2.0
 
 Popup { id: item
 	height: 200
@@ -63,7 +64,7 @@ Popup { id: item
 		Item { id: fileTransferForm
 			anchors.centerIn: parent
 			height: fileSelectForm.height+sendFileForm.height
-			width: fileTransferUrl.width + fileTransferBtn.width
+			width: filePathField.width + fileTransferBtn.width
 
 			FileDialog{
 				id: sendFileDialog
@@ -77,7 +78,7 @@ Popup { id: item
 				Row { id: fileSelectForm
 					width: parent.width
 					height: 40
-					TextField { id: fileTransferUrl
+					TextField { id: filePathField
 						height: parent.height
 						width: 300
 						placeholderText: qsTr(" File Location")
@@ -103,8 +104,8 @@ Popup { id: item
 						anchors.right: parent.right
 						text: qsTr("\uf1d8  Send")
 						onClicked: {
-							//TODO Connect API send function
-							fileTransferUrl.text = ""
+							IPConnect.sendFile(filePathField.text);
+							filePathField.text = ""
 							item.close()
 						}
 					}

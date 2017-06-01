@@ -35,7 +35,9 @@ class ControlCenter;
 class UserList;
 class Messenger;
 class MessageList;
+class IClientManager;
 class IUserSettings;
+class ITransferManager;
 
 class UiManager : public QObject
 {
@@ -77,6 +79,7 @@ public:
 	void setNotificationStatus(QString);
 
 	Q_INVOKABLE void sendMessage(QString);
+	Q_INVOKABLE void sendFile(QString);
 	Q_INVOKABLE void quickConnect(QString);
 
 	static QObject* uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine);
@@ -97,7 +100,9 @@ protected:
 	QPointer<UserList> m_usersList;
 	QPointer<Messenger> m_messenger;
 	QPointer<MessageList> m_messages;
-	QPointer<IUserSettings> m_settings;
+	IClientManager* m_clientManager;
+	IUserSettings* m_settings;
+	ITransferManager* m_transferManager;
 	QString m_notificationMsg;
 	QString m_notificationStatus;
 	qint16 m_selectedUser;

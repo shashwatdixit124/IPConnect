@@ -24,13 +24,17 @@
 #include <interfaces/icontrolcenter.h>
 #include <interfaces/iclientmanager.h>
 #include <interfaces/iusersettings.h>
+#include <interfaces/itransfermanager.h>
+#include <file.h>
 #include "userlist.h"
 #include "messenger.h"
 #include "messagelist.h"
 
 #include <QAbstractListModel>
+#include <QFileInfo>
 #include <QQmlEngine>
 #include <QJSEngine>
+#include <QDebug>
 
 namespace IPConnect
 {
@@ -41,7 +45,9 @@ UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
 	m_usersList = new UserList(cm);
 	m_messenger = new Messenger(cm);
 	m_messages = new MessageList(cm);
+	m_clientManager = cm;
 	m_settings = m_cc->userSettings();
+	m_transferManager = m_cc->transferManager();
 	connect(cm,&IClientManager::manualConnectionFailed,this,&UiManager::manualConnectionFailed);
 	m_notificationMsg = "Welcome to IPConnect";
 	m_notificationStatus = runningFirstTime() ? "Inactive" : "Active" ; 
@@ -138,6 +144,24 @@ void UiManager::setNotificationStatus(QString status)
 void UiManager::sendMessage(QString msg)
 {
 	m_messenger->sendMessage(m_selectedUser,msg);
+}
+
+void UiManager::sendFile(QString filename)
+{
+	if(filename.isEmpty() || filename.isNull())
+		return;
+
+	File f;
+	f.setAction(File::SEND);
+	f.setUrl(m_clientManager->clientInfo(m_selectedUser).ip());
+	f.setUserName(userName());
+
+	QFileInfo file(filename);
+	f.setName(file.fileName());
+	f.setPath(file.path());
+	f.setSize(file.size());
+
+	m_transferManager->sendFile(f);
 }
 
 void UiManager::quickConnect(QString url)

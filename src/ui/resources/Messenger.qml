@@ -316,7 +316,7 @@ Item { id: item
 				delegate: userDelegate
 				highlight: highlightBar
 				highlightFollowsCurrentItem: false
-				onCurrentIndexChanged: IPConnect.selectedUser = currentItem.idno
+				onCurrentIndexChanged: IPConnect.selectedUser = currentIndex > -1 ? currentItem.idno : -1
 			}
 		}
 	}
