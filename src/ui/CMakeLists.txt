@@ -2,6 +2,7 @@ set(IPConnectUILibrary_SRS
     ipconnectwindow.cpp
     messenger.cpp
     messagelist.cpp
+    pendingtransfers.cpp
     uimanager.cpp
     userlist.cpp
 )
@@ -10,6 +11,7 @@ set(IPConnectUILibrary_HEADERS
     ipconnectwindow.h
     messenger.h
     messagelist.h
+    pendingtransfers.h
     uimanager.h
     userlist.h
 )

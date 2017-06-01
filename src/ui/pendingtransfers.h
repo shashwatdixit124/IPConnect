@@ -18,39 +18,46 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef ITRANSFERMANAGER_H
-#define ITRANSFERMANAGER_H
+#ifndef PENDINGTRANSFERS_H
+#define PENDINGTRANSFERS_H
 
 #include <QObject>
+#include <QAbstractListModel>
 #include <QList>
 
 namespace IPConnect
 {
-
-class IConnection;
+class ITransferManager;
 class Transfer;
-class File;
 
-class ITransferManager : public QObject
+class PendingTransfers : public QAbstractListModel
 {
 	Q_OBJECT
-
 public:
-	virtual void shutdown() = 0;
-	virtual void addConnection(IConnection*) = 0;
-	virtual QList<Transfer*> pendingTransfers() = 0;
-	virtual void sendFile(File) = 0;
-	virtual void acceptTransfer(int) = 0;
-	virtual void rejectTransfer(int) = 0;
+	enum UserInfo {
+		FileName = Qt::UserRole + 1,
+		FilePath,
+		FileSize,
+		Url,
+		ClientName
+	};
 
-Q_SIGNALS:
-	void pendingTransfersUpdated();
+	explicit PendingTransfers(ITransferManager* tm, QObject* parent = nullptr);
+	~PendingTransfers();
+	int rowCount(const QModelIndex & parent = QModelIndex()) const;
+	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+
+public Q_SLOTS:
+	void updateList();
 
 protected:
-	explicit ITransferManager(QObject* parent = nullptr);
-	~ITransferManager();
+	QHash<int, QByteArray> roleNames() const;
+	ITransferManager *m_tm;
+	QList<Transfer*> m_transfers;
+
 };
 
 }
 
 #endif
+

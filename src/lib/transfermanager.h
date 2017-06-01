@@ -56,9 +56,6 @@ public Q_SLOTS:
 	void createManualTransfer();
 	void removeManualTransfer();
 
-Q_SIGNALS:
-	void pendingTransfersUpdated();
-
 protected:
 	QMap<int,Transfer*> m_pendingTransfers;
 	QMap<int,QThread*> m_runningThreads;
