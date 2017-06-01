@@ -48,6 +48,7 @@ public:
 
 	void shutdown() override;
 	QList<ClientInformation> clients() override;
+	ClientInformation clientInfo(qint16) override;
 	QList<MessageInformation> messages() override;
 	void addConnection(IConnection*) override;
 	void sendMessage(qint16,QString) override;

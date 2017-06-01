@@ -69,6 +69,11 @@ QList<ClientInformation> ClientManager::clients()
 	return m_clientsInfo.values();
 }
 
+ClientInformation ClientManager::clientInfo(qint16 id)
+{
+	return m_clientsInfo.value(id);
+}
+
 QList<MessageInformation> ClientManager::messages()
 {
 	return m_messages.values();
