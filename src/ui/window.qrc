@@ -10,6 +10,7 @@
         <file>resources/Notification.qml</file>
         <file>resources/QuickConnect.qml</file>
         <file>resources/SideBar.qml</file>
+        <file>resources/TransferManager.qml</file>
         <file>resources/Welcome.qml</file>
         <file>resources/triangle-32.png</file>
         <file>resources/fontawesome-webfont.ttf</file>
