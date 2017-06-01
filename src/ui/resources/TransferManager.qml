@@ -19,7 +19,8 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 2.1
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import api.ui.ipconnect 2.0
 
 Item { id: item
@@ -33,81 +34,82 @@ Item { id: item
 
 		Text { id: emptyPTText
 			text: qsTr("Empty")
-			color: "#40000000"
 			anchors.centerIn: parent
-			visible: pTList.currentIndex > -1 ? true : false
+			font.pixelSize: 80
+			font.weight: Font.Light
+			color: "#10000000"
+			visible: pTList.currentIndex > -1 ? false : true
 		}
 
 		Component { id: pTDelegate
 
-				Rectangle { id: pTWrapper
-					border.width: 1
-					border.color: item.theme
-					anchors.margins: 5
-					acnhors.fill: parent
+			Rectangle { id: pTWrapper
+				border.width: 1
+				border.color: item.theme
+				anchors.margins: 5
+				anchors.fill: parent
 
-					Column { 
-						anchors.fill: parent
+				Column { 
+					anchors.fill: parent
 
-						Item { id: pTFileName
-							width: parent.width - 20
-							height: 30
-							anchors.horizontalCenter: parent.horizontalCenter
-							Text { 
-								anchors.verticalCenter: parent.verticalCenter
-								text: qsTr("<b>File </b> : "+filename)
-							}
-						}
-
-						Item { id: pTFileSize
-							width: parent.width - 20
-							height: 30
-							anchors.horizontalCenter: parent.horizontalCenter
-							Text { 
-								anchors.verticalCenter: parent.verticalCenter
-								text: qsTr("<b>Size </b> : "+filesize)
-							}
-						}
-
-						Item { id: pTFrom
-							width: parent.width - 20
-							height: 30
-							anchors.horizontalCenter: parent.horizontalCenter
-							Text { 
-								anchors.verticalCenter: parent.verticalCenter
-								text: qsTr("<b>From </b> : "+clientname)
-							}
+					Item { id: pTFileName
+						width: parent.width - 20
+						height: 30
+						anchors.horizontalCenter: parent.horizontalCenter
+						Text { 
+							anchors.verticalCenter: parent.verticalCenter
+							text: qsTr("<b>File </b> : "+filename)
 						}
 					}
 
+					Item { id: pTFileSize
+						width: parent.width - 20
+						height: 30
+						anchors.horizontalCenter: parent.horizontalCenter
+						Text { 
+							anchors.verticalCenter: parent.verticalCenter
+							text: qsTr("<b>Size </b> : "+filesize)
+						}
+					}
+
+					Item { id: pTFrom
+						width: parent.width - 20
+						height: 30
+						anchors.horizontalCenter: parent.horizontalCenter
+						Text { 
+							anchors.verticalCenter: parent.verticalCenter
+							text: qsTr("<b>From </b> : "+clientname)
+						}
+					}
+				}
+
+			}
+		}
+
+		ScrollView {
+			anchors.fill: parent
+			flickableItem.interactive: true
+
+			style: ScrollViewStyle {
+				transientScrollBars: true
+				handle: Item {
+					implicitWidth: 14
+					implicitHeight: 26
+					Rectangle {
+						color: "#50000000"
+						anchors.fill: parent
+						anchors.margins: 4
+						radius: 4
+					}
 				}
 			}
 
-			ScrollView {
+			ListView { id:pTList
 				anchors.fill: parent
-				flickableItem.interactive: true
-
-				style: ScrollViewStyle {
-					transientScrollBars: true
-					handle: Item {
-						implicitWidth: 14
-						implicitHeight: 26
-						Rectangle {
-							color: "#50000000"
-							anchors.fill: parent
-							anchors.margins: 4
-							radius: 4
-						}
-					}
-				}
-
-				ListView { id:pTList
-					anchors.fill: parent
-					anchors.topMargin: 5
-					delegate: pTDelegate
-					model: IPConnect.pendingTransfers
-					spacing: 5
-				}
+				anchors.topMargin: 5
+				delegate: pTDelegate
+				model: IPConnect.pendingTransfers
+				spacing: 5
 			}
 		}
 	}

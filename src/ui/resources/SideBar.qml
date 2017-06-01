@@ -32,6 +32,7 @@ Item { id: item
 	property real tabHeight : 60
 
 	signal messengerClicked
+	signal transferManagerClicked
 	signal settingsClicked
 	signal quickConnectClicked
 	signal fileTransferClicked
@@ -71,6 +72,24 @@ Item { id: item
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
 					onClicked: messengerClicked()
+				}
+			}
+
+			Item { id: transferManager
+				width: parent.width
+				height: item.tabHeight
+
+				Text { id: transferManagerIcon
+					anchors.centerIn: parent
+					text: qsTr("\uf019")
+					color: item.theme
+					font.pixelSize: 24
+				}
+
+				MouseArea{
+					anchors.fill: parent
+					cursorShape: Qt.PointingHandCursor
+					onClicked: transferManagerClicked()
 				}
 			}
 

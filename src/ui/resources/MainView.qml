@@ -31,10 +31,17 @@ Item { id:item
 		target: sideBar
 		onMessengerClicked: {
 			messenger.visible = true
+			transferManager.visible = false
+			appSettings.visible = false
+		}
+		onTransferManagerClicked: {
+			messenger.visible = false
+			transferManager.visible = true
 			appSettings.visible = false
 		}
 		onSettingsClicked: {
 			messenger.visible = false
+			transferManager.visible = false
 			appSettings.visible = true
 		}
 		onQuickConnectClicked: {
@@ -50,6 +57,14 @@ Item { id:item
 		anchors.fill: parent
 		textColor: item.textColor
 		bgColor: item.bgColor
+	}
+
+	TransferManager { id: transferManager
+		anchors.margins: 20
+		anchors.fill: parent
+		textColor: item.textColor
+		bgColor: item.bgColor
+		visible: false
 	}
 
 	AppSettings { id: appSettings
