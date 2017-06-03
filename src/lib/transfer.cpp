@@ -119,7 +119,8 @@ void Transfer::sendFile()
 		return;
 
 	QString username = ControlCenter::instance()->userSettings()->name();
-	m_conn->write("IPC:FILE:SFI:"+username.toUtf8()+QString::number(m_file.size()).toUtf8()+m_file.name().toUtf8());
+	QString message  = "IPC:FILE:RSF:" + username + ":" + QString::number(m_file.size()) + ":" + m_file.name();
+	m_conn->write(message.toUtf8());
 }
 
 int Transfer::id()
