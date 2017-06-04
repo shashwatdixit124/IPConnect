@@ -33,7 +33,6 @@ class ITransfer : public QObject
 	Q_OBJECT
 
 public:
-	virtual int id() = 0;
 	virtual void accept() = 0;
 	virtual void reject() = 0;
 	virtual void sendFile() = 0;

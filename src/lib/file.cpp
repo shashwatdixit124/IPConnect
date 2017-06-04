@@ -31,6 +31,11 @@ File::~File()
 {
 }
 
+qint16 File::id() const
+{
+	return m_id;
+}
+
 QString File::name() const
 {
 	return m_name;
@@ -59,6 +64,11 @@ QString File::url() const
 QString File::userName() const
 {
 	return m_userName;
+}
+
+void File::setId(qint16 id)
+{
+	m_id = id;
 }
 
 void File::setName(QString name)

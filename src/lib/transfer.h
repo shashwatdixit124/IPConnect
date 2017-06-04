@@ -49,9 +49,6 @@ public:
 	Connection* connection();
 	void setConnection(Connection*);
 
-	int id() override;
-	void setId(int);
-
 	File file() override;
 	void setFile(File);
 

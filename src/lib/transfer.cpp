@@ -123,16 +123,6 @@ void Transfer::sendFile()
 	m_conn->write(message.toUtf8());
 }
 
-int Transfer::id()
-{
-	return m_id;
-}
-
-void Transfer::setId(int id)
-{
-	m_id = id;
-}
-
 File Transfer::file()
 {
 	return m_file;
@@ -343,6 +333,7 @@ void Transfer::reject()
 void Transfer::processRead(QByteArray data)
 {
 	QString header = data;
+	qCDebug(TRANSFER) << this << "recieved " << header ;
 	m_request.insert("request",header);
 
 	QStringList options = header.split(":");

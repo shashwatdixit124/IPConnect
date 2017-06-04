@@ -39,6 +39,7 @@ public:
 		RECIEVE
 	} Action;
 
+	qint16 id() const;
 	QString name() const;
 	QString path() const;
 	qint32 size() const;
@@ -46,6 +47,7 @@ public:
 	QString url() const;
 	QString userName() const;
 
+	void setId(qint16);
 	void setName(QString);
 	void setPath(QString);
 	void setSize(qint32);
@@ -54,6 +56,7 @@ public:
 	void setUserName(QString);
 
 protected:
+	qint16 m_id;
 	QString m_name;
 	QString m_path;
 	qint32 m_size;
