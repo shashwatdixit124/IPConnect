@@ -54,7 +54,7 @@ QVariant PendingTransfers::data(const QModelIndex& index, int role) const
 	if (index.row() < 0 || index.row() >= m_transfers.count())
 		return QVariant();
 
-	const File &file = m_transfers[index.row()]->file();
+	const File &file = m_transfers[index.row()];
 	if (role == FileName)
 		return file.name();
 	else if (role == FilePath)

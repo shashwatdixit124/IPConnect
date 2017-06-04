@@ -28,7 +28,7 @@
 namespace IPConnect
 {
 class ITransferManager;
-class Transfer;
+class File;
 
 class PendingTransfers : public QAbstractListModel
 {
@@ -53,7 +53,7 @@ public Q_SLOTS:
 protected:
 	QHash<int, QByteArray> roleNames() const;
 	ITransferManager *m_tm;
-	QList<Transfer*> m_transfers;
+	QList<File> m_transfers;
 
 };
 
