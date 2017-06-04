@@ -105,7 +105,6 @@ Popup { id: item
 						text: qsTr("\uf1d8  Send")
 						onClicked: {
 							IPConnect.sendFile(filePathField.text);
-							filePathField.text = ""
 							item.close()
 						}
 					}
