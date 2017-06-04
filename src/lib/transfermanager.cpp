@@ -25,7 +25,9 @@
 #include "interfaces/iusersettings.h"
 #include "controlcenter.h"
 #include "connection.h"
+#include "debugtransfer.h"
 #include "transfer.h"
+#include "transferthreadmanager.h"
 
 #include <QObject>
 #include <QList>
@@ -34,8 +36,18 @@
 namespace IPConnect
 {
 
-TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) , m_transferCount(0) , m_thread(new QThread(this))
+TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
+	m_transferCount(0) , m_transferThread(new QThread(this)) , m_ttm(new TransferThreadManager())
 {
+	m_ttm->moveToThread(m_transferThread);
+	connect(m_ttm,&TransferThreadManager::requestedTransfer,this,&TransferManager::addToPending);
+	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted);
+	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected);
+	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated);
+	connect(this,&TransferManager::acceptTransfer,m_ttm,&TransferThreadManager::acceptPending);
+	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending);
+	connect(this,&TransferManager::manualTransferCreated,m_ttm,&TransferThreadManager::manualTransferCreated);
+	m_transferThread->start();
 }
 
 TransferManager::~TransferManager()
@@ -44,38 +56,28 @@ TransferManager::~TransferManager()
 
 void TransferManager::shutdown()
 {
-	foreach(QThread* t , m_runningThreads.values())
-	{
-		t->exit();
-		t->deleteLater();
-	}
-
-	foreach(Transfer* t , m_allTransfers)
-	{
-		t->moveToThread(thread());
-		t->deleteLater();
-	}
-
-	m_thread->exit();
-	m_thread->deleteLater();
+	QMetaObject::invokeMethod(m_ttm,"moveToThread",Qt::QueuedConnection,Q_ARG(QThread*,thread()));
+	m_ttm->deleteLater();
+	m_transferThread->quit();
+	m_transferThread->wait();
+	m_transferThread->deleteLater();
 }
 
-void TransferManager::addConnection(IConnection* conn)
+void TransferManager::addConnection(IConnection* connection)
 {
-	Connection* c = dynamic_cast<Connection*>(conn);
-	if(!c)
-		return;
+	qCDebug(TRANSFER) << this << "adding new Transfer with descriptor " <<  connection->socketDescriptor();
+	Transfer* transfer = createTransfer(connection);
 
-	Transfer* t = new Transfer();
-	connect(t,&Transfer::destroyTransfer,this,&TransferManager::removeTransfer);
-	connect(t,&Transfer::requested,this,&TransferManager::addToPending);
-	t->setId(m_transferCount++);
-	t->setConnection(c);
-	m_allTransfers.push_back(t);
-	t->moveToThread(m_thread);
+	if(!transfer){
+		qCDebug(TRANSFER) << "cannot add Client with socket descriptor " << connection->socketDescriptor() ;
+		return;
+	}
+
+	transfer->setThread(m_transferThread);
+	emit transferCreated(transfer);
 }
 
-QList<Transfer*> TransferManager::pendingTransfers()
+QList<File> TransferManager::pendingTransfers()
 {
 	return m_pendingTransfers.values();
 }
@@ -100,13 +102,14 @@ void TransferManager::createManualTransfer()
 
 	File f = m_pendingConnections.value(c);
 	m_pendingConnections.remove(c);
+	f.setId(m_transferCount++);
 
 	Transfer* t = new Transfer();
 	t->setConnection(c);
 	t->setFile(f);
-	t->sendFile();
-	c->moveToThread(m_thread);
-	t->moveToThread(m_thread);
+	m_allTransfers.insert(f.id(),f);
+	t->setThread(m_transferThread);
+	emit manualTransferCreated(t);
 }
 
 void TransferManager::removeManualTransfer()
@@ -132,56 +135,74 @@ void TransferManager::removeTransfer()
 	if(!t)
 		return;
 
-	t->moveToThread(thread());
-	t->connection()->moveToThread(thread());
 	t->deleteLater();
-	QThread* thr = m_runningThreads.value(t->id());
-	if(thr) {
-		thr->exit();
-		thr->deleteLater();
-	}
 }
 
-void TransferManager::addToPending()
+void TransferManager::addToPending(File f)
 {
 	if(!sender())
 		return;
 
-	Transfer* t = dynamic_cast<Transfer*>(sender());
-	if(!t)
-		return;
-
-	m_pendingTransfers.insert(t->id(),t);
+	qint16 id = f.id();
+	m_allTransfers.remove(id);
+	m_allTransfers.insert(id,f);
+	m_pendingTransfers.insert(id,f);
 	emit pendingTransfersUpdated();
 }
 
-void TransferManager::acceptTransfer(int id)
+void TransferManager::transferRemoved(qint16 id)
 {
-	Transfer* t = m_pendingTransfers.value(id);
-	if(!t)
-		return;
-
-	t->moveToThread(thread());
-	t->connection()->moveToThread(thread());
-	m_pendingTransfers.remove(t->id());
-	QThread* thr = new QThread(this);
-	m_runningThreads.insert(t->id(),thr);
-	t->connection()->moveToThread(thr);
-	t->moveToThread(thr);
-
-	QMetaObject::invokeMethod(t,"accept",Qt::QueuedConnection);
+	if(m_pendingTransfers.contains(id)) {
+		m_pendingTransfers.remove(id);
+		emit pendingTransfersUpdated();
+	}
+	if(m_runningTransfers.contains(id)) {
+		m_runningTransfers.remove(id);
+		emit runningTransfersUpdated();
+	}
 }
 
-void TransferManager::rejectTransfer(int id)
+void TransferManager::accepted(qint16 id)
 {
-	Transfer* t = m_pendingTransfers.value(id);
-	if(!t)
-		return;
+	File f = m_pendingTransfers.value(id);
+	m_pendingTransfers.remove(id);
+	m_runningTransfers.insert(id,f);
+	emit pendingTransfersUpdated();
+	emit runningTransfersUpdated();
+}
 
-	t->moveToThread(thread());
-	t->connection()->moveToThread(thread());
-	m_pendingTransfers.remove(t->id());
-	t->reject();
+void TransferManager::rejected(qint16 id)
+{
+	File f = m_pendingTransfers.value(id);
+	m_pendingTransfers.remove(id);
+	emit pendingTransfersUpdated();
+}
+
+void TransferManager::acceptTransfer(qint16 id)
+{
+	emit acceptPending(id);
+}
+
+void TransferManager::rejectTransfer(qint16 id)
+{
+	emit rejectPending(id);
+}
+
+Transfer* TransferManager::createTransfer(IConnection* connection)
+{
+	Connection *conn = dynamic_cast<Connection*>(connection);
+	if(!conn){
+		connection->deleteLater();
+		return nullptr;
+	}
+
+	Transfer* transfer = new Transfer();
+	transfer->setConnection(conn);
+
+	File f;
+	f.setId(m_transferCount++);
+	transfer->setFile(f);
+	return transfer;
 }
 
 }

@@ -28,6 +28,7 @@
 #include <QIODevice>
 #include <QMap>
 #include <QTimer>
+#include <QThread>
 
 namespace IPConnect
 {
@@ -56,6 +57,7 @@ public:
 	void setRate(int);
 
 	void setChunkSize(int);
+	void setThread(QThread*);
 
 Q_SIGNALS:
 	void requested();

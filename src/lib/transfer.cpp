@@ -29,6 +29,7 @@
 
 #include <QObject>
 #include <QFile>
+#include <QThread>
 #include <QTime>
 #include <QHostAddress>
 
@@ -146,6 +147,13 @@ void Transfer::setRate(int rate)
 void Transfer::setChunkSize(int cs)
 {
 	m_chunkSize = cs;
+}
+
+void Transfer::setThread(QThread* thr)
+{
+	if(m_conn)
+		m_conn->moveToThread(thr);
+	moveToThread(thr);
 }
 
 void Transfer::bytesWritten(qint32)

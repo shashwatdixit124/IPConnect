@@ -28,7 +28,6 @@ namespace IPConnect
 {
 
 class IConnection;
-class Transfer;
 class File;
 
 class ITransferManager : public QObject
@@ -38,13 +37,14 @@ class ITransferManager : public QObject
 public:
 	virtual void shutdown() = 0;
 	virtual void addConnection(IConnection*) = 0;
-	virtual QList<Transfer*> pendingTransfers() = 0;
+	virtual QList<File> pendingTransfers() = 0;
 	virtual void sendFile(File) = 0;
-	virtual void acceptTransfer(int) = 0;
-	virtual void rejectTransfer(int) = 0;
+	virtual void acceptTransfer(qint16) = 0;
+	virtual void rejectTransfer(qint16) = 0;
 
 Q_SIGNALS:
 	void pendingTransfersUpdated();
+	void runningTransfersUpdated();
 
 protected:
 	explicit ITransferManager(QObject* parent = nullptr);
