@@ -22,6 +22,7 @@ set(IPConnectLibrary_SRS
     messageserver.cpp
     transfer.cpp
     transfermanager.cpp
+    transferthreadmanager.cpp
     transferserver.cpp
     usersettings.cpp
 )
@@ -52,6 +53,7 @@ set(IPConnectLibrary_HEADERS
     messageserver.h
     transfer.h
     transfermanager.h
+    transferthreadmanager.h
     transferserver.h
     usersettings.h
 )
