@@ -57,7 +57,7 @@ public:
 	void setRate(int);
 
 	void setChunkSize(int);
-	void setThread(QThread*);
+	Q_INVOKABLE void setThread(QThread*);
 
 Q_SIGNALS:
 	void requested();

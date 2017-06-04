@@ -24,12 +24,14 @@
 #include "debugtransfer.h"
 
 #include <QObject>
+#include <QThread>
 
 namespace IPConnect
 {
 
 TransferThreadManager::TransferThreadManager(QObject* parent) : QObject(parent)
 {
+	qRegisterMetaType<QThread*>("QThread*");
 }
 
 TransferThreadManager::~TransferThreadManager()
@@ -43,8 +45,8 @@ void TransferThreadManager::transferCreated(Transfer* transfer)
 	if(!transfer)
 		return;
 
-	connect(transfer,&Transfer::requested,this,&TransferThreadManager::requested);
-	connect(transfer,&Transfer::destroyTransfer,this,&TransferThreadManager::destroyTransfer);
+	connect(transfer,&Transfer::requested,this,&TransferThreadManager::requested,Qt::QueuedConnection);
+	connect(transfer,&Transfer::destroyTransfer,this,&TransferThreadManager::destroyTransfer,Qt::QueuedConnection);
 	qint16 id = transfer->file().id();
 	m_transferList.insert(id,transfer);
 	qCDebug(TRANSFER) << this << "Transfer Added with id " << id ;
@@ -57,6 +59,7 @@ void TransferThreadManager::manualTransferCreated(Transfer* transfer)
 
 	qint16 id = transfer->file().id();
 	m_transferList.insert(id,transfer);
+	transfer->sendFile();
 	qCDebug(TRANSFER) << this << "Manual Transfer Added with id " << id;
 }
 
@@ -99,9 +102,14 @@ void TransferThreadManager::destroyTransfer()
 	removeTransfer(t);
 }
 
+void TransferThreadManager::setThread(QThread* thr)
+{
+	moveToThread(thr);
+}
+
 void TransferThreadManager::removeTransfer(Transfer* t)
 {
-	QMetaObject::invokeMethod(t,"moveToThread",Qt::QueuedConnection,Q_ARG(QThread*,thread()));
+	QMetaObject::invokeMethod(t,"setThread",Qt::QueuedConnection,Q_ARG(QThread*,thread()));
 	qint16 id = t->file().id();
 	t->deleteLater();
 	m_transferList.remove(id);

@@ -60,6 +60,7 @@ void ClientManager::shutdown()
 {
 	emit removeAllClients();
 	m_clientThread->quit();
+	m_clientThread->wait();
 	m_clientThread->deleteLater();
 	qCDebug(BASE) << "ClientManager Stopped" ;
 }

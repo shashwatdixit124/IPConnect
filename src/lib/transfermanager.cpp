@@ -39,14 +39,15 @@ namespace IPConnect
 TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	m_transferCount(0) , m_transferThread(new QThread(this)) , m_ttm(new TransferThreadManager())
 {
+	qRegisterMetaType<QThread*>("QThread*");
 	m_ttm->moveToThread(m_transferThread);
-	connect(m_ttm,&TransferThreadManager::requestedTransfer,this,&TransferManager::addToPending);
-	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted);
-	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected);
-	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated);
-	connect(this,&TransferManager::acceptTransfer,m_ttm,&TransferThreadManager::acceptPending);
-	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending);
-	connect(this,&TransferManager::manualTransferCreated,m_ttm,&TransferThreadManager::manualTransferCreated);
+	connect(m_ttm,&TransferThreadManager::requestedTransfer,this,&TransferManager::addToPending,Qt::QueuedConnection);
+	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted,Qt::QueuedConnection);
+	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected,Qt::QueuedConnection);
+	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated,Qt::QueuedConnection);
+	connect(this,&TransferManager::acceptTransfer,m_ttm,&TransferThreadManager::acceptPending,Qt::QueuedConnection);
+	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending,Qt::QueuedConnection);
+	connect(this,&TransferManager::manualTransferCreated,m_ttm,&TransferThreadManager::manualTransferCreated,Qt::QueuedConnection);
 	m_transferThread->start();
 }
 
@@ -56,7 +57,7 @@ TransferManager::~TransferManager()
 
 void TransferManager::shutdown()
 {
-	QMetaObject::invokeMethod(m_ttm,"moveToThread",Qt::QueuedConnection,Q_ARG(QThread*,thread()));
+	QMetaObject::invokeMethod(m_ttm,"setThread",Qt::QueuedConnection,Q_ARG(QThread*,thread()));
 	m_ttm->deleteLater();
 	m_transferThread->quit();
 	m_transferThread->wait();

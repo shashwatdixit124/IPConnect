@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QThread>
 #include <QMap>
 
 namespace IPConnect
@@ -47,6 +48,8 @@ public Q_SLOTS:
 
 	void requested();
 	void destroyTransfer();
+
+	void setThread(QThread*);
 
 Q_SIGNALS:
 	void requestedTransfer(File);
