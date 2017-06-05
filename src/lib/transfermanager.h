@@ -53,7 +53,6 @@ public:
 	void rejectTransfer(qint16) override;
 
 public Q_SLOTS:
-	void removeTransfer();
 	void createManualTransfer();
 	void removeManualTransfer();
 

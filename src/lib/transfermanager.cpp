@@ -44,6 +44,7 @@ TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	connect(m_ttm,&TransferThreadManager::requestedTransfer,this,&TransferManager::addToPending,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected,Qt::QueuedConnection);
+	connect(m_ttm,&TransferThreadManager::transferRemoved,this,&TransferManager::transferRemoved,Qt::QueuedConnection);
 	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated,Qt::QueuedConnection);
 	connect(this,&TransferManager::acceptTransfer,m_ttm,&TransferThreadManager::acceptPending,Qt::QueuedConnection);
 	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending,Qt::QueuedConnection);
@@ -125,18 +126,6 @@ void TransferManager::removeManualTransfer()
 	c->close();
 	c->deleteLater();
 	m_pendingConnections.remove(c);
-}
-
-void TransferManager::removeTransfer()
-{
-	if(!sender())
-		return;
-
-	Transfer* t = dynamic_cast<Transfer*>(sender());
-	if(!t)
-		return;
-
-	t->deleteLater();
 }
 
 void TransferManager::addToPending(File f)
