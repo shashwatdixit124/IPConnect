@@ -58,6 +58,7 @@ public:
 
 	void setChunkSize(int);
 	Q_INVOKABLE void setThread(QThread*);
+	void checkForData();
 
 Q_SIGNALS:
 	void requested();

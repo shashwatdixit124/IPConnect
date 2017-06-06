@@ -84,7 +84,7 @@ void Client::start()
 
 void Client::handleRead()
 {
-	QByteArray data = m_conn->readAll();
+	QByteArray data = m_conn->data();
 // 	qCDebug(BASE) << "Reading from Connection(" << m_conn->socketDescriptor() << ") => " << data ;
 	processRead(data);
 }

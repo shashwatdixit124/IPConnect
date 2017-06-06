@@ -157,6 +157,18 @@ void Transfer::setThread(QThread* thr)
 	moveToThread(thr);
 }
 
+void Transfer::checkForData()
+{
+	qCDebug(TRANSFER) << "checking for data" ;
+	if(m_conn && m_conn->hasUnreadData()) {
+		QByteArray msg = m_conn->data();
+		qCDebug(TRANSFER) << this << "recieved" << msg;
+		processRead(msg);
+	}
+	else 
+		qCDebug(TRANSFER) << "no data found" ;
+}
+
 void Transfer::bytesWritten(qint32)
 {
 	scheduleTransfer();
@@ -314,7 +326,10 @@ void Transfer::handleRead()
 	if(m_transferStarted)
 		return;
 
-	processRead(m_conn->readAll());
+	QByteArray msg = m_conn->data();
+	qCDebug(TRANSFER) << this << "recieved message " << msg ;
+
+	processRead(msg);
 }
 
 void Transfer::handleWrite(qint32)
