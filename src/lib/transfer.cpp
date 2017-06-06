@@ -121,6 +121,7 @@ void Transfer::sendFile()
 
 	QString username = ControlCenter::instance()->userSettings()->name();
 	QString message  = "IPC:FILE:RSF:" + username + ":" + QString::number(m_file.size()) + ":" + m_file.name();
+	qCDebug(TRANSFER) << "sending message " << message ;
 	m_conn->write(message.toUtf8());
 }
 
@@ -386,6 +387,7 @@ void Transfer::handleRequest()
 			m_file.setUserName(clientName);
 			m_file.setUrl(m_conn->peerAddress().toString());
 			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());
+			qCDebug(TRANSFER) << this << "requested transfer" ;
 			emit requested();
 		}
 		if(m_request.value("option") == "RAF")

@@ -30,6 +30,10 @@ class IConnection : public QTcpSocket
 {
 	Q_OBJECT
 
+public:
+	virtual QByteArray data() = 0;
+	virtual bool hasUnreadData() = 0;
+	
 Q_SIGNALS:
 	void errorOccurred();
 	void hostNotFound();

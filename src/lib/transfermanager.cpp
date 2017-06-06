@@ -40,7 +40,6 @@ TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	m_transferCount(0) , m_transferThread(new QThread(this)) , m_ttm(new TransferThreadManager())
 {
 	qRegisterMetaType<QThread*>("QThread*");
-	m_ttm->moveToThread(m_transferThread);
 	connect(m_ttm,&TransferThreadManager::requestedTransfer,this,&TransferManager::addToPending,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected,Qt::QueuedConnection);
@@ -50,6 +49,7 @@ TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending,Qt::QueuedConnection);
 	connect(this,&TransferManager::manualTransferCreated,m_ttm,&TransferThreadManager::manualTransferCreated,Qt::QueuedConnection);
 	m_transferThread->start();
+	m_ttm->moveToThread(m_transferThread);
 }
 
 TransferManager::~TransferManager()
@@ -75,7 +75,9 @@ void TransferManager::addConnection(IConnection* connection)
 		return;
 	}
 
-	transfer->setThread(m_transferThread);
+	//transfer->setThread(m_transferThread);
+	transfer->connection()->moveToThread(m_transferThread);
+	transfer->moveToThread(m_transferThread);
 	emit transferCreated(transfer);
 }
 
@@ -99,8 +101,12 @@ void TransferManager::createManualTransfer()
 		return;
 
 	Connection* c = dynamic_cast<Connection*>(sender());
+
 	if(!c)
 		return;
+
+	disconnect(c,&Connection::connected,this,&TransferManager::createManualTransfer);
+	disconnect(c,&Connection::errorOccurred,this,&TransferManager::removeManualTransfer);
 
 	File f = m_pendingConnections.value(c);
 	m_pendingConnections.remove(c);
@@ -110,7 +116,9 @@ void TransferManager::createManualTransfer()
 	t->setConnection(c);
 	t->setFile(f);
 	m_allTransfers.insert(f.id(),f);
-	t->setThread(m_transferThread);
+	//t->setThread(m_transferThread);
+	t->connection()->moveToThread(m_transferThread);
+	t->moveToThread(m_transferThread);
 	emit manualTransferCreated(t);
 }
 
@@ -130,6 +138,8 @@ void TransferManager::removeManualTransfer()
 
 void TransferManager::addToPending(File f)
 {
+	qCDebug(TRANSFER) << this << "adding to pending " << f.name() ;
+
 	if(!sender())
 		return;
 

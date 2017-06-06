@@ -36,10 +36,15 @@ public:
 	explicit Connection();
 	~Connection();
 
+	QByteArray data() override;
+	bool hasUnreadData() override;
+
 protected:
 	void isError();
+	void saveData();
 
-	bool isInUse;
+	QByteArray m_data;
+	bool m_unreadData;
 
 };
 

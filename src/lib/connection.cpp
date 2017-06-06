@@ -21,13 +21,15 @@
 #include "connection.h"
 
 #include <QAbstractSocket>
+#include <QDebug>
 
 namespace IPConnect
 {
 
-Connection::Connection() : isInUse(false)
+Connection::Connection() : m_unreadData(false)
 {
 	connect(this,static_cast<void (Connection::*)(QAbstractSocket::SocketError)>(&Connection::error),this,&Connection::isError);
+	connect(this,&Connection::readyRead,this,&Connection::saveData);
 }
 
 Connection::~Connection(){}
@@ -38,6 +40,23 @@ void Connection::isError()
 		emit hostNotFound();
 	else
 		emit errorOccurred();
+}
+
+QByteArray Connection::data()
+{
+	m_unreadData = false;
+	return m_data;
+}
+
+bool Connection::hasUnreadData()
+{
+	return m_unreadData;
+}
+
+void Connection::saveData()
+{
+	m_unreadData = true;
+	m_data = readAll();
 }
 
 }
