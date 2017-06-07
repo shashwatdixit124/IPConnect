@@ -33,7 +33,7 @@
 namespace IPConnect
 {
 
-class Connection;
+class IConnection;
 
 class Transfer : public ITransfer
 {
@@ -47,8 +47,8 @@ public:
 	void reject() override;
 	void sendFile() override;
 
-	Connection* connection();
-	void setConnection(Connection*);
+	IConnection* connection();
+	void setConnection(IConnection*);
 
 	File file() override;
 	void setFile(File);
@@ -66,7 +66,7 @@ Q_SIGNALS:
 
 protected:
 	File m_file;
-	Connection* m_conn;
+	IConnection* m_conn;
 	int m_rate;
 	int m_chunkSize;
 	QIODevice* m_source;

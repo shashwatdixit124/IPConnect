@@ -32,7 +32,6 @@ namespace IPConnect
 {
 
 class IConnection;
-class Connection;
 class File;
 class Transfer;
 class TransferThreadManager;
@@ -72,7 +71,7 @@ protected:
 	QMap<qint16,File> m_pendingTransfers;
 	QMap<qint16,File> m_runningTransfers;
 	QMap<qint16,File> m_allTransfers;
-	QMap<Connection*,File> m_pendingConnections;
+	QMap<IConnection*,File> m_pendingConnections;
 	QThread* m_transferThread;
 	int m_transferCount;
 

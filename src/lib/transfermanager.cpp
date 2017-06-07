@@ -39,13 +39,14 @@ namespace IPConnect
 TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	m_transferCount(0) , m_transferThread(new QThread(this)) , m_ttm(new TransferThreadManager())
 {
+	qCDebug(TRANSFER) << this << "Started";
 	qRegisterMetaType<QThread*>("QThread*");
 	connect(m_ttm,&TransferThreadManager::requestedTransfer,this,&TransferManager::addToPending,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::transferRemoved,this,&TransferManager::transferRemoved,Qt::QueuedConnection);
 	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated,Qt::QueuedConnection);
-	connect(this,&TransferManager::acceptTransfer,m_ttm,&TransferThreadManager::acceptPending,Qt::QueuedConnection);
+	connect(this,&TransferManager::acceptPending,m_ttm,&TransferThreadManager::acceptPending,Qt::QueuedConnection);
 	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending,Qt::QueuedConnection);
 	connect(this,&TransferManager::manualTransferCreated,m_ttm,&TransferThreadManager::manualTransferCreated,Qt::QueuedConnection);
 	m_transferThread->start();
@@ -63,6 +64,7 @@ void TransferManager::shutdown()
 	m_transferThread->quit();
 	m_transferThread->wait();
 	m_transferThread->deleteLater();
+	qCDebug(TRANSFER) << this << "Stopped";
 }
 
 void TransferManager::addConnection(IConnection* connection)
@@ -188,13 +190,10 @@ void TransferManager::rejectTransfer(qint16 id)
 	emit rejectPending(id);
 }
 
-Transfer* TransferManager::createTransfer(IConnection* connection)
+Transfer* TransferManager::createTransfer(IConnection* conn)
 {
-	Connection *conn = dynamic_cast<Connection*>(connection);
-	if(!conn){
-		connection->deleteLater();
+	if(!conn)
 		return nullptr;
-	}
 
 	Transfer* transfer = new Transfer();
 	transfer->setConnection(conn);

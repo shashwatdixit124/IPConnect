@@ -39,25 +39,23 @@ MessageServer::~MessageServer(){}
 void MessageServer::start()
 {
 	if(listen(QHostAddress::Any, 2424))
-		qCDebug(BASE) << "Server started on 2424";
+		qCDebug(BASE) << this << "started on 2424";
 	else
-		qCDebug(BASE) << "Server could not start on 2424";
+		qCDebug(BASE) << this << "could not start on 2424";
 }
 
 void MessageServer::shutdown()
 {
-	qCDebug(BASE) << "Server Stopped" ;
+	qCDebug(BASE) << this << "Stopped" ;
 	close();
 }
 
 void MessageServer::incomingConnection(qintptr handle)
 {
-	qCDebug(BASE) << "handling connection with descriptor " << handle ;
+	qCDebug(BASE) << this << "new connection " << handle ;
 	Connection *conn = new Connection();
 	conn->setSocketDescriptor(handle);
-	if(conn){
-		ControlCenter::instance()->clientManager()->addConnection(conn);
-	}
+	emit gotConnection(conn);
 }
 
 }

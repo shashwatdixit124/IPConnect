@@ -31,7 +31,6 @@ namespace IPConnect
 {
 
 class IConnection;
-class Connection;
 
 class Client : public IClient
 {
@@ -45,7 +44,7 @@ public:
 	ClientInformation info() override;
 	void sendMessage(QString ) override;
 
-	void setConnection(Connection*);
+	void setConnection(IConnection*);
 	void setInfo(ClientInformation);
 	void start();
 
@@ -64,7 +63,7 @@ protected:
 	void write(QString);
 	void sendDetail();
 
-	Connection* m_conn;
+	IConnection* m_conn;
 	ClientInformation m_info;
 	QMap<QString,QString> m_request;
 	QMap<QString,QString> m_response;

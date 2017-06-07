@@ -22,7 +22,7 @@
 
 #include "controlcenter.h"
 #include "connection.h"
-#include "debug.h"
+#include "debugtransfer.h"
 #include "interfaces/itransfermanager.h"
 
 #include <QObject>
@@ -38,25 +38,23 @@ TransferServer::~TransferServer(){}
 void TransferServer::start()
 {
 	if(listen(QHostAddress::Any, 2423))
-		qCDebug(BASE) << this << "started on 2423";
+		qCDebug(TRANSFER) << this << "started on 2423";
 	else
-		qCDebug(BASE) << this << "could not start on 2423";
+		qCDebug(TRANSFER) << this << "could not start on 2423";
 }
 
 void TransferServer::shutdown()
 {
-	qCDebug(BASE) << this << "Stopped" ;
+	qCDebug(TRANSFER) << this << "Stopped" ;
 	close();
 }
 
 void TransferServer::incomingConnection(qintptr handle)
 {
-	qCDebug(BASE) << this << "handling connection with descriptor " << handle ;
+	qCDebug(TRANSFER) << this << "new connection " << handle ;
 	Connection *conn = new Connection();
 	conn->setSocketDescriptor(handle);
-	if(conn){
-		ControlCenter::instance()->transferManager()->addConnection(conn);
-	}
+	emit gotConnection(conn);
 }
 
 }

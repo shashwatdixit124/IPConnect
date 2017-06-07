@@ -22,8 +22,8 @@
 
 #include "interfaces/itransfer.h"
 #include "interfaces/iusersettings.h"
+#include "interfaces/iconnection.h"
 #include "controlcenter.h"
-#include "connection.h"
 #include "debugtransfer.h"
 #include "file.h"
 
@@ -98,20 +98,20 @@ void Transfer::stop()
 	emit destroyTransfer();
 }
 
-Connection* Transfer::connection()
+IConnection* Transfer::connection()
 {
 	return m_conn;
 }
 
-void Transfer::setConnection(Connection* conn)
+void Transfer::setConnection(IConnection* conn)
 {
 	if(!conn)
 		return;
 
 	m_conn = conn;
-	connect(m_conn,&Connection::dataAvailable,this,&Transfer::handleRead);
-	connect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
-	connect(m_conn,&Connection::errorOccurred,this,&Transfer::stop);
+	connect(m_conn,&IConnection::dataAvailable,this,&Transfer::handleRead);
+	connect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
+	connect(m_conn,&IConnection::errorOccurred,this,&Transfer::stop);
 }
 
 void Transfer::sendFile()
@@ -342,8 +342,8 @@ void Transfer::accept()
 {
 	QByteArray message = "IPC:FILE:RAF:"+m_file.name().toUtf8();
 	m_conn->write(message);
-	disconnect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
-	disconnect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+	disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
+	disconnect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
 	start();
 }
 
@@ -406,8 +406,8 @@ void Transfer::handleRequest()
 		}
 		if(m_request.value("option") == "RAF")
 		{
-			disconnect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
-			disconnect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
+			disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
+			disconnect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
 			start();
 		}
 		if(m_request.value("option") == "REJ")

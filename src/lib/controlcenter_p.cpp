@@ -20,12 +20,15 @@
 
 #include "controlcenter_p.h" 
 
+#include "interfaces/iconnection.h"
 #include "clientmanager.h"
 #include "controlcenter.h"
 #include "messageserver.h"
 #include "transfermanager.h"
 #include "transferserver.h"
 #include "usersettings.h"
+
+#include <QObject>
 
 namespace IPConnect
 {
@@ -38,10 +41,12 @@ void ControlCenterPrivate::init()
 {
 	m_userSettings = new UserSettings();
 	m_clientManager = new ClientManager(m_cc);
-	m_transferManager = new TransferManager(m_cc);
 	m_messageServer = new MessageServer(m_cc);
-	m_messageServer->start();
+	m_transferManager = new TransferManager(m_cc);
 	m_transferServer = new TransferServer(m_cc);
+	QObject::connect(m_messageServer,&MessageServer::gotConnection,m_clientManager,&ClientManager::addConnection,Qt::QueuedConnection);
+	m_messageServer->start();
+	QObject::connect(m_transferServer,&TransferServer::gotConnection,m_transferManager,&TransferManager::addConnection,Qt::QueuedConnection);
 	m_transferServer->start();
 }
 

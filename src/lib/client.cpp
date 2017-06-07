@@ -23,7 +23,6 @@
 #include "interfaces/iclient.h"
 #include "interfaces/iconnection.h"
 #include "interfaces/iusersettings.h"
-#include "connection.h"
 #include "controlcenter.h"
 #include "clientinformation.h"
 #include "debug.h"
@@ -57,12 +56,12 @@ void Client::sendMessage(QString msg)
 	write(msg);
 }
 
-void Client::setConnection(Connection* conn)
+void Client::setConnection(IConnection* conn)
 {
 	m_conn = conn;
-	connect(m_conn,&Connection::dataAvailable,this,&Client::handleRead);
-	connect(m_conn,&Connection::disconnected,this,&Client::closeConnection);
-	connect(m_conn,&Connection::errorOccurred,this,&Client::closeConnection);
+	connect(m_conn,&IConnection::dataAvailable,this,&Client::handleRead);
+	connect(m_conn,&IConnection::disconnected,this,&Client::closeConnection);
+	connect(m_conn,&IConnection::errorOccurred,this,&Client::closeConnection);
 }
 
 void Client::setInfo(ClientInformation info)

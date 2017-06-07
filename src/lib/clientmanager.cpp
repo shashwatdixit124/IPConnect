@@ -41,7 +41,7 @@ ClientManager::ClientManager(QObject* parent)
 	: IClientManager(parent) , m_clientCount(0) , m_messageCount(0) ,
 	m_clientThread(new QThread(this)) , m_clientThreadManager(new ClientThreadManager())
 {
-	qCDebug(BASE) << "ClientManager started";
+	qCDebug(BASE) << this << "Sstarted";
 	connect(m_clientThreadManager,&ClientThreadManager::clientAdded,this,&ClientManager::clientAdded,Qt::QueuedConnection);
 	connect(m_clientThreadManager,&ClientThreadManager::clientRemoved,this,&ClientManager::clientRemoved,Qt::QueuedConnection);
 	connect(m_clientThreadManager,&ClientThreadManager::messageAdded,this,&ClientManager::addMessage,Qt::QueuedConnection);
@@ -62,7 +62,7 @@ void ClientManager::shutdown()
 	m_clientThread->quit();
 	m_clientThread->wait();
 	m_clientThread->deleteLater();
-	qCDebug(BASE) << "ClientManager Stopped" ;
+	qCDebug(BASE) << this << "Stopped" ;
 }
 
 QList<ClientInformation> ClientManager::clients()
@@ -114,10 +114,10 @@ void ClientManager::sendMessage(qint16 id,QString msg)
 
 void ClientManager::connectManualy(QString url)
 {
-	Connection* con = new Connection();
+	IConnection* con = new Connection();
 	m_pendingManualConnection.insert(con,url);
-	connect(con,&Connection::connected,this,&ClientManager::addManualConnection);
-	connect(con,&Connection::hostNotFound,this,&ClientManager::noManualConnection);
+	connect(con,&IConnection::connected,this,&ClientManager::addManualConnection);
+	connect(con,&IConnection::hostNotFound,this,&ClientManager::noManualConnection);
 	con->connectToHost(url,2424);
 }
 
@@ -126,7 +126,7 @@ void ClientManager::addManualConnection()
 	if(!sender())
 		return;
 
-	Connection* con = dynamic_cast<Connection*>(sender());
+	IConnection* con = dynamic_cast<IConnection*>(sender());
 	m_pendingManualConnection.remove(con);
 	addConnection(con);
 }
@@ -136,7 +136,7 @@ void ClientManager::noManualConnection()
 	if(!sender())
 		return;
 
-	Connection* con = dynamic_cast<Connection*>(sender());
+	IConnection* con = dynamic_cast<IConnection*>(sender());
 	QString url = m_pendingManualConnection.value(con);
 	m_pendingManualConnection.remove(con);
 
@@ -163,13 +163,10 @@ void ClientManager::addMessage(qint16 id, QString msg)
 	emit messageAdded(mi);
 }
 
-Client* ClientManager::createClient(IConnection* connection)
+Client* ClientManager::createClient(IConnection* conn)
 {
-	Connection *conn = dynamic_cast<Connection*>(connection);
-	if(!conn){
-		connection->deleteLater();
+	if(!conn)
 		return nullptr;
-	}
 
 	Client* client = new Client();
 	client->setConnection(conn);

@@ -36,11 +36,12 @@ class ITransferManager : public QObject
 
 public:
 	virtual void shutdown() = 0;
-	virtual void addConnection(IConnection*) = 0;
 	virtual QList<File> pendingTransfers() = 0;
 	virtual void sendFile(File) = 0;
 	virtual void acceptTransfer(qint16) = 0;
 	virtual void rejectTransfer(qint16) = 0;
+	
+	Q_INVOKABLE virtual void addConnection(IConnection*) = 0;
 
 Q_SIGNALS:
 	void pendingTransfersUpdated();

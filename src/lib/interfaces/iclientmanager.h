@@ -40,9 +40,10 @@ public:
 	virtual QList<ClientInformation> clients() = 0;
 	virtual ClientInformation clientInfo(qint16) = 0;
 	virtual QList<MessageInformation> messages() = 0;
-	virtual void addConnection(IConnection*) = 0;
 	virtual void sendMessage(qint16,QString) = 0;
 	virtual void connectManualy(QString) = 0;
+
+	Q_INVOKABLE virtual void addConnection(IConnection*) = 0;
 
 Q_SIGNALS:
 	void userListUpdated();

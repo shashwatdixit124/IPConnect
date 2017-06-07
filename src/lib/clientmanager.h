@@ -33,7 +33,6 @@ namespace IPConnect
 {
 
 class IConnection;
-class Connection;
 class Client;
 class ClientInformation;
 class ClientThreadManager;
@@ -71,7 +70,7 @@ protected:
 
 	QMap<qint16,ClientInformation> m_clientsInfo;
 	QMap<qint16,MessageInformation> m_messages;
-	QMap<Connection*,QString> m_pendingManualConnection;
+	QMap<IConnection*,QString> m_pendingManualConnection;
 	qint16 m_clientCount;
 	qint16 m_messageCount;
 	QThread *m_clientThread;
