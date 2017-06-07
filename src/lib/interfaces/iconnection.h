@@ -35,6 +35,7 @@ public:
 	virtual bool hasUnreadData() = 0;
 	
 Q_SIGNALS:
+	void dataAvailable();
 	void errorOccurred();
 	void hostNotFound();
 

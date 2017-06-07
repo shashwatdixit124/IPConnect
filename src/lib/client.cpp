@@ -59,14 +59,8 @@ void Client::sendMessage(QString msg)
 
 void Client::setConnection(Connection* conn)
 {
-	if(m_conn)
-	{
-		disconnect(m_conn,&Connection::readyRead,this,&Client::handleRead);
-		disconnect(m_conn,&Connection::disconnected,this,&Client::closeConnection);
-		disconnect(m_conn,&Connection::errorOccurred,this,&Client::closeConnection);
-	}
 	m_conn = conn;
-	connect(m_conn,&Connection::readyRead,this,&Client::handleRead);
+	connect(m_conn,&Connection::dataAvailable,this,&Client::handleRead);
 	connect(m_conn,&Connection::disconnected,this,&Client::closeConnection);
 	connect(m_conn,&Connection::errorOccurred,this,&Client::closeConnection);
 }

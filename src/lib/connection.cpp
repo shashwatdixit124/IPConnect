@@ -57,6 +57,7 @@ void Connection::saveData()
 {
 	m_unreadData = true;
 	m_data = readAll();
+	emit dataAvailable();
 }
 
 }

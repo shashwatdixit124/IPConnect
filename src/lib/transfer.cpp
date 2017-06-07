@@ -109,7 +109,7 @@ void Transfer::setConnection(Connection* conn)
 		return;
 
 	m_conn = conn;
-	connect(m_conn,&Connection::readyRead,this,&Transfer::handleRead);
+	connect(m_conn,&Connection::dataAvailable,this,&Transfer::handleRead);
 	connect(m_conn,&Connection::bytesWritten,this,&Transfer::handleWrite);
 	connect(m_conn,&Connection::errorOccurred,this,&Transfer::stop);
 }
@@ -357,7 +357,6 @@ void Transfer::reject()
 void Transfer::processRead(QByteArray data)
 {
 	QString header = data;
-	qCDebug(TRANSFER) << this << "recieved " << header ;
 	m_request.insert("request",header);
 
 	QStringList options = header.split(":");
