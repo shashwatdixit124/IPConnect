@@ -21,6 +21,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+import QtGraphicalEffects 1.0
 import api.ui.ipconnect 2.0
 
 Item { id: item
@@ -43,46 +44,89 @@ Item { id: item
 
 		Component { id: pTDelegate
 
-			Rectangle { id: pTWrapper
-				property int idno : id
-				border.width: 1
-				border.color: item.theme
-				width: parent.width - 20
-				height: pTFileName.height + pTFileSize.height + pTFrom.height
-				anchors.horizontalCenter: parent.horizontalCenter
+			Item { id: pTWrapper
+				width: parent.width
+				height: pTRect.height
+				Rectangle { id: pTRect
+					clip: true
+					width: parent.width - 20
+					height: infoCol.height + actionRow.height
+					anchors.horizontalCenter: parent.horizontalCenter
+					radius: 2
 
-				Column { 
-					anchors.fill: parent
+					Column { id: infoCol
+						width: parent.width
+						height: pTFileName.height + pTFileSize.height + pTFrom.height
 
-					Item { id: pTFileName
-						width: parent.width - 20
-						height: 30
-						anchors.horizontalCenter: parent.horizontalCenter
-						Text { 
-							anchors.verticalCenter: parent.verticalCenter
-							text: qsTr("<b>File </b> : "+filename)
+						Item { id: pTFileName
+							width: parent.width - 20
+							height: 30
+							anchors.horizontalCenter: parent.horizontalCenter
+							Text { 
+								anchors.verticalCenter: parent.verticalCenter
+								text: qsTr("<b>File </b> : "+filename)
+							}
+						}
+
+						Item { id: pTFileSize
+							width: parent.width - 20
+							height: 30
+							anchors.horizontalCenter: parent.horizontalCenter
+							Text { 
+								anchors.verticalCenter: parent.verticalCenter
+								text: qsTr("<b>Size </b> : "+filesize)
+							}
+						}
+
+						Item { id: pTFrom
+							width: parent.width - 20
+							height: 30
+							anchors.horizontalCenter: parent.horizontalCenter
+							Text { 
+								anchors.verticalCenter: parent.verticalCenter
+								text: qsTr("<b>From </b> : "+clientname)
+							}
 						}
 					}
-
-					Item { id: pTFileSize
-						width: parent.width - 20
-						height: 30
-						anchors.horizontalCenter: parent.horizontalCenter
-						Text { 
+					Row { id: actionRow
+						width: parent.width
+						height: 50
+						anchors.top: infoCol.bottom
+						Rectangle { id: acceptBtn
+							color: "#4285f4"
+							width: 100
+							height: 40
 							anchors.verticalCenter: parent.verticalCenter
-							text: qsTr("<b>Size </b> : "+filesize)
+							anchors.left: parent.left
+							Text {
+								color: "#fdfdfd"
+								text: qsTr("Accept")
+								anchors.centerIn: parent
+							}
+						}
+						Rectangle { id: rejectBtn
+							color: "#4285f4"
+							width: 100
+							height: 40
+							anchors.verticalCenter: parent.verticalCenter
+							anchors.left: acceptBtn.right
+							Text {
+								color: "#fdfdfd"
+								text: qsTr("Reject")
+								anchors.centerIn: parent
+							}
 						}
 					}
-
-					Item { id: pTFrom
-						width: parent.width - 20
-						height: 30
-						anchors.horizontalCenter: parent.horizontalCenter
-						Text { 
-							anchors.verticalCenter: parent.verticalCenter
-							text: qsTr("<b>From </b> : "+clientname)
-						}
-					}
+				}
+				DropShadow { 
+					anchors.fill: pTRect
+					source: pTRect
+					horizontalOffset: 0
+					verticalOffset: 1
+					radius: 6
+					samples: 32
+					color: "#60000000"
+					transparentBorder: true
 				}
 			}
 		}
