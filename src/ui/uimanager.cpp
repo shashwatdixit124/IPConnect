@@ -162,6 +162,9 @@ void UiManager::sendFile(QString filename)
 	f.setUrl(m_clientManager->clientInfo(m_selectedUser).ip());
 	f.setUserName(userName());
 
+	if(filename.startsWith("file://"))
+		filename = filename.mid(7);
+
 	QFileInfo file(filename);
 	f.setName(file.fileName());
 	f.setPath(file.path());
