@@ -35,7 +35,8 @@ class PendingTransfers : public QAbstractListModel
 	Q_OBJECT
 public:
 	enum UserInfo {
-		FileName = Qt::UserRole + 1,
+		Id  = Qt::UserRole + 1,
+		FileName,
 		FilePath,
 		FileSize,
 		Url,
@@ -54,6 +55,8 @@ protected:
 	QHash<int, QByteArray> roleNames() const;
 	ITransferManager *m_tm;
 	QList<File> m_transfers;
+
+	QString bytesToString(qint32) const;
 
 };
 

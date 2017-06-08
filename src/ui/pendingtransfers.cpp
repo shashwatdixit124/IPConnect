@@ -55,12 +55,14 @@ QVariant PendingTransfers::data(const QModelIndex& index, int role) const
 		return QVariant();
 
 	const File &file = m_transfers[index.row()];
-	if (role == FileName)
+	if (role == Id)
+		return file.id();
+	else if (role == FileName)
 		return file.name();
 	else if (role == FilePath)
 		return file.path();
 	else if (role == FileSize)
-		return file.size();
+		return bytesToString(file.size());
 	else if (role == Url)
 		return file.url();
 	else if (role == ClientName)
@@ -87,12 +89,25 @@ void PendingTransfers::updateList()
 QHash<int, QByteArray> PendingTransfers::roleNames() const
 {
 	QHash<int, QByteArray> roles;
+	roles[Id] = "id";
 	roles[FileName] = "filename";
 	roles[FilePath] = "filepath";
 	roles[FileSize] = "filesize";
 	roles[Url] = "url";
 	roles[ClientName] = "clientname";
 	return roles;
+}
+
+QString PendingTransfers::bytesToString(qint32 bytes) const
+{
+	if(bytes > 1024*1024*1024)
+		return QString::number((double)bytes/(1024*1024*1024)) + QString(" GB");
+	else if(bytes > 1024*1024)
+		return QString::number(bytes/(1024*1024)) + QString(" MB");
+	else if(bytes > 1024)
+		return QString::number(bytes/1024) + QString(" KB");
+	else
+		return QString::number(bytes) + QString(" B");
 }
 
 }

@@ -44,6 +44,7 @@ Item { id: item
 		Component { id: pTDelegate
 
 			Rectangle { id: pTWrapper
+				property int idno : id
 				border.width: 1
 				border.color: item.theme
 				width: parent.width - 20
