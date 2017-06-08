@@ -90,7 +90,7 @@ void TransferThreadManager::requested()
 	Transfer* t = dynamic_cast<Transfer*>(sender());
 	File f = t->file();
 	qint16 id = f.id();
-	m_transferList.value(id)->setFile(f);
+	//m_transferList.value(id)->setFile(f);
 	emit requestedTransfer(f);
 }
 

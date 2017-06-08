@@ -46,8 +46,9 @@ Item { id: item
 			Rectangle { id: pTWrapper
 				border.width: 1
 				border.color: item.theme
-				anchors.margins: 5
-				anchors.fill: parent
+				width: parent.width - 20
+				height: pTFileName.height + pTFileSize.height + pTFrom.height
+				anchors.horizontalCenter: parent.horizontalCenter
 
 				Column { 
 					anchors.fill: parent
@@ -82,7 +83,6 @@ Item { id: item
 						}
 					}
 				}
-
 			}
 		}
 
@@ -112,6 +112,7 @@ Item { id: item
 				spacing: 5
 			}
 		}
+
 	}
 
 }

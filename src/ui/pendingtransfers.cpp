@@ -71,8 +71,15 @@ QVariant PendingTransfers::data(const QModelIndex& index, int role) const
 void PendingTransfers::updateList()
 {
 	m_transfers = m_tm->pendingTransfers();
-	beginRemoveRows(QModelIndex(),0,rowCount()-1);
-	endRemoveRows();
+
+	if(rowCount() > 0) {
+		beginRemoveRows(QModelIndex(),0,rowCount()-1);
+		endRemoveRows();
+	}
+
+	if(m_transfers.count() <= 0)
+		return;
+
 	beginInsertRows(QModelIndex(), 0 , m_transfers.count()-1);
 	endInsertRows();
 }
