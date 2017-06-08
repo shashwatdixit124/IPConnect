@@ -38,7 +38,7 @@ namespace IPConnect
 
 Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
 	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) ,
-	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0)
+	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false)
 {
 }
 
