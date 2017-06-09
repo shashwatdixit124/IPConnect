@@ -77,10 +77,10 @@ Popup { id: item
 						close()
 					}
 				}
-				Button { id: quickConnectBtn
-					height: parent.height
-					width: height
-					text: qsTr("\uf0c1")
+				IPCButton { id: quickConnectBtn
+					shadow: false
+					radius: 0
+					icon: qsTr("\uf0c1")
 					onClicked:{
 						IPConnect.quickConnect(quickConnectUrl.text)
 						quickConnectUrl.text = ""

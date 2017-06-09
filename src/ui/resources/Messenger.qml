@@ -41,7 +41,7 @@ Item { id: item
 			anchors.right: parent.right
 			anchors.top: parent.top
 			anchors.bottom: msgInputBox.top
-			color: "#f9f9f9"
+			color: "#fff"
 			anchors.bottomMargin: 20
 			anchors.rightMargin: 20
 			clip: true
@@ -148,7 +148,7 @@ Item { id: item
 			height: 40
 			anchors.topMargin: 20
 			anchors.rightMargin: 20
-			color: "#f9f9f9"
+			color: "#fff"
 
 			TextField { id:msgInput
 				height: parent.height
@@ -191,11 +191,11 @@ Item { id: item
 				anchors.right: parent.right
 				color: item.bgColor
 
-				Text { id: sendBtnImage
-					font.family: awesome.name
-					font.pixelSize: 24
-					text: "\uf1d8"
-					color: item.theme
+				IPCButton { id: sendBtnImage
+					iconFont: awesome.name
+					icon: "\uf1d8"
+					shadow: false
+					radius: 0
 					anchors.centerIn: parent
 				}
 
@@ -230,7 +230,7 @@ Item { id: item
 		anchors.right: parent.right
 		anchors.leftMargin: 20
 		width: 250
-		color: "#f9f9f9"
+		color: "#fff"
 		clip: true
 
 		Component { id: userDelegate

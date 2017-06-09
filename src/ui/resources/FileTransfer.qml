@@ -32,7 +32,6 @@ Popup { id: item
 	modal: true
 
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
-	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
 
 	background: Item{
 		implicitHeight: 200
@@ -62,8 +61,10 @@ Popup { id: item
 			anchors.horizontalCenter: parent.horizontalCenter
 		}
 
-		Item { id: fileTransferForm
-			anchors.centerIn: parent
+		Rectangle{ id: fileTransferForm
+			anchors.horizontalCenter: parent.horizontalCenter
+			anchors.bottom: parent.bottom
+			anchors.bottomMargin: 20
 			height: fileSelectForm.height+sendFileForm.height
 			width: filePathField.width + fileTransferBtn.width
 

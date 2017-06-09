@@ -53,14 +53,14 @@ Item { id:item
 	}
 
 	Messenger { id: messenger
-		anchors.margins: 20
+		anchors.margins: 40
 		anchors.fill: parent
 		textColor: item.textColor
 		bgColor: item.bgColor
 	}
 
 	TransferManager { id: transferManager
-		anchors.margins: 20
+		anchors.margins: 40
 		anchors.fill: parent
 		textColor: item.textColor
 		bgColor: item.bgColor
@@ -68,7 +68,7 @@ Item { id:item
 	}
 
 	AppSettings { id: appSettings
-		anchors.margins: 20
+		anchors.margins: 40
 		anchors.fill: parent
 		textColor: item.textColor
 		bgColor: item.bgColor

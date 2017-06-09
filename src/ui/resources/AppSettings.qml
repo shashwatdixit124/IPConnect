@@ -37,6 +37,7 @@ Item { id: item
 
 	signal updated()
 
+	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
 	Column{
@@ -96,11 +97,12 @@ Item { id: item
 						text: dirDialog.folder
 					}
 
-					Button { id: selectBtn
+					IPCButton { id: selectBtn
 						anchors.right: parent.right
-						text: qsTr("\uf07b")
-						height: parent.height
-						width: height
+						iconFont: awesome.name
+						radius: 0
+						shadow: false
+						icon: qsTr("\uf07b")
 						onClicked: {
 							dirDialog.open()
 						}
@@ -161,9 +163,10 @@ Item { id: item
 		height: 40
 		anchors.bottom: parent.bottom
 
-		Button {
+		IPCButton {
+			icon: qsTr("\uf0c7")
+			iconFont: awesome.name
 			text: qsTr("Save")
-			height: parent.height
 			onClicked: {
 				IPConnect.userName = username;
 				IPConnect.downloadDir = ddir;
@@ -173,4 +176,3 @@ Item { id: item
 		}
 	}
 }
-

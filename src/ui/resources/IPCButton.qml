@@ -21,6 +21,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.1
 import QtGraphicalEffects 1.0
+import api.ui.ipconnect 2.0
 
 Item { id: btnRoot
 	signal clicked
@@ -32,13 +33,14 @@ Item { id: btnRoot
 	property alias color : btnBack.color
 	property alias radius: btnBack.radius
 	property alias iconFont: btnIcon.font
+	property alias shadowColor: dropBtnBack.color
 
 	height: 40
 	width: content.width <  height ? height : content.width + 20
 
 	Rectangle { id: btnBack
 		anchors.fill: parent
-		color: "#3498db"
+		color: IPConnect.theme
 		radius: 4
 		clip: true
 
@@ -61,6 +63,7 @@ Item { id: btnRoot
 				width: btnText.implicitWidth
 				height: parent.height
 				Text { id: btnText
+					font.weight: Font.Bold
 					font.pixelSize: 12
 					anchors.verticalCenter: parent.verticalCenter
 					color: btnRoot.textColor
@@ -72,6 +75,7 @@ Item { id: btnRoot
 			anchors.fill: parent
 			cursorShape: Qt.PointingHandCursor
 			onClicked: {
+				btnRoot.clicked()
 			}
 		}
 	}

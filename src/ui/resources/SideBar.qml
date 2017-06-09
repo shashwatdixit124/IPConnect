@@ -23,7 +23,7 @@ import QtGraphicalEffects 1.0
 import api.ui.ipconnect 2.0
 
 Item { id: item
-	width: 60
+	width: 70
 	height: parent.height
 	anchors.left: parent.left
 
@@ -37,10 +37,11 @@ Item { id: item
 	signal quickConnectClicked
 	signal fileTransferClicked
 
-	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
+	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
 
 	Item { id:sidePane
 		anchors.fill: parent
+		property int currentId: 0
 
 		Column{
 			anchors.fill: parent
@@ -61,17 +62,33 @@ Item { id: item
 				width: parent.width
 				height: item.tabHeight
 
+				property int idno: 0
+				property string color: sidePane.currentId == idno ? item.theme : "#999"
+
 				Text { id: messengerIcon
 					anchors.centerIn: parent
-					text: qsTr("\uf075")
-					color: item.theme
+					font.family: linea_basic.name
+					text: qsTr(".")
+					color: parent.color
 					font.pixelSize: 24
 				}
+
+//				Text {
+//					anchors.topMargin: 10
+//					anchors.top: messengerIcon.bottom
+//					anchors.horizontalCenter: parent.horizontalCenter
+//					text: qsTr("Messages")
+//					color: parent.color
+//					font.pixelSize: 10
+//				}
 
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: messengerClicked()
+					onClicked: {
+						sidePane.currentId = parent.idno
+						messengerClicked()
+					}
 				}
 			}
 
@@ -79,17 +96,24 @@ Item { id: item
 				width: parent.width
 				height: item.tabHeight
 
+				property int idno: messenger.idno + 1
+				property string color: sidePane.currentId == idno ? item.theme : "#999"
+
 				Text { id: transferManagerIcon
 					anchors.centerIn: parent
-					text: qsTr("\uf019")
-					color: item.theme
+					font.family: linea_basic.name
+					text: qsTr("F")
+					color: parent.color
 					font.pixelSize: 24
 				}
 
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: transferManagerClicked()
+					onClicked: {
+						sidePane.currentId = parent.idno
+						transferManagerClicked()
+					}
 				}
 			}
 
@@ -97,17 +121,24 @@ Item { id: item
 				width: parent.width
 				height: item.tabHeight
 
+				property int idno: transferManager.idno + 1
+				property string color: sidePane.currentId == idno ? item.theme : "#999"
+
 				Text { id: settingsIcon
 					anchors.centerIn: parent
-					text: qsTr("\uf013")
-					color: item.theme
+					font.family: linea_basic.name
+					text: qsTr("P")
+					color: parent.color
 					font.pixelSize: 24
 				}
 
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: settingsClicked()
+					onClicked: {
+						sidePane.currentId = parent.idno
+						settingsClicked()
+					}
 				}
 			}
 
@@ -115,17 +146,22 @@ Item { id: item
 				width: parent.width
 				height: item.tabHeight
 
+				property string color: "#999"
+
 				Text { id: quickConnectIcon
 					anchors.centerIn: parent
-					text: qsTr("\uf0c1")
-					color: item.theme
+					font.family: linea_basic.name
+					text: qsTr("8")
+					color: parent.color
 					font.pixelSize: 24
 				}
 
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: quickConnectClicked()
+					onClicked: {
+						quickConnectClicked()
+					}
 				}
 			}
 
@@ -133,17 +169,22 @@ Item { id: item
 				width: parent.width
 				height: item.tabHeight
 
+				property string color: "#999"
+
 				Text { id: fileTransferIcon
 					anchors.centerIn: parent
-					text: qsTr("\uf15b")
-					color: item.theme
+					font.family: linea_basic.name
+					text: qsTr("\ue007")
+					color: parent.color
 					font.pixelSize: 24
 				}
 
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
-					onClicked: fileTransferClicked()
+					onClicked: {
+						fileTransferClicked()
+					}
 				}
 			}
 		}

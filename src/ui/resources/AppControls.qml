@@ -24,7 +24,7 @@ import QtQuick.Window 2.2
 import api.ui.ipconnect 2.0
 
 Item { id: root
-	property string theme: IPConnect.theme
+	property string theme: "#bbb"//IPConnect.theme
 	property string textColor : "#333"
 	property string bgColor : "#fdfdfd"
 

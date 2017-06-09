@@ -85,7 +85,6 @@ ApplicationWindow { id:root
 				width:parent.width
 				height: 24
 				anchors.bottom: parent.bottom
-				text: qsTr("Server Not Running")
 				textColor: root.sbTextColor
 				bgColor: root.sbBgColor
 				onSizeChanged: {
