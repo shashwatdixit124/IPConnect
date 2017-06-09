@@ -32,6 +32,7 @@ Popup { id: item
 	modal: true
 
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
+	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
 
 	background: Item{
 		implicitHeight: 200
@@ -84,10 +85,10 @@ Popup { id: item
 						placeholderText: qsTr(" File Location")
 						text: sendFileDialog.fileUrl
 					}
-					Button { id: fileTransferBtn
-						height: parent.height
-						width: height
-						text: qsTr("\uf15b")
+					IPCButton {id: fileTransferBtn
+						icon: qsTr("\uf15b")
+						radius: 0
+						shadow: false
 						onClicked:{
 							sendFileDialog.open()
 						}
@@ -97,12 +98,12 @@ Popup { id: item
 					width:  parent.width
 					height: 60
 
-					Button { id: sendFileBtn
-						height: 40
-						width: 100
+					IPCButton { id: sendFileBtn
 						anchors.bottom: parent.bottom
 						anchors.right: parent.right
-						text: qsTr("\uf1d8  Send")
+						icon: qsTr("\uf1d8")
+						iconFont: awesome.name
+						text: qsTr("Send")
 						onClicked: {
 							IPConnect.sendFile(filePathField.text);
 							item.close()

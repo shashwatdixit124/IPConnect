@@ -3,6 +3,7 @@
         <file>resources/AppControls.qml</file>
         <file>resources/AppSettings.qml</file>
         <file>resources/FileTransfer.qml</file>
+        <file>resources/IPCButton.qml</file>
         <file>resources/StatusBar.qml</file>
         <file>resources/MainView.qml</file>
         <file>resources/MainWindow.qml</file>
@@ -14,5 +15,6 @@
         <file>resources/Welcome.qml</file>
         <file>resources/triangle-32.png</file>
         <file>resources/fontawesome-webfont.ttf</file>
+        <file>resources/linea-basic-10.ttf</file>
     </qresource>
 </RCC>
