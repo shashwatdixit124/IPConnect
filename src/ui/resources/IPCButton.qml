@@ -25,14 +25,18 @@ import api.ui.ipconnect 2.0
 
 Item { id: btnRoot
 	signal clicked
-	property string icon
-	property string textColor : "#fbfbfb"
-	property bool shadow : true
+
+	property alias icon : btnIcon.text
+	property alias iconFont: btnIcon.font
 
 	property alias text : btnText.text
+	property alias textFont: btnText.font
+
 	property alias color : btnBack.color
+	property string textColor : "#fbfbfb"
+
 	property alias radius: btnBack.radius
-	property alias iconFont: btnIcon.font
+	property bool shadow : true
 	property alias shadowColor: dropBtnBack.color
 
 	height: 40
@@ -49,12 +53,9 @@ Item { id: btnRoot
 			width: iconBlk.width + textBlk.width
 			anchors.horizontalCenter: parent.horizontalCenter
 			Item { id: iconBlk
-				width: 30
+				width: btnIcon.implicitWidth > 0 ? 30 : 0
 				height: parent.height
 				Text { id: btnIcon
-					text: icon
-					font.pixelSize: 16
-					font.family: iconFont
 					anchors.centerIn: parent
 					color: btnRoot.textColor
 				}
@@ -64,7 +65,6 @@ Item { id: btnRoot
 				height: parent.height
 				Text { id: btnText
 					font.weight: Font.Bold
-					font.pixelSize: 12
 					anchors.verticalCenter: parent.verticalCenter
 					color: btnRoot.textColor
 				}

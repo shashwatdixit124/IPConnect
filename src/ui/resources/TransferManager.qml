@@ -30,6 +30,9 @@ Item { id: item
 	property string textColor: "#333"
 	property string bgColor: "#f7f7f7"
 
+	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
+	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
+
 	Item { id: pendingTransfers
 		anchors.fill: parent
 
@@ -45,76 +48,96 @@ Item { id: item
 		Component { id: pTDelegate
 
 			Item { id: pTWrapper
-				width: parent.width
-				height: pTRect.height
+				width: parent.width > 750 ? 750 : parent.width
+				height: 150
+				anchors.horizontalCenter: parent.horizontalCenter
 				Rectangle { id: pTRect
-					clip: true
 					width: parent.width - 20
-					height: infoCol.height + actionRow.height
-					anchors.horizontalCenter: parent.horizontalCenter
-					radius: 2
+					height: parent.height - 20
+					anchors.centerIn: parent
+					clip: true
 
-					Column { id: infoCol
-						width: parent.width
-						height: pTFileName.height + pTFileSize.height + pTFrom.height
+					Row { id: pTRow
+						anchors.fill: parent
+						Item { id: fileIconWrapper
+							height: parent.height
+							width: parent.height
 
-						Item { id: pTFileName
-							width: parent.width - 20
-							height: 30
-							anchors.horizontalCenter: parent.horizontalCenter
-							Text { 
-								anchors.verticalCenter: parent.verticalCenter
-								text: qsTr("<b>File </b> : "+filename)
-							}
-						}
-
-						Item { id: pTFileSize
-							width: parent.width - 20
-							height: 30
-							anchors.horizontalCenter: parent.horizontalCenter
-							Text { 
-								anchors.verticalCenter: parent.verticalCenter
-								text: qsTr("<b>Size </b> : "+filesize)
-							}
-						}
-
-						Item { id: pTFrom
-							width: parent.width - 20
-							height: 30
-							anchors.horizontalCenter: parent.horizontalCenter
-							Text { 
-								anchors.verticalCenter: parent.verticalCenter
-								text: qsTr("<b>From </b> : "+clientname)
-							}
-						}
-					}
-					Row { id: actionRow
-						width: parent.width
-						height: 50
-						anchors.top: infoCol.bottom
-						Rectangle { id: acceptBtn
-							color: "#4285f4"
-							width: 100
-							height: 40
-							anchors.verticalCenter: parent.verticalCenter
-							anchors.left: parent.left
-							Text {
-								color: "#fdfdfd"
-								text: qsTr("Accept")
+							Text { id: fileIcon
+								text: qsTr("\ue007")
+								font.family: linea_basic.name
+								font.pixelSize: parent.width / 3
 								anchors.centerIn: parent
+								color: "#333"
 							}
 						}
-						Rectangle { id: rejectBtn
-							color: "#4285f4"
-							width: 100
-							height: 40
-							anchors.verticalCenter: parent.verticalCenter
-							anchors.left: acceptBtn.right
-							Text {
-								color: "#fdfdfd"
-								text: qsTr("Reject")
+						Item { id: content
+							height: parent.height
+							width: parent.width - fileIconWrapper.width - pTAction.width
+
+							Column { id: infoCol
+								height: parent.height - 30
+								width: parent.width - 20
 								anchors.centerIn: parent
+								spacing: 5
+
+								Item { id: pTFileName
+									width: parent.width
+									height: 30
+									Text {
+										anchors.verticalCenter: parent.verticalCenter
+										text: qsTr(filename)
+										elide: Text.ElideMiddle
+									}
+								}
+
+								Item { id: pTFileSize
+									width: parent.width
+									height: 30
+									Text {
+										anchors.verticalCenter: parent.verticalCenter
+										text: qsTr("<b>Size </b> : "+filesize)
+									}
+								}
+
+								Item { id: pTFrom
+									width: parent.width
+									height: 30
+									Text {
+										anchors.verticalCenter: parent.verticalCenter
+										text: qsTr("<b>From </b> : "+clientname)
+									}
+								}
 							}
+						}
+						Item { id: pTAction
+							height: parent.height
+							width: height / 2
+
+							Column {
+								anchors.fill: parent
+								IPCButton {
+									icon: qsTr("\ue01c")
+									iconFont: Qt.font({	family: linea_basic.name, pixelSize: 20 })
+									height: parent.width
+									width: parent.width
+									shadow: false
+									radius: 0
+									color: "#fbfbfb"
+									textColor: "#333"
+								}
+								IPCButton {
+									icon: qsTr("M")
+									iconFont: Qt.font({	family: linea_basic.name, pixelSize: 20 })
+									height: parent.width
+									width: parent.width
+									shadow: false
+									radius: 0
+									color: "#fbfbfb"
+									textColor: "#333"
+								}
+							}
+
 						}
 					}
 				}
@@ -122,10 +145,10 @@ Item { id: item
 					anchors.fill: pTRect
 					source: pTRect
 					horizontalOffset: 0
-					verticalOffset: 1
-					radius: 6
-					samples: 32
-					color: "#60000000"
+					verticalOffset: 0
+					radius: 8
+					samples: 16
+					color: "#30000000"
 					transparentBorder: true
 				}
 			}
