@@ -125,6 +125,7 @@ Item { id: item
 									radius: 0
 									color: "#fbfbfb"
 									textColor: "#333"
+									onClicked: IPConnect.rejectTransfer(id)
 								}
 								IPCButton {
 									icon: qsTr("M")
@@ -135,9 +136,9 @@ Item { id: item
 									radius: 0
 									color: "#fbfbfb"
 									textColor: "#333"
+									onClicked: IPConnect.acceptTransfer(id)
 								}
 							}
-
 						}
 					}
 				}

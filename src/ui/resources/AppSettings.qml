@@ -113,7 +113,7 @@ Item { id: item
 			FileDialog { id: dirDialog
 				selectExisting: true
 				selectFolder: true
-				folder: IPConnect.downloadDir
+				folder: "file://"+IPConnect.downloadDir
 			}
 		}
 

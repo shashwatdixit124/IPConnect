@@ -109,8 +109,12 @@ QString UiManager::downloadDir()
 
 void UiManager::setDownloadDir(QString ddir)
 {
+	if(ddir.startsWith("file://"))
+		ddir = ddir.mid(7);
+
 	if(ddir != downloadDir() && !ddir.isEmpty() && !ddir.isNull())
 		m_settings->setDownloadDir(ddir);
+
 	emit downloadDirChanged();
 }
 
@@ -179,6 +183,16 @@ void UiManager::quickConnect(QString url)
 		return;
 
 	m_cc->clientManager()->connectManualy(url);
+}
+
+void UiManager::acceptTransfer(qint16 id)
+{
+	m_transferManager->acceptTransfer(id);
+}
+
+void UiManager::rejectTransfer(qint16 id)
+{
+	m_transferManager->rejectTransfer(id);
 }
 
 void UiManager::manualConnectionFailed(QString url)

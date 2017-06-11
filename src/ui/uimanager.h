@@ -85,6 +85,8 @@ public:
 	Q_INVOKABLE void sendMessage(QString);
 	Q_INVOKABLE void sendFile(QString);
 	Q_INVOKABLE void quickConnect(QString);
+	Q_INVOKABLE void acceptTransfer(qint16);
+	Q_INVOKABLE void rejectTransfer(qint16);
 
 	static QObject* uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine);
 
