@@ -46,11 +46,13 @@ Transfer::~Transfer()
 {
 	if(m_source)
 	{
+		m_source->close();
 		m_source->deleteLater();
 		m_source = nullptr;
 	}
 	if(m_destination)
 	{
+		m_destination->close();
 		m_destination->deleteLater();
 		m_destination = nullptr;
 	}
@@ -58,6 +60,7 @@ Transfer::~Transfer()
 
 void Transfer::start()
 {
+	qCDebug(TRANSFER) << this << "Starting the transfer" ;
 	if(m_file.action() == File::UNKNOWN){
 		qCDebug(TRANSFER) << this << "( ERROR ) File Not Set";
 		emit error();
@@ -65,7 +68,14 @@ void Transfer::start()
 	}
 
 	if(m_file.action() == File::SEND){
-		m_source = new QFile(m_file.path() + "/" + m_file.name());
+		QString filepath = m_file.path() + "/" + m_file.name();
+		m_source = new QFile(filepath);
+		if(!m_source->open(QFile::ReadOnly))
+		{
+			qWarning() << "Could not open file: " << filepath;
+			emit error();
+			return;
+		}
 		m_destination = m_conn;
 		connect(m_destination,&QIODevice::bytesWritten,this,&Transfer::bytesWritten);
 		m_isSender = true;
@@ -74,7 +84,14 @@ void Transfer::start()
 	if(m_file.action() == File::RECIEVE){
 		m_source = m_conn;
 		connect(m_source,&QIODevice::readyRead,this,&Transfer::readyRead);
-		m_destination = new QFile(m_file.path() + "/" + m_file.name());
+		QString filepath = m_file.path() + "/" + m_file.name();
+		m_destination = new QFile(filepath);
+		if(!m_destination->open(QFile::WriteOnly))
+		{
+			qWarning() << "Could not open file: " << filepath;
+			emit error();
+			return;
+		}
 		m_isSender = false;
 	}
 
@@ -82,12 +99,13 @@ void Transfer::start()
 	m_transfering = true;
 	m_transfered = 0;
 
-	if(m_file.action() == File::SEND && m_source->bytesAvailable() > 0)
+	checkDevices();
+
+	if(m_isSender && m_source->bytesAvailable() > 0)
 	{
-		qCDebug(TRANSFER) << this <<"started the transfer";
+		qCDebug(TRANSFER) << this <<"transfer started";
 		scheduleTransfer();
 	}
-
 }
 
 void Transfer::stop()
@@ -250,7 +268,13 @@ void Transfer::scheduleTransfer()
 		return;
 	}
 
-	if(m_source->bytesAvailable() <= 0)
+	if(m_isSender && m_source->bytesAvailable() <= 0)
+	{
+		qCDebug(TRANSFER) << this << "Exiting scheduleTransfer due to: no bytes available to be read";
+		return;
+	}
+
+	if(!m_isSender && !m_conn->hasUnreadData())
 	{
 		qCDebug(TRANSFER) << this << "Exiting scheduleTransfer due to: no bytes available to be read";
 		return;
@@ -288,9 +312,9 @@ void Transfer::transfer()
 	if(m_isSender)
 		buffer = m_source->read(m_chunkSize);
 	else
-		buffer = m_source->read(m_source->bytesAvailable());
+		buffer = m_conn->data();
 
-	qCDebug(TRANSFER) << this << "writting to destination: " << buffer.length();
+	qCDebug(TRANSFER) << this << "writting to destination: " << buffer.length() ;
 
 	m_destination->write(buffer);
 	m_transferInCycle += buffer.length();
@@ -302,6 +326,7 @@ void Transfer::transfer()
 		{
 			emit finished();
 			stop();
+			return;
 		}
 	}
 
@@ -344,6 +369,8 @@ void Transfer::accept()
 	m_conn->write(message);
 	disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
 	disconnect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
+	connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
+	connect(m_conn,&IConnection::bytesWritten,this,&Transfer::bytesWritten);
 	start();
 }
 
@@ -351,6 +378,7 @@ void Transfer::reject()
 {
 	QByteArray message = "IPC:FILE:REJ:"+m_file.name().toUtf8();
 	m_conn->write(message);
+	emit finished();
 	stop();
 }
 
@@ -386,7 +414,7 @@ void Transfer::handleRequest()
 		m_response.insert("app","IPC");
 		m_response.insert("method","FILE");
 
-		if(m_request.value("option") == "RSF")
+		if(option == "RSF")
 		{
 			QString data = m_request.value("data");
 			QStringList options = data.split(":");
@@ -404,14 +432,17 @@ void Transfer::handleRequest()
 			qCDebug(TRANSFER) << this << "requested transfer" ;
 			emit requested();
 		}
-		if(m_request.value("option") == "RAF")
+		if(option == "RAF")
 		{
 			disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
 			disconnect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
+			connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
+			connect(m_conn,&IConnection::bytesWritten,this,&Transfer::bytesWritten);
 			start();
 		}
-		if(m_request.value("option") == "REJ")
+		if(option == "REJ")
 		{
+			emit finished();
 			stop();
 		}
 	}
