@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QVector>
 
 namespace IPConnect
 {
@@ -52,6 +53,11 @@ public Q_SLOTS:
 
 protected:
 	QMap<qint16,Client*> m_clientList;
+	QVector<Client*> m_clientInQueue;
+
+	void addToPending(Client*);
+	bool isPending(Client*);
+	void removeIfPending(Client*);
 
 };
 

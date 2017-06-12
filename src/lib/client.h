@@ -47,6 +47,7 @@ public:
 	void setConnection(IConnection*);
 	void setInfo(ClientInformation);
 	void start();
+	bool hasAcceptedData() const;
 
 public Q_SLOTS:
 	void handleRead();

@@ -75,6 +75,11 @@ void Client::start()
 	sendDetail();
 }
 
+bool Client::hasAcceptedData() const
+{
+	return m_detailAccepted;
+}
+
 void Client::handleRead()
 {
 	QByteArray data = m_conn->data();
@@ -118,37 +123,33 @@ void Client::handleRequest()
 
 	if(method == "CONNECT")
 	{
-		m_request.insert("message",m_request.value("request"));
 		if(option == "REQUEST")
 		{
 			if(!m_detailAccepted)
 			{
-				if(m_request.value("option") == "REQUEST")
-				{
-					qCDebug(BASE) << this << "Accepting Detail";
-					QString data = m_request.value("data");
-					QString ip = data.split(":").at(0);
-					int pos = data.indexOf(":");
-					QString name = data.mid(pos + 1);
-					m_info.setName(name.trimmed());
-					m_info.setIp(ip.trimmed());
-					qCDebug(BASE) << this << "Accepted request from "<< name;
+				qCDebug(BASE) << this << "Accepting Detail";
+				QString data = m_request.value("data");
+				QString ip = data.split(":").at(0);
+				int pos = data.indexOf(":");
+				QString name = data.mid(pos + 1);
+				m_info.setName(name.trimmed());
+				m_info.setIp(ip.trimmed());
+				qCDebug(BASE) << this << "Accepted request from "<< name;
+				emit infoRecieved(m_info);
+				m_detailAccepted = true;
 
-					if(!m_detailSent)
-					{
-						QString myIp = ControlCenter::instance()->userSettings()->ip();
-						QString myName = ControlCenter::instance()->userSettings()->name();
-						m_response.insert("app","IPC");
-						m_response.insert("method","CONNECT");
-						m_response.insert("option","REQUEST");
-						m_response.insert("data",myIp+":"+myName);
-						QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
-						m_response.insert("message",message);
-						m_detailSent = true;
-						write(message);
-					}
-					m_detailAccepted = true;
-					emit infoRecieved(m_info);
+				if(!m_detailSent)
+				{
+					QString myIp = ControlCenter::instance()->userSettings()->ip();
+					QString myName = ControlCenter::instance()->userSettings()->name();
+					m_response.insert("app","IPC");
+					m_response.insert("method","CONNECT");
+					m_response.insert("option","REQUEST");
+					m_response.insert("data",myIp+":"+myName);
+					QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
+					qCDebug(BASE) << this << "sending details " << message ;
+					m_detailSent = true;
+					write(message);
 				}
 			}
 		}
@@ -179,7 +180,6 @@ void Client::sendDetail()
 	{
 		if(!m_detailSent)
 		{
-// 			qCDebug(BASE) << this << "Sending Details" ;
 			m_detailSent = true;
 			QString myIp = ControlCenter::instance()->userSettings()->ip();
 			QString myName = ControlCenter::instance()->userSettings()->name();
@@ -188,7 +188,7 @@ void Client::sendDetail()
 			m_response.insert("method","CONNECT");
 			m_response.insert("option","REQUEST");
 			m_response.insert("data",myIp+":"+myName);
-			m_response.insert("message",message);
+			qCDebug(BASE) << this << "Sending Details " << message ;
 			write(message);
 		}
 	}
