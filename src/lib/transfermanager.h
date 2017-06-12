@@ -47,6 +47,7 @@ public:
 	void shutdown() override;
 	void addConnection(IConnection*) override;
 	QList<File> pendingTransfers() override;
+	QList<File> runningTransfers() override;
 	void sendFile(File) override;
 	void acceptTransfer(qint16) override;
 	void rejectTransfer(qint16) override;

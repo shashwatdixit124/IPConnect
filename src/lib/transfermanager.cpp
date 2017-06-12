@@ -88,6 +88,11 @@ QList<File> TransferManager::pendingTransfers()
 	return m_pendingTransfers.values();
 }
 
+QList<File> TransferManager::runningTransfers()
+{
+	return m_runningTransfers.values();
+}
+
 void TransferManager::sendFile(File f)
 {
 	Connection* c = new Connection();
