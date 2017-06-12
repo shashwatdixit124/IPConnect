@@ -242,7 +242,7 @@ bool Transfer::checkTransfer()
 		emit error();
 		return false;
 	}
-	if(m_transfered >= m_rate)
+	if(m_transferInCycle >= m_rate)
 	{
 		qCDebug(TRANSFER) << this << "Rate exeeded, not allowed to transfer!";
 		emit error();
