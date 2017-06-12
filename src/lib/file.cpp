@@ -46,7 +46,7 @@ QString File::path() const
 	return m_path;
 }
 
-qint32 File::size() const
+quint64 File::size() const
 {
 	return m_size;
 }
@@ -81,7 +81,7 @@ void File::setPath(QString path)
 	m_path = path;
 }
 
-void File::setSize(qint32 size)
+void File::setSize(quint64 size)
 {
 	m_size = size;
 }

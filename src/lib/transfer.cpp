@@ -320,20 +320,26 @@ void Transfer::transfer()
 	m_transferInCycle += buffer.length();
 	m_transfered += buffer.length();
 
-	if(!m_isSender)
+	if(!m_isSender && m_file.size() == m_transfered)
 	{
-		if(m_file.size() == m_transfered)
-		{
-			emit finished();
-			stop();
-			return;
-		}
+		qCDebug(TRANSFER) << this << "Stopping due to recieved whole file";
+		stop();
+		emit finished();
+	}
+	else if(!m_isSender)
+	{
+		qCDebug(TRANSFER) << this << "Still Recieving total recieved = " << m_transfered ;
 	}
 
-	if(!m_source->isSequential() && m_source->bytesAvailable() == 0)
+	if(m_isSender && m_source->bytesAvailable() == 0)
 	{
 		qCDebug(TRANSFER) << this << "Stopping due to end of file";
 		stop();
+		emit finished();
+	}
+	else if(m_isSender)
+	{
+		qCDebug(TRANSFER) << this << "Still Sending total sent = " << m_transfered ;
 	}
 
 	if(m_transfering == false)
@@ -424,7 +430,7 @@ void Transfer::handleRequest()
 			QString filename = data.mid(pos + 1);
 
 			m_file.setName(filename);
-			m_file.setSize(filesize.toInt());
+			m_file.setSize(filesize.toULongLong());
 			m_file.setAction(File::RECIEVE);
 			m_file.setUserName(clientName);
 			m_file.setUrl(m_conn->peerAddress().toString());

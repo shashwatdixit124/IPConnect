@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QList>
+#include <QDebug>
 
 namespace IPConnect
 {
@@ -72,12 +73,12 @@ QVariant PendingTransfers::data(const QModelIndex& index, int role) const
 
 void PendingTransfers::updateList()
 {
-	m_transfers = m_tm->pendingTransfers();
-
 	if(rowCount() > 0) {
 		beginRemoveRows(QModelIndex(),0,rowCount()-1);
 		endRemoveRows();
 	}
+
+	m_transfers = m_tm->pendingTransfers();
 
 	if(m_transfers.count() <= 0)
 		return;
@@ -98,7 +99,7 @@ QHash<int, QByteArray> PendingTransfers::roleNames() const
 	return roles;
 }
 
-QString PendingTransfers::bytesToString(qint32 bytes) const
+QString PendingTransfers::bytesToString(quint64 bytes) const
 {
 	if(bytes > 1024*1024*1024)
 		return QString::number((double)bytes/(1024*1024*1024)) + QString(" GB");

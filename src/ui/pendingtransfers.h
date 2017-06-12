@@ -56,7 +56,7 @@ protected:
 	ITransferManager *m_tm;
 	QList<File> m_transfers;
 
-	QString bytesToString(qint32) const;
+	QString bytesToString(quint64) const;
 
 };
 
