@@ -114,8 +114,8 @@ Item { id: pendingTransfers
 								iconFont: Qt.font({ family: linea_basic.name, pixelSize: 20 })
 								height: parent.height
 								width: parent.width
-								shadow: false
 								radius: 0
+								shadowRadius: 3
 								color: "#fbfbfb"
 								textColor: "#333"
 							}

@@ -41,6 +41,7 @@ Item { id: btnRoot
 
 	property alias radius: btnBack.radius
 	property alias shadow : dropBtnBack.visible
+	property alias shadowRadius: dropBtnBack.radius
 	property alias shadowColor: dropBtnBack.color
 
 	height: 40

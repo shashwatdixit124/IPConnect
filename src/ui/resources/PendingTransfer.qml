@@ -114,8 +114,8 @@ Item { id: pendingTransfers
 								iconFont: Qt.font({	family: linea_basic.name, pixelSize: 20 })
 								height: parent.width
 								width: parent.width
-								shadow: false
 								radius: 0
+								shadowRadius: 3
 								color: "#fbfbfb"
 								textColor: "#333"
 								onClicked: IPConnect.rejectTransfer(id)
@@ -125,8 +125,8 @@ Item { id: pendingTransfers
 								iconFont: Qt.font({	family: linea_basic.name, pixelSize: 20 })
 								height: parent.width
 								width: parent.width
-								shadow: false
 								radius: 0
+								shadowRadius: 3
 								color: "#fbfbfb"
 								textColor: "#333"
 								onClicked: IPConnect.acceptTransfer(id)
