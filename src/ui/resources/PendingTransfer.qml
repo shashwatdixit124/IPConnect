@@ -26,6 +26,8 @@ import api.ui.ipconnect 2.0
 
 Item { id: pendingTransfers
 
+	property alias count: pTList.count
+
 	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
@@ -35,7 +37,7 @@ Item { id: pendingTransfers
 		font.pixelSize: 80
 		font.weight: Font.Light
 		color: "#10000000"
-		visible: pTList.currentIndex > -1 ? false : true
+		visible: pTList.count > 0 ? false : true
 	}
 
 	Component { id: pTDelegate
@@ -174,5 +176,4 @@ Item { id: pendingTransfers
 			spacing: 5
 		}
 	}
-
 }

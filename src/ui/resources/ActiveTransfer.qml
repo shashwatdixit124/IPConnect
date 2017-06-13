@@ -26,31 +26,33 @@ import api.ui.ipconnect 2.0
 
 Item { id: pendingTransfers
 
+	property alias count: aTList.count
+
 	FontLoader { id: linea_basic; source: "qrc:/resources/linea-basic-10.ttf" }
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
-	Text { id: emptyPTText
+	Text { id: emptyATText
 		text: qsTr("Empty")
 		anchors.centerIn: parent
 		font.pixelSize: 80
 		font.weight: Font.Light
 		color: "#10000000"
-		visible: pTList.currentIndex > -1 ? false : true
+		visible: aTList.count > 0 ? false : true
 	}
 
-	Component { id: pTDelegate
+	Component { id: aTDelegate
 
-		Item { id: pTWrapper
+		Item { id: aTWrapper
 			width: parent.width
 			height: 150
 			anchors.horizontalCenter: parent.horizontalCenter
-			Rectangle { id: pTRect
+			Rectangle { id: aTRect
 				width: parent.width - 20
 				height: parent.height - 20
 				anchors.centerIn: parent
 				clip: true
 
-				Row { id: pTRow
+				Row { id: aTRow
 					anchors.fill: parent
 					Item { id: fileIconWrapper
 						height: parent.height
@@ -66,7 +68,7 @@ Item { id: pendingTransfers
 					}
 					Item { id: content
 						height: parent.height
-						width: parent.width - fileIconWrapper.width - pTAction.width
+						width: parent.width - fileIconWrapper.width - aTAction.width
 
 						Column { id: infoCol
 							height: parent.height - 30
@@ -74,7 +76,7 @@ Item { id: pendingTransfers
 							anchors.centerIn: parent
 							spacing: 5
 
-							Item { id: pTFileName
+							Item { id: aTFileName
 								width: parent.width
 								height: 30
 								Text {
@@ -84,7 +86,7 @@ Item { id: pendingTransfers
 								}
 							}
 
-							Item { id: pTFileSize
+							Item { id: aTFileSize
 								width: parent.width
 								height: 30
 								Text {
@@ -93,7 +95,7 @@ Item { id: pendingTransfers
 								}
 							}
 
-							Item { id: pTFrom
+							Item { id: aTFrom
 								width: parent.width
 								height: 30
 								Text {
@@ -103,7 +105,7 @@ Item { id: pendingTransfers
 							}
 						}
 					}
-					Item { id: pTAction
+					Item { id: aTAction
 						height: parent.height
 						width: height / 2
 
@@ -118,14 +120,15 @@ Item { id: pendingTransfers
 								shadowRadius: 3
 								color: "#fbfbfb"
 								textColor: "#333"
+								onClicked: IPConnect.stopTransfer(id)
 							}
 						}
 					}
 				}
 			}
 			DropShadow { 
-				anchors.fill: pTRect
-				source: pTRect
+				anchors.fill: aTRect
+				source: aTRect
 				horizontalOffset: 0
 				verticalOffset: 0
 				radius: 8
@@ -154,10 +157,10 @@ Item { id: pendingTransfers
 			}
 		}
 
-		ListView { id:pTList
+		ListView { id:aTList
 			anchors.fill: parent
 			anchors.topMargin: 5
-			delegate: pTDelegate
+			delegate: aTDelegate
 			model: IPConnect.runningTransfers
 			spacing: 5
 		}

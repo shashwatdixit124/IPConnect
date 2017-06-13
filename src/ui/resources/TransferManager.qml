@@ -44,7 +44,7 @@ Item { id: item
 					radius: 0
 					active: true
 					activeColor: "#fff"
-					text: qsTr("Requested")
+					text: qsTr("Requested"+"  ("+pendingTransfer.count+")")
 					onClicked: {
 						active = true
 						activeBtn.active = false
@@ -57,7 +57,7 @@ Item { id: item
 					radius: 0
 					active: false
 					activeColor: "#fff"
-					text: qsTr("Active")
+					text: qsTr("Active"+"  ("+activeTransfer.count+")")
 					onClicked: {
 						active = true
 						requestedBtn.active = false
