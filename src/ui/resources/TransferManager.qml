@@ -37,10 +37,13 @@ Item { id: item
 			width: parent.width
 			anchors.top: parent.top
 			Row {
+				clip: true
 				anchors.fill: parent
-				IPCButton{
-					width: parent.width
+				IPCButton { id: requestedBtn
+					width: parent.width / 2
 					radius: 0
+					active: true
+					activeColor: "#fff"
 					text: qsTr("Requested")
 				}
 			}

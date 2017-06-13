@@ -35,8 +35,12 @@ Item { id: btnRoot
 	property alias color : btnBack.color
 	property string textColor : "#fbfbfb"
 
+	property bool active : false
+	property string activeTextColor : IPConnect.theme
+	property string activeColor : textColor
+
 	property alias radius: btnBack.radius
-	property bool shadow : true
+	property alias shadow : dropBtnBack.visible
 	property alias shadowColor: dropBtnBack.color
 
 	height: 40
@@ -44,7 +48,7 @@ Item { id: btnRoot
 
 	Rectangle { id: btnBack
 		anchors.fill: parent
-		color: IPConnect.theme
+		color: btnRoot.active ? btnRoot.activeColor : IPConnect.theme
 		radius: 4
 		clip: true
 
@@ -57,7 +61,7 @@ Item { id: btnRoot
 				height: parent.height
 				Text { id: btnIcon
 					anchors.centerIn: parent
-					color: btnRoot.textColor
+					color: active ? btnRoot.activeTextColor : btnRoot.textColor
 				}
 			}
 			Item { id: textBlk
@@ -66,7 +70,7 @@ Item { id: btnRoot
 				Text { id: btnText
 					font.weight: Font.Bold
 					anchors.verticalCenter: parent.verticalCenter
-					color: btnRoot.textColor
+					color: active ? btnRoot.activeTextColor : btnRoot.textColor
 				}
 			}
 		}
@@ -86,9 +90,8 @@ Item { id: btnRoot
 		horizontalOffset: 0
 		verticalOffset: 0
 		radius: 8
-		samples: 32
+		samples: 17
 		color: "#30000000"
 		transparentBorder: true
-		visible: btnRoot.visible
 	}
 }
