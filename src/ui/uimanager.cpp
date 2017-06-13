@@ -202,6 +202,11 @@ void UiManager::rejectTransfer(qint16 id)
 	m_transferManager->rejectTransfer(id);
 }
 
+void UiManager::stopTransfer(qint16 id)
+{
+	m_transferManager->stopTransfer(id);
+}
+
 void UiManager::manualConnectionFailed(QString url)
 {
 	setNotificationMsg("Can't Connect to \""+url+"\"");

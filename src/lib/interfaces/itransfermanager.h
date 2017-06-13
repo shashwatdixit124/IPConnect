@@ -41,6 +41,7 @@ public:
 	virtual void sendFile(File) = 0;
 	virtual void acceptTransfer(qint16) = 0;
 	virtual void rejectTransfer(qint16) = 0;
+	virtual void stopTransfer(qint16) = 0;
 	
 	Q_INVOKABLE virtual void addConnection(IConnection*) = 0;
 

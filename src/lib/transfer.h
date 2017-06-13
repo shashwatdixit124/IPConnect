@@ -59,6 +59,7 @@ public:
 	void setChunkSize(int);
 	Q_INVOKABLE void setThread(QThread*);
 	void checkForData();
+	Q_INVOKABLE void stop();
 
 Q_SIGNALS:
 	void requested();
@@ -91,7 +92,6 @@ protected:
 	bool m_transferStarted;
 
 	void start();
-	void stop();
 	void handleRead();
 	void handleWrite(qint32);
 	void processRead(QByteArray);

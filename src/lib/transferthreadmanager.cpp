@@ -82,6 +82,14 @@ void TransferThreadManager::rejectPending(qint16 id)
 	emit rejected(id);
 }
 
+void TransferThreadManager::stopTransfer(qint16 id)
+{
+	Transfer* t = m_transferList.value(id);
+	if(!t)
+		return;
+	QMetaObject::invokeMethod(t,"stop",Qt::QueuedConnection);
+}
+
 void TransferThreadManager::requested()
 {
 	if(!sender())

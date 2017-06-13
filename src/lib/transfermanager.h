@@ -51,6 +51,7 @@ public:
 	void sendFile(File) override;
 	void acceptTransfer(qint16) override;
 	void rejectTransfer(qint16) override;
+	void stopTransfer(qint16) override;
 
 public Q_SLOTS:
 	void createManualTransfer();
@@ -65,6 +66,7 @@ Q_SIGNALS:
 	void transferCreated(Transfer*);
 	void acceptPending(qint16);
 	void rejectPending(qint16);
+	void removeTransfer(qint16);
 	void manualTransferCreated(Transfer*);
 
 protected:

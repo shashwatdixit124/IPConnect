@@ -45,6 +45,7 @@ public Q_SLOTS:
 	void manualTransferCreated(Transfer*);
 	void acceptPending(qint16);
 	void rejectPending(qint16);
+	void stopTransfer(qint16);
 
 	void requested();
 	void destroyTransfer();

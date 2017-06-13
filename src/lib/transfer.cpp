@@ -384,7 +384,6 @@ void Transfer::reject()
 {
 	QByteArray message = "IPC:FILE:REJ:"+m_file.name().toUtf8();
 	m_conn->write(message);
-	emit finished();
 	stop();
 }
 
@@ -448,7 +447,6 @@ void Transfer::handleRequest()
 		}
 		if(option == "REJ")
 		{
-			emit finished();
 			stop();
 		}
 	}

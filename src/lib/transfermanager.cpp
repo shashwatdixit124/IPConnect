@@ -48,6 +48,7 @@ TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated,Qt::QueuedConnection);
 	connect(this,&TransferManager::acceptPending,m_ttm,&TransferThreadManager::acceptPending,Qt::QueuedConnection);
 	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending,Qt::QueuedConnection);
+	connect(this,&TransferManager::removeTransfer,m_ttm,&TransferThreadManager::stopTransfer,Qt::QueuedConnection);
 	connect(this,&TransferManager::manualTransferCreated,m_ttm,&TransferThreadManager::manualTransferCreated,Qt::QueuedConnection);
 	m_transferThread->start();
 	m_ttm->moveToThread(m_transferThread);
@@ -193,6 +194,11 @@ void TransferManager::acceptTransfer(qint16 id)
 void TransferManager::rejectTransfer(qint16 id)
 {
 	emit rejectPending(id);
+}
+
+void TransferManager::stopTransfer(qint16 id)
+{
+	emit removeTransfer(id);
 }
 
 Transfer* TransferManager::createTransfer(IConnection* conn)
