@@ -10,6 +10,7 @@
         <file>resources/Messenger.qml</file>
         <file>resources/Notification.qml</file>
         <file>resources/PendingTransfer.qml</file>
+        <file>resources/ActiveTransfer.qml</file>
         <file>resources/QuickConnect.qml</file>
         <file>resources/SideBar.qml</file>
         <file>resources/TransferManager.qml</file>

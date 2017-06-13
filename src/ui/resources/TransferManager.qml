@@ -45,6 +45,25 @@ Item { id: item
 					active: true
 					activeColor: "#fff"
 					text: qsTr("Requested")
+					onClicked: {
+						active = true
+						activeBtn.active = false
+						pendingTransfer.visible = true
+						activeTransfer.visible = false
+					}
+				}
+				IPCButton { id: activeBtn
+					width: parent.width / 2
+					radius: 0
+					active: false
+					activeColor: "#fff"
+					text: qsTr("Active")
+					onClicked: {
+						active = true
+						requestedBtn.active = false
+						pendingTransfer.visible = false
+						activeTransfer.visible = true
+					}
 				}
 			}
 		}
@@ -53,9 +72,14 @@ Item { id: item
 			anchors.top: tabView.bottom
 			anchors.bottom: parent.bottom
 			width: parent.width
-			PendingTransfer {
-				id: pendingTransfer
+			PendingTransfer { id: pendingTransfer
 				anchors.fill: parent
+				anchors.topMargin: 30
+			}
+			ActiveTransfer { id: activeTransfer
+				anchors.fill: parent
+				anchors.topMargin: 30
+				visible: false
 			}
 		}
 	}

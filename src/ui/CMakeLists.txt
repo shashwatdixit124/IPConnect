@@ -3,6 +3,7 @@ set(IPConnectUILibrary_SRS
     messenger.cpp
     messagelist.cpp
     pendingtransfers.cpp
+    runningtransfers.cpp
     uimanager.cpp
     userlist.cpp
 )
@@ -12,6 +13,7 @@ set(IPConnectUILibrary_HEADERS
     messenger.h
     messagelist.h
     pendingtransfers.h
+    runningtransfers.h
     uimanager.h
     userlist.h
 )

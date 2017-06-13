@@ -30,6 +30,7 @@
 #include "messenger.h"
 #include "messagelist.h"
 #include "pendingtransfers.h"
+#include "runningtransfers.h"
 
 #include <QAbstractListModel>
 #include <QFileInfo>
@@ -49,6 +50,7 @@ UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
 	m_usersList = new UserList(m_clientManager);
 	m_messenger = new Messenger(m_clientManager);
 	m_pendingTransfersList = new PendingTransfers(m_transferManager);
+	m_runningTransfersList = new RunningTransfers(m_transferManager);
 	connect(m_clientManager,&IClientManager::manualConnectionFailed,this,&UiManager::manualConnectionFailed);
 	m_notificationMsg = "Welcome to IPConnect";
 	m_notificationStatus = runningFirstTime() ? "Inactive" : "Active" ; 
@@ -71,6 +73,11 @@ QAbstractListModel* UiManager::messages()
 QAbstractListModel* UiManager::pendingTransfers()
 {
 	return m_pendingTransfersList;
+}
+
+QAbstractListModel* UiManager::runningTransfers()
+{
+	return m_runningTransfersList;
 }
 
 bool UiManager::runningFirstTime()
