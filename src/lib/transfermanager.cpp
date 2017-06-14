@@ -189,6 +189,7 @@ void TransferManager::rejected(qint16 id)
 
 void TransferManager::progressTransfer(qint16 id, int prog)
 {
+	m_runningTransfers[id].setProgress(prog);
 	emit transferProgressed(id,prog);
 }
 
