@@ -92,7 +92,6 @@ void RunningTransfers::updateList()
 
 void RunningTransfers::updateProgress(qint16 id, int prog)
 {
-	qDebug() << this << "updating progress for " << id << " to " << prog ;
 	qint16 i ;
 	File f;
 	for(i=0;i<rowCount();i++)

@@ -55,8 +55,11 @@ bool Connection::hasUnreadData()
 
 void Connection::saveData()
 {
+	if (hasUnreadData())
+		m_data += readAll();
+	else
+		m_data = readAll();
 	m_unreadData = true;
-	m_data = readAll();
 	emit dataAvailable();
 }
 
