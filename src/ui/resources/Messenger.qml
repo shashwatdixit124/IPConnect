@@ -29,6 +29,7 @@ Item { id: item
 	property string theme: IPConnect.theme
 	property string textColor: "#333"
 	property string bgColor: "#f7f7f7"
+
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
 	Item { id: messageBox
@@ -41,7 +42,7 @@ Item { id: item
 			anchors.right: parent.right
 			anchors.top: parent.top
 			anchors.bottom: msgInputBox.top
-			color: "#fff"
+			color: "#f9f9f9"
 			anchors.bottomMargin: 20
 			anchors.rightMargin: 20
 			clip: true
@@ -148,7 +149,7 @@ Item { id: item
 			height: 40
 			anchors.topMargin: 20
 			anchors.rightMargin: 20
-			color: "#fff"
+			color: "#f9f9f9"
 
 			TextField { id:msgInput
 				height: parent.height
@@ -230,7 +231,7 @@ Item { id: item
 		anchors.right: parent.right
 		anchors.leftMargin: 20
 		width: 250
-		color: "#fff"
+		color: "#f9f9f9"
 		clip: true
 
 		Component { id: userDelegate

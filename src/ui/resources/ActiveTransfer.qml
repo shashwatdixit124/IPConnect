@@ -80,6 +80,7 @@ Item { id: pendingTransfers
 								width: parent.width
 								height: 30
 								Text {
+									width: parent.width - 20
 									anchors.verticalCenter: parent.verticalCenter
 									text: qsTr(filename)
 									elide: Text.ElideMiddle
@@ -90,6 +91,7 @@ Item { id: pendingTransfers
 								width: parent.width
 								height: 30
 								Text {
+									width: parent.width - 20
 									anchors.verticalCenter: parent.verticalCenter
 									text: qsTr("<b>Size </b> : "+filesize)
 								}
@@ -99,6 +101,7 @@ Item { id: pendingTransfers
 								width: parent.width
 								height: 30
 								Text {
+									width: parent.width - 20
 									anchors.verticalCenter: parent.verticalCenter
 									text: qsTr("<b>From </b> : "+clientname)
 								}
