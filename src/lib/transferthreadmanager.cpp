@@ -47,6 +47,7 @@ void TransferThreadManager::transferCreated(Transfer* transfer)
 
 	connect(transfer,&Transfer::requested,this,&TransferThreadManager::requested,Qt::QueuedConnection);
 	connect(transfer,&Transfer::destroyTransfer,this,&TransferThreadManager::destroyTransfer,Qt::QueuedConnection);
+	connect(transfer,&Transfer::error,this,&TransferThreadManager::destroyTransfer,Qt::QueuedConnection);
 	qint16 id = transfer->file().id();
 	m_transferList.insert(id,transfer);
 	qCDebug(TRANSFER) << this << "Transfer Added with id " << id ;

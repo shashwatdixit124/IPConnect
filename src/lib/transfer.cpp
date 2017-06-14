@@ -334,8 +334,7 @@ void Transfer::transfer()
 	if(m_isSender && m_source->bytesAvailable() == 0)
 	{
 		qCDebug(TRANSFER) << this << "Stopping due to end of file";
-		stop();
-		emit finished();
+		return;
 	}
 	else if(m_isSender)
 	{
