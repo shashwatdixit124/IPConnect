@@ -44,7 +44,7 @@ Item { id: pendingTransfers
 
 		Item { id: aTWrapper
 			width: parent.width
-			height: 150
+			height: 180
 			anchors.horizontalCenter: parent.horizontalCenter
 			Rectangle { id: aTRect
 				width: parent.width - 20
@@ -101,6 +101,18 @@ Item { id: pendingTransfers
 								Text {
 									anchors.verticalCenter: parent.verticalCenter
 									text: qsTr("<b>From </b> : "+clientname)
+								}
+							}
+
+							Item { id: aTProgress
+								width: parent.width
+								height: 30
+								ProgressBar {
+									anchors.verticalCenter: parent.verticalCenter
+									width: parent.width - 20
+									minimumValue: 0
+									maximumValue: 100
+									value: progress
 								}
 							}
 						}

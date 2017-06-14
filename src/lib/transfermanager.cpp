@@ -45,6 +45,7 @@ TransferManager::TransferManager(QObject* parent) : ITransferManager(parent) ,
 	connect(m_ttm,&TransferThreadManager::accepted,this,&TransferManager::accepted,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::rejected,this,&TransferManager::rejected,Qt::QueuedConnection);
 	connect(m_ttm,&TransferThreadManager::transferRemoved,this,&TransferManager::transferRemoved,Qt::QueuedConnection);
+	connect(m_ttm,&TransferThreadManager::transferProgressed,this,&TransferManager::progressTransfer,Qt::QueuedConnection);
 	connect(this,&TransferManager::transferCreated,m_ttm,&TransferThreadManager::transferCreated,Qt::QueuedConnection);
 	connect(this,&TransferManager::acceptPending,m_ttm,&TransferThreadManager::acceptPending,Qt::QueuedConnection);
 	connect(this,&TransferManager::rejectPending,m_ttm,&TransferThreadManager::rejectPending,Qt::QueuedConnection);
@@ -184,6 +185,11 @@ void TransferManager::rejected(qint16 id)
 	File f = m_pendingTransfers.value(id);
 	m_pendingTransfers.remove(id);
 	emit pendingTransfersUpdated();
+}
+
+void TransferManager::progressTransfer(qint16 id, int prog)
+{
+	emit transferProgressed(id,prog);
 }
 
 void TransferManager::acceptTransfer(qint16 id)

@@ -25,6 +25,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QDebug>
 
 namespace IPConnect
 {
@@ -46,6 +47,7 @@ void TransferThreadManager::transferCreated(Transfer* transfer)
 		return;
 
 	connect(transfer,&Transfer::requested,this,&TransferThreadManager::requested,Qt::QueuedConnection);
+	connect(transfer,&Transfer::progress,this,&TransferThreadManager::progressTransfer,Qt::QueuedConnection);
 	connect(transfer,&Transfer::destroyTransfer,this,&TransferThreadManager::destroyTransfer,Qt::QueuedConnection);
 	connect(transfer,&Transfer::error,this,&TransferThreadManager::destroyTransfer,Qt::QueuedConnection);
 	qint16 id = transfer->file().id();
@@ -89,6 +91,15 @@ void TransferThreadManager::stopTransfer(qint16 id)
 	if(!t)
 		return;
 	QMetaObject::invokeMethod(t,"stop",Qt::QueuedConnection);
+}
+
+void TransferThreadManager::progressTransfer(int prog)
+{
+	if(!sender())
+		return;
+
+	Transfer* t = dynamic_cast<Transfer*>(sender());
+	emit transferProgressed(t->file().id(),prog);
 }
 
 void TransferThreadManager::requested()

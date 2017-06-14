@@ -35,6 +35,7 @@ namespace IPConnect
 RunningTransfers::RunningTransfers(ITransferManager* tm, QObject* parent) : QAbstractListModel(parent) , m_tm(tm)
 {
 	connect(tm,&ITransferManager::runningTransfersUpdated,this,&RunningTransfers::updateList);
+	connect(tm,&ITransferManager::transferProgressed,this,&RunningTransfers::updateProgress);
 	m_transfers = tm->runningTransfers();
 	beginInsertRows(QModelIndex(), 0, m_transfers.count()-1);
 	endInsertRows();
@@ -68,6 +69,8 @@ QVariant RunningTransfers::data(const QModelIndex& index, int role) const
 		return file.url();
 	else if (role == ClientName)
 		return file.userName();
+	else if (role == Progress)
+		return file.progress();
 	return QVariant();
 }
 
@@ -87,6 +90,28 @@ void RunningTransfers::updateList()
 	endInsertRows();
 }
 
+void RunningTransfers::updateProgress(qint16 id, int prog)
+{
+	qDebug() << this << "updating progress for " << id << " to " << prog ;
+	qint16 i ;
+	File f;
+	for(i=0;i<rowCount();i++)
+	{
+		if(m_transfers.value(i).id() == id){
+			f = m_transfers.value(i);
+			break;
+		}
+	}
+
+	beginRemoveRows(QModelIndex(),i, i);
+	endRemoveRows();
+
+	beginInsertRows(QModelIndex(), i, i);
+	m_transfers[i].setProgress(prog);
+	endInsertRows();
+
+}
+
 QHash<int, QByteArray> RunningTransfers::roleNames() const
 {
 	QHash<int, QByteArray> roles;
@@ -96,6 +121,7 @@ QHash<int, QByteArray> RunningTransfers::roleNames() const
 	roles[FileSize] = "filesize";
 	roles[Url] = "url";
 	roles[ClientName] = "clientname";
+	roles[Progress] = "progress";
 	return roles;
 }
 

@@ -41,6 +41,7 @@ public:
 
 Q_SIGNALS:
 	void error();
+	void progress(int);
 
 protected:
 	explicit ITransfer(QObject* parent = nullptr);

@@ -40,7 +40,8 @@ public:
 		FilePath,
 		FileSize,
 		Url,
-		ClientName
+		ClientName,
+		Progress
 	};
 
 	explicit RunningTransfers(ITransferManager* tm, QObject* parent = nullptr);
@@ -50,6 +51,7 @@ public:
 
 public Q_SLOTS:
 	void updateList();
+	void updateProgress(qint16,int);
 
 protected:
 	QHash<int, QByteArray> roleNames() const;

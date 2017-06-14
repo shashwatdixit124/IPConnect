@@ -48,6 +48,7 @@ public:
 Q_SIGNALS:
 	void pendingTransfersUpdated();
 	void runningTransfersUpdated();
+	void transferProgressed(qint16,int);
 
 protected:
 	explicit ITransferManager(QObject* parent = nullptr);

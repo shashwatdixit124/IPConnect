@@ -46,6 +46,7 @@ public:
 	Action action() const;
 	QString url() const;
 	QString userName() const;
+	int progress() const;
 
 	void setId(qint16);
 	void setName(QString);
@@ -54,6 +55,7 @@ public:
 	void setAction(Action);
 	void setUrl(QString);
 	void setUserName(QString);
+	void setProgress(int);
 
 protected:
 	qint16 m_id;
@@ -63,6 +65,7 @@ protected:
 	Action m_action;
 	QString m_url;
 	QString m_userName;
+	int m_prog;
 
 };
 

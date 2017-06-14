@@ -31,13 +31,14 @@
 #include <QFile>
 #include <QThread>
 #include <QTime>
+#include <QDebug>
 #include <QHostAddress>
 
 namespace IPConnect
 {
 
 Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
-	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) ,
+	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) , m_progress(0) ,
 	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false)
 {
 }
@@ -128,7 +129,6 @@ void Transfer::setConnection(IConnection* conn)
 
 	m_conn = conn;
 	connect(m_conn,&IConnection::dataAvailable,this,&Transfer::handleRead);
-	connect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
 	connect(m_conn,&IConnection::errorOccurred,this,&Transfer::stop);
 }
 
@@ -319,12 +319,19 @@ void Transfer::transfer()
 	m_destination->write(buffer);
 	m_transferInCycle += buffer.length();
 	m_transfered += buffer.length();
+	if(!m_isSender) {
+		int temp = ((double)m_transfered/m_file.size())*100;
+		if(m_progress != temp) {
+			m_progress = temp;
+			m_file.setProgress(m_progress);
+			emit progress(m_progress);
+		}
+	}
 
 	if(!m_isSender && m_file.size() == m_transfered)
 	{
 		qCDebug(TRANSFER) << this << "Stopping due to recieved whole file";
 		stop();
-		emit finished();
 	}
 	else if(!m_isSender)
 	{
@@ -373,9 +380,7 @@ void Transfer::accept()
 	QByteArray message = "IPC:FILE:RAF:"+m_file.name().toUtf8();
 	m_conn->write(message);
 	disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
-	disconnect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
 	connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
-	connect(m_conn,&IConnection::bytesWritten,this,&Transfer::bytesWritten);
 	start();
 }
 
@@ -439,9 +444,7 @@ void Transfer::handleRequest()
 		if(option == "RAF")
 		{
 			disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
-			disconnect(m_conn,&IConnection::bytesWritten,this,&Transfer::handleWrite);
 			connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
-			connect(m_conn,&IConnection::bytesWritten,this,&Transfer::bytesWritten);
 			start();
 		}
 		if(option == "REJ")
