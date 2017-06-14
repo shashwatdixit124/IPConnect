@@ -202,7 +202,7 @@ bool Transfer::checkDevices()
 	if(!m_source)
 	{
 		m_transfering = false;
-		qCDebug(TRANSFER) << this << "No source device!";
+		qCDebug(TRANSFERRIGOR) << this << "No source device!";
 		emit error();
 		return false;
 	}
@@ -210,7 +210,7 @@ bool Transfer::checkDevices()
 	if(!m_destination)
 	{
 		m_transfering = false;
-		qCDebug(TRANSFER) << this << "No destination device!";
+		qCDebug(TRANSFERRIGOR) << this << "No destination device!";
 		emit error();
 		return false;
 	}
@@ -218,7 +218,7 @@ bool Transfer::checkDevices()
 	if(!m_source->isOpen() || !m_source->isReadable())
 	{
 		m_transfering = false;
-		qCDebug(TRANSFER) << this << "Source device is not open or is not readable!";
+		qCDebug(TRANSFERRIGOR) << this << "Source device is not open or is not readable!";
 		emit error();
 		return false;
 	}
@@ -226,7 +226,7 @@ bool Transfer::checkDevices()
 	if(!m_destination->isOpen() || !m_destination->isWritable())
 	{
 		m_transfering = false;
-		qCDebug(TRANSFER) << this << "Destination device is not open or is not writable!";
+		qCDebug(TRANSFERRIGOR) << this << "Destination device is not open or is not writable!";
 		emit error();
 		return false;
 	}
@@ -238,13 +238,13 @@ bool Transfer::checkTransfer()
 {
 	if(!m_transfering)
 	{
-		qCDebug(TRANSFER) << this << "Not transfering, aborting!";
+		qCDebug(TRANSFERRIGOR) << this << "Not transfering, aborting!";
 		emit error();
 		return false;
 	}
 	if(m_transferInCycle >= m_rate)
 	{
-		qCDebug(TRANSFER) << this << "Rate exeeded, not allowed to transfer!";
+		qCDebug(TRANSFERRIGOR) << this << "Rate exeeded, not allowed to transfer!";
 		emit error();
 		return false;
 	}
@@ -254,43 +254,43 @@ bool Transfer::checkTransfer()
 
 void Transfer::scheduleTransfer()
 {
-	qCDebug(TRANSFER) << this << "scheduleTransfer called";
+	qCDebug(TRANSFERRIGOR) << this << "scheduleTransfer called";
 
 	if(m_scheduled)
 	{
-		qCDebug(TRANSFER) << this << "Exiting scheduleTransfer due to: waiting on timer";
+		qCDebug(TRANSFERRIGOR) << this << "Exiting scheduleTransfer due to: waiting on timer";
 		return;
 	}
 
 	if(!m_transfering)
 	{
-		qCDebug(TRANSFER) << this << "Exiting scheduleTransfer due to: not transfering";
+		qCDebug(TRANSFERRIGOR) << this << "Exiting scheduleTransfer due to: not transfering";
 		return;
 	}
 
 	if(m_isSender && m_source->bytesAvailable() <= 0)
 	{
-		qCDebug(TRANSFER) << this << "Exiting scheduleTransfer due to: no bytes available to be read";
+		qCDebug(TRANSFERRIGOR) << this << "Exiting scheduleTransfer due to: no bytes available to be read";
 		return;
 	}
 
 	if(!m_isSender && !m_conn->hasUnreadData())
 	{
-		qCDebug(TRANSFER) << this << "Exiting scheduleTransfer due to: no bytes available to be read";
+		qCDebug(TRANSFERRIGOR) << this << "Exiting scheduleTransfer due to: no bytes available to be read";
 		return;
 	}
 
 	int prediction = m_transferInCycle + m_chunkSize;
 	if(prediction <= m_rate)
 	{
-		qCDebug(TRANSFER) << this << "calling transfer from scheduleTransfer";
+		qCDebug(TRANSFERRIGOR) << this << "calling transfer from scheduleTransfer";
 		transfer();
 	}
 	else
 	{
 		int current = QTime::currentTime().msec();
 		int delay = 1000 - current;
-		qCDebug(TRANSFER) << this << "Rate limit (" << m_rate << ") exeeded in prediction (" << m_transferInCycle << " to " <<  prediction << "), delaying transfer for " << delay << "ms";
+		qCDebug(TRANSFERRIGOR) << this << "Rate limit (" << m_rate << ") exeeded in prediction (" << m_transferInCycle << " to " <<  prediction << "), delaying transfer for " << delay << "ms";
 		m_transferInCycle = 0;
 		m_scheduled = true;
 		m_timer.singleShot(delay,this,&Transfer::transfer);
@@ -335,7 +335,7 @@ void Transfer::transfer()
 	}
 	else if(!m_isSender)
 	{
-		qCDebug(TRANSFER) << this << "Still Recieving total recieved = " << m_transfered ;
+		qCDebug(TRANSFERRIGOR) << this << "Still Recieving total recieved = " << m_transfered ;
 	}
 
 	if(m_isSender && m_source->bytesAvailable() == 0)
@@ -345,7 +345,7 @@ void Transfer::transfer()
 	}
 	else if(m_isSender)
 	{
-		qCDebug(TRANSFER) << this << "Still Sending total sent = " << m_transfered ;
+		qCDebug(TRANSFERRIGOR) << this << "Still Sending total sent = " << m_transfered ;
 	}
 
 	if(m_transfering == false)
@@ -353,7 +353,7 @@ void Transfer::transfer()
 
 	if(!m_source->isSequential() && m_source->bytesAvailable() > 0)
 	{
-		qCDebug(TRANSFER) << this << "Source still has bytes, scheduling a transfer";
+		qCDebug(TRANSFERRIGOR) << this << "Source still has bytes, scheduling a transfer";
 		scheduleTransfer();
 	}
 }

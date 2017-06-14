@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <QApplication>
+#include <QLoggingCategory>
 #include <QIcon>
 
 using namespace IPConnect;
@@ -34,6 +35,8 @@ int main(int argc, char* argv[])
 	a.setOrganizationName("IPConnect");
 	a.setOrganizationDomain("https://github.com/shashwatdixit124/IPConnect");
 	a.setApplicationVersion("2.0");
+
+	QLoggingCategory::setFilterRules(QStringLiteral("ipconnect.transferrigor=false\n"));
 
 	ControlCenter::init();
 	QObject::connect(&a,&QApplication::aboutToQuit,ControlCenter::instance(),&ControlCenter::shutdown);

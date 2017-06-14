@@ -21,5 +21,4 @@
 #include "debugtransfer.h"
 
 Q_LOGGING_CATEGORY(TRANSFER, "ipconnect.transfer")
- 
-
+Q_LOGGING_CATEGORY(TRANSFERRIGOR, "ipconnect.transferrigor")
