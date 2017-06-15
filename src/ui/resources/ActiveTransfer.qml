@@ -116,6 +116,19 @@ Item { id: pendingTransfers
 									minimumValue: 0
 									maximumValue: 100
 									value: progress
+									style: ProgressBarStyle {
+										background: Rectangle {
+											implicitWidth: 200
+											implicitHeight: 20
+											color: "#fafafa"
+											border.color: "#f8f8f8"
+											anchors.fill: parent
+										}
+										progress: Rectangle {
+											color: IPConnect.theme
+											anchors.margins: 1
+										}
+									}
 								}
 							}
 						}
@@ -178,6 +191,7 @@ Item { id: pendingTransfers
 			delegate: aTDelegate
 			model: IPConnect.runningTransfers
 			spacing: 5
+
 		}
 	}
 

@@ -85,6 +85,13 @@ Popup { id: item
 						width: 300
 						placeholderText: qsTr(" File Location")
 						text: sendFileDialog.fileUrl
+						background: Rectangle {
+							implicitHeight: 40
+							implicitWidth: 200
+							color: parent.activeFocus ? "transparent" : "#f6f6f6"
+							border.color: parent.activeFocus ? IPConnect.theme : "#888"
+							border.width: parent.activeFocus ? 2 : 0
+						}
 					}
 					IPCButton {id: fileTransferBtn
 						icon: qsTr("\uf15b")

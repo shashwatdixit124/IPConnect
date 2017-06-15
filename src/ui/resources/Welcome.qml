@@ -115,6 +115,13 @@ Popup { id: setting
 								height: 40
 								width: parent.width
 								onActiveFocusChanged: userNameLabel.font.pixelSize = 20
+								background: Rectangle {
+									implicitHeight: 40
+									implicitWidth: 200
+									color: parent.activeFocus ? "transparent" : "#f6f6f6"
+									border.color: parent.activeFocus ? IPConnect.theme : "#888"
+									border.width: parent.activeFocus ? 2 : 0
+								}
 							}
 						}
 					}
@@ -147,6 +154,13 @@ Popup { id: setting
 									height: parent.height
 									placeholderText: qsTr("ex: ~/Downloads")
 									text: dirDialog.folder
+									background: Rectangle {
+										implicitHeight: 40
+										implicitWidth: 200
+										color: parent.activeFocus ? "transparent" : "#f6f6f6"
+										border.color: parent.activeFocus ? IPConnect.theme : "#888"
+										border.width: parent.activeFocus ? 2 : 0
+									}
 								}
 
 								Button { id: selectBtn

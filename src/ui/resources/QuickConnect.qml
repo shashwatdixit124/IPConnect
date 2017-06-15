@@ -76,6 +76,13 @@ Popup { id: item
 						quickConnectUrl.text = ""
 						close()
 					}
+					background: Rectangle {
+						implicitHeight: 40
+						implicitWidth: 200
+						color: parent.activeFocus ? "transparent" : "#f6f6f6"
+						border.color: parent.activeFocus ? IPConnect.theme : "#888"
+						border.width: parent.activeFocus ? 2 : 0
+					}
 				}
 				IPCButton { id: quickConnectBtn
 					shadow: false

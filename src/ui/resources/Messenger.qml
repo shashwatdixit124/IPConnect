@@ -127,6 +127,7 @@ Item { id: item
 					delegate: msgDelegate
 					model: IPConnect.messages
 					spacing: 5
+					currentIndex: count - 1
 				}
 			}
 		}
