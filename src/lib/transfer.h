@@ -80,6 +80,7 @@ protected:
 	qint32 m_transferInCycle;
 	int m_id;
 	int m_progress;
+	bool m_stopped;
 
 	void bytesWritten(qint32);
 	void readyRead();

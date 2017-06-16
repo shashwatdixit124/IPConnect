@@ -39,7 +39,7 @@ namespace IPConnect
 
 Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
 	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) , m_progress(0) ,
-	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false)
+	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false) , m_stopped(true)
 {
 }
 
@@ -47,13 +47,11 @@ Transfer::~Transfer()
 {
 	if(m_source)
 	{
-		m_source->close();
 		m_source->deleteLater();
 		m_source = nullptr;
 	}
 	if(m_destination)
 	{
-		m_destination->close();
 		m_destination->deleteLater();
 		m_destination = nullptr;
 	}
@@ -97,6 +95,7 @@ void Transfer::start()
 	}
 
 	m_transferStarted = true;
+	m_stopped = false;
 	m_transfering = true;
 	m_transfered = 0;
 
@@ -113,7 +112,10 @@ void Transfer::stop()
 {
 	qCDebug(TRANSFER) << this << "Stopping the transfer";
 	m_timer.stop();
+	m_stopped = true;
 	m_transfering = false;
+	m_source->close();
+	m_destination->close();
 	emit destroyTransfer();
 }
 
@@ -254,6 +256,9 @@ bool Transfer::checkTransfer()
 
 void Transfer::scheduleTransfer()
 {
+	if(m_stopped)
+		return;
+
 	qCDebug(TRANSFERRIGOR) << this << "scheduleTransfer called";
 
 	if(m_scheduled)
@@ -299,6 +304,9 @@ void Transfer::scheduleTransfer()
 
 void Transfer::transfer()
 {
+	if(m_stopped)
+		return;
+
 	m_scheduled = false;
 	m_transfering = true;
 
