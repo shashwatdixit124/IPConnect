@@ -47,6 +47,9 @@ public:
 	QString url() const;
 	QString userName() const;
 	int progress() const;
+	int rate() const;
+	int transfered() const;
+	quint64 timeRemaining() const;
 
 	void setId(qint16);
 	void setName(QString);
@@ -56,6 +59,9 @@ public:
 	void setUrl(QString);
 	void setUserName(QString);
 	void setProgress(int);
+	void setRate(int);
+	void setTransfered(quint64);
+	void setTimeRemaining(quint64);
 
 protected:
 	qint16 m_id;
@@ -66,6 +72,9 @@ protected:
 	QString m_url;
 	QString m_userName;
 	int m_prog;
+	int m_rate;
+	quint64 m_transfered;
+	quint64 m_timeRemaining;
 
 };
 

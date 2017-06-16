@@ -93,13 +93,13 @@ void TransferThreadManager::stopTransfer(qint16 id)
 	QMetaObject::invokeMethod(t,"stop",Qt::QueuedConnection);
 }
 
-void TransferThreadManager::progressTransfer(int prog)
+void TransferThreadManager::progressTransfer(int prog, quint64 transfered , int rate)
 {
 	if(!sender())
 		return;
 
 	Transfer* t = dynamic_cast<Transfer*>(sender());
-	emit transferProgressed(t->file().id(),prog);
+	emit transferProgressed(t->file().id(),prog,transfered,rate);
 }
 
 void TransferThreadManager::requested()

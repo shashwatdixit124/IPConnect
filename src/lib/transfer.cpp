@@ -316,15 +316,19 @@ void Transfer::transfer()
 
 	qCDebug(TRANSFER) << this << "writting to destination: " << buffer.length() ;
 
+	quint64 len = buffer.length();
 	m_destination->write(buffer);
-	m_transferInCycle += buffer.length();
-	m_transfered += buffer.length();
+	m_transferInCycle += len;
+	m_transfered += len;
 	if(!m_isSender) {
 		int temp = ((double)m_transfered/m_file.size())*100;
 		if(m_progress != temp) {
 			m_progress = temp;
 			m_file.setProgress(m_progress);
-			emit progress(m_progress);
+			m_file.setTransfered(m_transfered);
+			int rate = len/(1024*1024);
+			m_file.setRate(rate);
+			emit progress(m_progress,m_transfered,rate);
 		}
 	}
 

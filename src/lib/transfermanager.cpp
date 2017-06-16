@@ -187,10 +187,12 @@ void TransferManager::rejected(qint16 id)
 	emit pendingTransfersUpdated();
 }
 
-void TransferManager::progressTransfer(qint16 id, int prog)
+void TransferManager::progressTransfer(qint16 id, int prog, quint64 transfered, int rate)
 {
 	m_runningTransfers[id].setProgress(prog);
-	emit transferProgressed(id,prog);
+	m_runningTransfers[id].setTransfered(transfered);
+	m_runningTransfers[id].setRate(rate);
+	emit transferProgressed(id,prog,transfered,rate);
 }
 
 void TransferManager::acceptTransfer(qint16 id)

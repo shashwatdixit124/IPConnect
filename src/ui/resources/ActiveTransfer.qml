@@ -44,7 +44,7 @@ Item { id: pendingTransfers
 
 		Item { id: aTWrapper
 			width: parent.width
-			height: 180
+			height: 210
 			anchors.horizontalCenter: parent.horizontalCenter
 			Rectangle { id: aTRect
 				width: parent.width - 20
@@ -56,7 +56,7 @@ Item { id: pendingTransfers
 					anchors.fill: parent
 					Item { id: fileIconWrapper
 						height: parent.height
-						width: parent.height
+						width: 150
 
 						Text { id: fileIcon
 							text: qsTr("\ue007")
@@ -84,16 +84,6 @@ Item { id: pendingTransfers
 									anchors.verticalCenter: parent.verticalCenter
 									text: qsTr(filename)
 									elide: Text.ElideMiddle
-								}
-							}
-
-							Item { id: aTFileSize
-								width: parent.width
-								height: 30
-								Text {
-									width: parent.width - 20
-									anchors.verticalCenter: parent.verticalCenter
-									text: qsTr("<b>Size </b> : "+filesize)
 								}
 							}
 
@@ -131,11 +121,32 @@ Item { id: pendingTransfers
 									}
 								}
 							}
+
+							Item { id: aTFileSize
+								width: parent.width
+								height: 30
+								Text {
+									width: parent.width - 20
+									anchors.verticalCenter: parent.verticalCenter
+									text: qsTr(transfered+" / "+filesize+" ( "+rate+" MB/sec )")
+								}
+							}
+
+							Item { id: aTTimeRemaining
+								width: parent.width
+								height: 30
+								Text {
+									width: parent.width - 20
+									anchors.verticalCenter: parent.verticalCenter
+									text: qsTr(timeRemaining+" remaining ")
+								}
+							}
+
 						}
 					}
 					Item { id: aTAction
 						height: parent.height
-						width: height / 2
+						width: 150/2
 
 						Column {
 							anchors.fill: parent

@@ -41,7 +41,10 @@ public:
 		FileSize,
 		Url,
 		ClientName,
-		Progress
+		Progress,
+		Transfered,
+		Rate,
+		TimeRemaining
 	};
 
 	explicit RunningTransfers(ITransferManager* tm, QObject* parent = nullptr);
@@ -51,7 +54,7 @@ public:
 
 public Q_SLOTS:
 	void updateList();
-	void updateProgress(qint16,int);
+	void updateProgress(qint16,int,quint64,int);
 
 protected:
 	QHash<int, QByteArray> roleNames() const;
@@ -59,6 +62,7 @@ protected:
 	QList<File> m_transfers;
 
 	QString bytesToString(quint64) const;
+	QString timeForFile(File) const;
 
 };
 

@@ -61,7 +61,7 @@ public Q_SLOTS:
 	void transferRemoved(qint16);
 	void accepted(qint16);
 	void rejected(qint16);
-	void progressTransfer(qint16,int);
+	void progressTransfer(qint16,int,quint64,int);
 
 Q_SIGNALS:
 	void transferCreated(Transfer*);

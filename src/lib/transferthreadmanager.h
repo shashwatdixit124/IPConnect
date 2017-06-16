@@ -46,7 +46,7 @@ public Q_SLOTS:
 	void acceptPending(qint16);
 	void rejectPending(qint16);
 	void stopTransfer(qint16);
-	void progressTransfer(int);
+	void progressTransfer(int,quint64,int);
 
 	void requested();
 	void destroyTransfer();
@@ -55,7 +55,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
 	void requestedTransfer(File);
-	void transferProgressed(qint16,int);
+	void transferProgressed(qint16,int,quint64,int);
 	void transferRemoved(qint16);
 	void accepted(qint16);
 	void rejected(qint16);

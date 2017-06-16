@@ -71,6 +71,12 @@ QVariant RunningTransfers::data(const QModelIndex& index, int role) const
 		return file.userName();
 	else if (role == Progress)
 		return file.progress();
+	else if(role == Transfered)
+		return bytesToString(file.transfered());
+	else if(role == Rate)
+		return file.rate();
+	else if(role == TimeRemaining)
+		return timeForFile(file);
 	return QVariant();
 }
 
@@ -90,7 +96,7 @@ void RunningTransfers::updateList()
 	endInsertRows();
 }
 
-void RunningTransfers::updateProgress(qint16 id, int prog)
+void RunningTransfers::updateProgress(qint16 id, int prog, quint64 transfered, int rate)
 {
 	qint16 i ;
 	File f;
@@ -107,6 +113,8 @@ void RunningTransfers::updateProgress(qint16 id, int prog)
 
 	beginInsertRows(QModelIndex(), i, i);
 	m_transfers[i].setProgress(prog);
+	m_transfers[i].setTransfered(transfered);
+	m_transfers[i].setRate(rate);
 	endInsertRows();
 
 }
@@ -121,6 +129,9 @@ QHash<int, QByteArray> RunningTransfers::roleNames() const
 	roles[Url] = "url";
 	roles[ClientName] = "clientname";
 	roles[Progress] = "progress";
+	roles[Transfered] = "transfered";
+	roles[Rate] = "rate";
+	roles[TimeRemaining] = "timeRemaining";
 	return roles;
 }
 
@@ -134,6 +145,28 @@ QString RunningTransfers::bytesToString(quint64 bytes) const
 		return QString::number(bytes/1024) + QString(" KB");
 	else
 		return QString::number(bytes) + QString(" B");
+}
+
+QString RunningTransfers::timeForFile(File f) const
+{
+	if(f.rate() == 0)
+		return QString("Unknown Time");
+
+	quint64 secs = (f.size() - f.transfered())/(f.rate()*1024*1024) ;
+	if(secs < 60)
+		return QString::number(secs) + " sec";
+	else if(secs < 60*60)
+	{
+		int min = secs / 60;
+		int sec = secs % 60;
+		return QString::number(min)+" min "+QString::number(sec)+" sec";
+	}
+	else
+	{
+		int hour = secs / (60*60) ;
+		int min = secs / 60 ;
+		return QString::number(hour)+" h "+QString::number(min)+" min";
+	}
 }
 
 }
