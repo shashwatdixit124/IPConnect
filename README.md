@@ -1,3 +1,23 @@
 # IPConnect
 
-IPConnect is a P2P Chatting and File Transfering app made on Qt.
+P2P Chat and File Transfer Desktop Application for LAN.
+
+![IPConnect](images/ipconnect.png)
+
+### Requirements
+* cmake 3.5.1
+* Qt 5.8 libs
+
+### Compiling
+* if Qt 5.8 is installed globally
+```
+$ mkdir build && cd build
+$ cmake ..
+$ make && make install
+```
+* if Qt 5.8 is installed at a specific path
+```
+$ mkdir build && cd build
+$ cmake -DCMAKE_PREFIX_PATH=/path/to/Qt5.8.0/ ..
+$ make && make install
+```
