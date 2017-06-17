@@ -18,6 +18,7 @@ set(IPConnectLibrary_SRS
     debug.cpp
     debugtransfer.cpp
     file.cpp
+    message.cpp
     messageinformation.cpp
     messageserver.cpp
     transfer.cpp
@@ -49,6 +50,7 @@ set(IPConnectLibrary_HEADERS
     debug.h
     debugtransfer.h
     file.h
+    message.h
     messageinformation.h
     messageserver.h
     transfer.h
