@@ -49,6 +49,9 @@ public:
 public Q_SLOTS:
 	void updateList(MessageInformation);
 
+Q_SIGNALS:
+	void messagesAdded(int);
+
 protected:
 	QHash<int, QByteArray> roleNames() const;
 	IClientManager *m_cm;

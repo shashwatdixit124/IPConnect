@@ -69,6 +69,7 @@ void MessageList::updateList(MessageInformation mi)
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	m_messages.append(mi);
 	endInsertRows();
+	emit messagesAdded(1);
 }
 
 QHash<int, QByteArray> MessageList::roleNames() const

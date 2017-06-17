@@ -73,6 +73,7 @@ QVariant PendingTransfers::data(const QModelIndex& index, int role) const
 
 void PendingTransfers::updateList()
 {
+	int prevCount = rowCount();
 	if(rowCount() > 0) {
 		beginRemoveRows(QModelIndex(),0,rowCount()-1);
 		endRemoveRows();
@@ -83,8 +84,10 @@ void PendingTransfers::updateList()
 	if(m_transfers.count() <= 0)
 		return;
 
+	int newCount = rowCount();
 	beginInsertRows(QModelIndex(), 0 , m_transfers.count()-1);
 	endInsertRows();
+	emit transfersAdded(newCount-prevCount);
 }
 
 QHash<int, QByteArray> PendingTransfers::roleNames() const

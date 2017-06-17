@@ -87,7 +87,29 @@ Item { id: item
 					cursorShape: Qt.PointingHandCursor
 					onClicked: {
 						sidePane.currentId = parent.idno
+						IPConnect.unreadMessages = 0
 						messengerClicked()
+					}
+				}
+
+				Rectangle { id: msgRemainingBlock
+					property int unreadMessages: IPConnect.unreadMessages
+					visible: sidePane.currentId == parent.idno ? false : unreadMessages === 0 ? false : true
+					anchors.bottom: parent.bottom
+					anchors.right: parent.right
+					height: remainingMsg.implicitWidth + 12
+					width: height
+					radius: width/2
+					color: "#10000000"
+					onUnreadMessagesChanged: {
+						if(sidePane.currentId == parent.idno)
+							IPConnect.unreadMessages = 0
+					}
+					Text { id: remainingMsg
+						text: IPConnect.unreadMessages
+						anchors.centerIn: parent
+						color: IPConnect.theme
+						font.pixelSize: 10
 					}
 				}
 			}
@@ -112,7 +134,29 @@ Item { id: item
 					cursorShape: Qt.PointingHandCursor
 					onClicked: {
 						sidePane.currentId = parent.idno
+						IPConnect.unseenTransfers = 0
 						transferManagerClicked()
+					}
+				}
+
+				Rectangle { id: transferRemainingBlock
+					property int unseenTransfers : IPConnect.unseenTransfers
+					visible: sidePane.currentId == parent.idno ? false : unseenTransfers === 0 ? false : true
+					anchors.bottom: parent.bottom
+					anchors.right: parent.right
+					height: remainingTransfer.implicitWidth+12
+					width: height
+					radius: width/2
+					color: "#10000000"
+					onUnseenTransfersChanged: {
+						if(sidePane.currentId == parent.idno)
+							IPConnect.unseenTransfers = 0
+					}
+					Text { id: remainingTransfer
+						text: parent.unseenTransfers
+						anchors.centerIn: parent
+						color: IPConnect.theme
+						font.pixelSize: 10
 					}
 				}
 			}

@@ -41,7 +41,7 @@
 namespace IPConnect
 {
 
-UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
+UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1) , m_unreadMessages(0) , m_unseenTransfers(0)
 {
 	m_clientManager = m_cc->clientManager();
 	m_settings = m_cc->userSettings();
@@ -54,6 +54,8 @@ UiManager::UiManager() : m_cc(ControlCenter::instance()) , m_selectedUser(-1)
 	connect(m_clientManager,&IClientManager::manualConnectionFailed,this,&UiManager::manualConnectionFailed);
 	m_notificationMsg = "Welcome to IPConnect";
 	m_notificationStatus = runningFirstTime() ? "Inactive" : "Active" ; 
+	connect(m_messages,&MessageList::messagesAdded,this,&UiManager::messagesAdded);
+	connect(m_pendingTransfersList,&PendingTransfers::transfersAdded,this,&UiManager::transfersAdded);
 }
 
 UiManager::~UiManager()
@@ -158,6 +160,28 @@ void UiManager::setNotificationStatus(QString status)
 	emit notificationStatusChanged();
 }
 
+int UiManager::unreadMessages()
+{
+	return m_unreadMessages;
+}
+
+void UiManager::setUnreadMessages(int m)
+{
+	m_unreadMessages = m;
+	emit unreadMessagesChanged();
+}
+
+int UiManager::unseenTransfers()
+{
+	return m_unseenTransfers;
+}
+
+void UiManager::setUnseenTransfers(int t)
+{
+	m_unseenTransfers = t;
+	emit unseenTransfersChanged();
+}
+
 void UiManager::sendMessage(QString msg)
 {
 	m_messenger->sendMessage(m_selectedUser,msg);
@@ -211,6 +235,16 @@ void UiManager::manualConnectionFailed(QString url)
 {
 	setNotificationMsg("Can't Connect to \""+url+"\"");
 	setNotificationStatus("Active");
+}
+
+void UiManager::messagesAdded(int n)
+{
+	setUnreadMessages(unreadMessages() + n);
+}
+
+void UiManager::transfersAdded(int n)
+{
+	setUnseenTransfers(unseenTransfers() + n);
 }
 
 QObject* UiManager::uimanager_singleton(QQmlEngine *engine, QJSEngine *scriptEngine)

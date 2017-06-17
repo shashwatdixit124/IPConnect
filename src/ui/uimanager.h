@@ -55,6 +55,8 @@ class UiManager : public QObject
 	Q_PROPERTY(qint16 selectedUser READ selectedUser WRITE setSelectedUser NOTIFY selectedUserChanged)
 	Q_PROPERTY(QString notificationMsg READ notificationMsg WRITE setNotificationMsg NOTIFY notificationMsgChanged)
 	Q_PROPERTY(QString notificationStatus READ notificationStatus WRITE setNotificationStatus NOTIFY notificationStatusChanged)
+	Q_PROPERTY(int unreadMessages READ unreadMessages WRITE setUnreadMessages NOTIFY unreadMessagesChanged)
+	Q_PROPERTY(int unseenTransfers READ unseenTransfers WRITE setUnseenTransfers NOTIFY unseenTransfersChanged)
 
 public:
 	UiManager();
@@ -85,6 +87,12 @@ public:
 	QString notificationStatus();
 	void setNotificationStatus(QString);
 
+	int unreadMessages();
+	void setUnreadMessages(int);
+
+	int unseenTransfers();
+	void setUnseenTransfers(int);
+
 	Q_INVOKABLE void sendMessage(QString);
 	Q_INVOKABLE void sendFile(QString);
 	Q_INVOKABLE void quickConnect(QString);
@@ -96,6 +104,8 @@ public:
 
 protected Q_SLOTS:
 	void manualConnectionFailed(QString);
+	void messagesAdded(int);
+	void transfersAdded(int);
 
 Q_SIGNALS:
 	void themeChanged();
@@ -104,6 +114,8 @@ Q_SIGNALS:
 	void selectedUserChanged();
 	void notificationMsgChanged();
 	void notificationStatusChanged();
+	void unreadMessagesChanged();
+	void unseenTransfersChanged();
 
 protected:
 	ControlCenter* m_cc;
@@ -118,6 +130,8 @@ protected:
 	QString m_notificationMsg;
 	QString m_notificationStatus;
 	qint16 m_selectedUser;
+	int m_unreadMessages;
+	int m_unseenTransfers;
 
 };
 

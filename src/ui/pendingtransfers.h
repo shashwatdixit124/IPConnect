@@ -51,6 +51,9 @@ public:
 public Q_SLOTS:
 	void updateList();
 
+Q_SIGNALS:
+	void transfersAdded(int);
+
 protected:
 	QHash<int, QByteArray> roleNames() const;
 	ITransferManager *m_tm;
