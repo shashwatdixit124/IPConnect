@@ -32,7 +32,7 @@ public:
 
 	enum Method{
 		CONNECT,
-		FILE,
+		TRANSFER,
 		MSG
 	};
 

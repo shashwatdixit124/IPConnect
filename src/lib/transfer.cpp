@@ -26,6 +26,7 @@
 #include "controlcenter.h"
 #include "debugtransfer.h"
 #include "file.h"
+#include "message.h"
 
 #include <QObject>
 #include <QFile>
@@ -140,9 +141,25 @@ void Transfer::sendFile()
 		return;
 
 	QString username = ControlCenter::instance()->userSettings()->name();
-	QString message  = "IPC:FILE:RSF:" + username + ":" + QString::number(m_file.size()) + ":" + m_file.name();
-	qCDebug(TRANSFER) << "sending message " << message ;
-	m_conn->write(message.toUtf8());
+	Message m;
+	m.setMethod(Message::TRANSFER);
+	m.setOption(Message::RSF);
+	m.setData("USERNAME",username);
+	m.setData("FILENAME",m_file.name());
+	m.setData("FILESIZE",QString::number(m_file.size()));
+	send(m);
+}
+
+void Transfer::send(Message m)
+{
+	if(m_conn)
+	{
+		m_conn->write(m.toJson());
+		m_conn->flush();
+		m_conn->waitForBytesWritten();
+	}
+	else
+		qCDebug(TRANSFER) << "connection not available on write" ;
 }
 
 File Transfer::file()
@@ -389,8 +406,11 @@ void Transfer::handleWrite(qint32)
 
 void Transfer::accept()
 {
-	QByteArray message = "IPC:FILE:RAF:"+m_file.name().toUtf8();
-	m_conn->write(message);
+	Message m;
+	m.setMethod(Message::TRANSFER);
+	m.setOption(Message::RAF);
+	m.setData("FILENAME",m_file.name());
+	send(m);
 	disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
 	connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
 	start();
@@ -398,51 +418,29 @@ void Transfer::accept()
 
 void Transfer::reject()
 {
-	QByteArray message = "IPC:FILE:REJ:"+m_file.name().toUtf8();
-	m_conn->write(message);
+	Message m;
+	m.setMethod(Message::TRANSFER);
+	m.setOption(Message::REJ);
+	m.setData("FILENAME",m_file.name());
+	send(m);
 	stop();
 }
 
 void Transfer::processRead(QByteArray data)
 {
-	QString header = data;
-	m_request.insert("request",header);
-
-	QStringList options = header.split(":");
-
-	if(options.count() >= 1) m_request.insert("app", options.at(0).trimmed());
-
-	if(options.count() >= 2) m_request.insert("method", options.at(1).trimmed());
-
-	if(options.count() >= 3) m_request.insert("option", options.at(2).trimmed());
-
-	if(options.count() >= 4)
-	{
-		int pos = header.indexOf(":") + m_request.value("method","").size() + m_request.value("option","").size() + 2;
-		m_request.insert("data", header.mid(pos + 1));
-	}
-
+	m_request = Message::fromJson(data);
 	handleRequest();
 }
 
 void Transfer::handleRequest()
 {
-	QString method = m_request.value("method","");
-	QString option = m_request.value("option","");
-
-	if(method == "FILE")
+	if(m_request.method() == Message::TRANSFER)
 	{
-		m_response.insert("app","IPC");
-		m_response.insert("method","FILE");
-
-		if(option == "RSF")
+		if(m_request.option() == Message::RSF)
 		{
-			QString data = m_request.value("data");
-			QStringList options = data.split(":");
-			QString clientName = options.at(0).trimmed();
-			QString filesize = options.at(1).trimmed();
-			int pos = data.indexOf(":") + filesize.size() + 1 ;
-			QString filename = data.mid(pos + 1);
+			QString clientName = m_request.data("USERNAME");
+			QString filesize = m_request.data("FILESIZE");
+			QString filename = m_request.data("FILENAME");
 
 			m_file.setName(filename);
 			m_file.setSize(filesize.toULongLong());
@@ -450,16 +448,17 @@ void Transfer::handleRequest()
 			m_file.setUserName(clientName);
 			m_file.setUrl(m_conn->peerAddress().toString());
 			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());
+
 			qCDebug(TRANSFER) << this << "requested transfer" ;
 			emit requested();
 		}
-		if(option == "RAF")
+		if(m_request.option() == Message::RAF)
 		{
 			disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
 			connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
 			start();
 		}
-		if(option == "REJ")
+		if(m_request.option() == Message::REJ)
 		{
 			stop();
 		}

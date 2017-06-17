@@ -26,6 +26,7 @@
 #include "controlcenter.h"
 #include "clientinformation.h"
 #include "debug.h"
+#include "message.h"
 
 #include <QObject>
 
@@ -52,8 +53,11 @@ ClientInformation Client::info()
 
 void Client::sendMessage(QString msg)
 {
-	msg = "IPC:MSG:TEXT:"+msg;
-	write(msg);
+	Message m;
+	m.setMethod(Message::MSG);
+	m.setOption(Message::TEXT);
+	m.setData("MSG",msg);
+	send(m);
 }
 
 void Client::setConnection(IConnection* conn)
@@ -71,7 +75,6 @@ void Client::setInfo(ClientInformation info)
 
 void Client::start()
 {
-// 	qCDebug(BASE) << "Client started on " << thread() ;
 	sendDetail();
 }
 
@@ -83,7 +86,6 @@ bool Client::hasAcceptedData() const
 void Client::handleRead()
 {
 	QByteArray data = m_conn->data();
-// 	qCDebug(BASE) << "Reading from Connection(" << m_conn->socketDescriptor() << ") => " << data ;
 	processRead(data);
 }
 
@@ -94,44 +96,21 @@ void Client::closeConnection()
 
 void Client::processRead(QByteArray t_data)
 {
-	QString header = t_data;
-// 	qCDebug(BASE) << this << "Processing GET header = "<<header;
-	m_request.insert("request",header);
-
-	//Header has 4 values APP METHOD OPTION DATA(optional)
-	QStringList options = header.split(":");
-
-	if(options.count() >= 1) m_request.insert("app", options.at(0).trimmed());
-
-	if(options.count() >= 2) m_request.insert("method", options.at(1).trimmed());
-
-	if(options.count() >= 3) m_request.insert("option", options.at(2).trimmed());
-
-	if(options.count() >= 4)
-	{
-		int pos = header.indexOf(":") + m_request.value("method","").size() + m_request.value("option","").size() + 2;
-		m_request.insert("data", header.mid(pos + 1));
-	}
-
+	m_request = Message::fromJson(t_data);
 	handleRequest();
 }
 
 void Client::handleRequest()
 {
-	QString method = m_request.value("method","");
-	QString option = m_request.value("option","");
-
-	if(method == "CONNECT")
+	if(m_request.method() == Message::CONNECT)
 	{
-		if(option == "REQUEST")
+		if(m_request.option() == Message::REQUEST)
 		{
 			if(!m_detailAccepted)
 			{
 				qCDebug(BASE) << this << "Accepting Detail";
-				QString data = m_request.value("data");
-				QString ip = data.split(":").at(0);
-				int pos = data.indexOf(":");
-				QString name = data.mid(pos + 1);
+				QString ip = m_request.data("IP");
+				QString name = m_request.data("NAME");
 				m_info.setName(name.trimmed());
 				m_info.setIp(ip.trimmed());
 				qCDebug(BASE) << this << "Accepted request from "<< name;
@@ -139,35 +118,25 @@ void Client::handleRequest()
 				m_detailAccepted = true;
 
 				if(!m_detailSent)
-				{
-					QString myIp = ControlCenter::instance()->userSettings()->ip();
-					QString myName = ControlCenter::instance()->userSettings()->name();
-					m_response.insert("app","IPC");
-					m_response.insert("method","CONNECT");
-					m_response.insert("option","REQUEST");
-					m_response.insert("data",myIp+":"+myName);
-					QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
-					qCDebug(BASE) << this << "sending details " << message ;
-					m_detailSent = true;
-					write(message);
-				}
+					sendDetail();
 			}
 		}
 	}
-	if(method == "MSG")
+	if(m_request.method() == Message::MSG)
     {
-		if(!m_detailSent)
+		if(!m_detailSent || !m_detailAccepted)
 			return;
 
-		if(m_request.value("option") == "TEXT") emit messageRecieved(m_info.id(),m_request.value("data"));
+		if(m_request.option() == Message::TEXT) emit messageRecieved(m_info.id(),m_request.data("MSG"));
 	}
 	return;
 }
 
-void Client::write(QString t_message)
+void Client::send(Message t_message)
 {
 	if(m_conn){
-		m_conn->write(t_message.toUtf8());
+		m_conn->write(t_message.toJson());
+		m_conn->flush();
 		m_conn->waitForBytesWritten();
 	}
 	else
@@ -183,13 +152,12 @@ void Client::sendDetail()
 			m_detailSent = true;
 			QString myIp = ControlCenter::instance()->userSettings()->ip();
 			QString myName = ControlCenter::instance()->userSettings()->name();
-			QString message = "IPC:CONNECT:REQUEST:"+myIp+":"+myName;
-			m_response.insert("app","IPC");
-			m_response.insert("method","CONNECT");
-			m_response.insert("option","REQUEST");
-			m_response.insert("data",myIp+":"+myName);
-			qCDebug(BASE) << this << "Sending Details " << message ;
-			write(message);
+			Message m;
+			m.setMethod(Message::CONNECT);
+			m.setOption(Message::REQUEST);
+			m.setData("NAME",myName);
+			m.setData("IP",myIp);
+			send(m);
 		}
 	}
 	else

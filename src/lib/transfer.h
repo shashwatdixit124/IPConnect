@@ -23,6 +23,7 @@
 
 #include "interfaces/itransfer.h"
 #include "file.h"
+#include "message.h"
 
 #include <QObject>
 #include <QIODevice>
@@ -89,11 +90,11 @@ protected:
 	void scheduleTransfer();
 	void transfer();
 
-	QMap<QString,QString> m_request;
-	QMap<QString,QString> m_response;
+	Message m_request;
 	bool m_transferStarted;
 
 	void start();
+	void send(Message);
 	void handleRead();
 	void handleWrite(qint32);
 	void processRead(QByteArray);

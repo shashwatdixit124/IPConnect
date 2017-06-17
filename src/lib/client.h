@@ -23,6 +23,7 @@
 
 #include "interfaces/iclient.h"
 #include "clientinformation.h"
+#include "message.h"
 
 #include <QObject>
 #include <QMap>
@@ -61,13 +62,12 @@ Q_SIGNALS:
 protected:
 	void processRead(QByteArray);
 	void handleRequest();
-	void write(QString);
+	void send(Message);
 	void sendDetail();
 
 	IConnection* m_conn;
 	ClientInformation m_info;
-	QMap<QString,QString> m_request;
-	QMap<QString,QString> m_response;
+	Message m_request;
 	bool m_detailAccepted;
 	bool m_detailSent;
 };
