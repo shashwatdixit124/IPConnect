@@ -28,7 +28,7 @@ Item { id: item
 
 	property string theme: IPConnect.theme
 	property string textColor: "#333"
-	property string bgColor: "#f7f7f7"
+	property string bgColor: "#fff"
 
 	FontLoader { id: awesome; source: "qrc:/resources/fontawesome-webfont.ttf" }
 
@@ -42,7 +42,7 @@ Item { id: item
 			anchors.right: parent.right
 			anchors.top: parent.top
 			anchors.bottom: msgInputBox.top
-			color: "#f9f9f9"
+			color: "#fff"
 			anchors.bottomMargin: 20
 			anchors.rightMargin: 20
 			clip: true
@@ -50,11 +50,14 @@ Item { id: item
 			Component { id: msgDelegate
 
 				Rectangle { id: msgWrapper
-					border.width: 1
-					border.color: item.theme
+					//border.width: 1
+					//border.color: item.theme
 					anchors.margins: 5
+					color: "#f9f9f9"
 					height: userNameItem.height + messageItem.height
 					width: userNameItem.width > messageItem.width ? userNameItem.width : messageItem.width
+					radius: 5
+					clip: true
 
 					Component.onCompleted: {
 						if(sent)
@@ -97,7 +100,8 @@ Item { id: item
 							text: message
 							wrapMode: Text.Wrap
 							color: "#333"
-							font.pixelSize: 16
+							font.pixelSize: 20
+							font.weight: Font.Light
 						}
 					}
 				}
@@ -150,7 +154,7 @@ Item { id: item
 			height: 40
 			anchors.topMargin: 20
 			anchors.rightMargin: 20
-			color: "#f9f9f9"
+			color: "#fff"
 
 			TextField { id:msgInput
 				height: parent.height
@@ -182,7 +186,7 @@ Item { id: item
 					else
 					{
 						dropMsgInputBox.radius = 7
-						msgInputBox.color = "#f9f9f9"
+						msgInputBox.color = "#fcfcfc"
 					}
 				}
 			}
@@ -232,7 +236,7 @@ Item { id: item
 		anchors.right: parent.right
 		anchors.leftMargin: 20
 		width: 250
-		color: "#f9f9f9"
+		color: "#fff"
 		clip: true
 
 		Component { id: userDelegate

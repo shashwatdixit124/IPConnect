@@ -33,9 +33,7 @@ ApplicationWindow { id:root
 	flags: Qt.FramelessWindowHint
 
 	property string textColor:  "#333"
-	property string rootBgColor: "#fcfcfc"
-	property string sbBgColor: "#f6f6f6"
-	property string sbTextColor: "#333"
+	property string rootBgColor: "#f9f9f9"
 
 	Welcome{
 		onUpdated: {
@@ -85,8 +83,6 @@ ApplicationWindow { id:root
 				width:parent.width
 				height: 24
 				anchors.bottom: parent.bottom
-				textColor: root.sbTextColor
-				bgColor: root.sbBgColor
 				onSizeChanged: {
 					root.width += sizeX
 					root.height += sizeY
