@@ -1,6 +1,6 @@
 # IPConnect
 
-P2P Chat and File Transfer Desktop Application for LAN.
+P2P Chat and File Transfer Desktop Application for LAN Liscenced under GPLv3.0 ( see LISCENCE ).
 
 ![IPConnect](images/ipconnect.png)
 
@@ -21,3 +21,6 @@ $ mkdir build && cd build
 $ cmake -DCMAKE_PREFIX_PATH=/path/to/Qt5.8.0/ ..
 $ make && make install
 ```
+
+### Using
+see [Using.md](Using.md)
