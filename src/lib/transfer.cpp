@@ -48,11 +48,13 @@ Transfer::~Transfer()
 {
 	if(m_source)
 	{
+		m_source->close();
 		m_source->deleteLater();
 		m_source = nullptr;
 	}
 	if(m_destination)
 	{
+		m_destination->close();
 		m_destination->deleteLater();
 		m_destination = nullptr;
 	}
@@ -115,8 +117,7 @@ void Transfer::stop()
 	m_timer.stop();
 	m_stopped = true;
 	m_transfering = false;
-	m_source->close();
-	m_destination->close();
+
 	emit destroyTransfer();
 }
 
@@ -436,29 +437,34 @@ void Transfer::handleRequest()
 {
 	if(m_request.method() == Message::TRANSFER)
 	{
-		if(m_request.option() == Message::RSF)
+		if(m_request.option() == Message::RSF )//&& m_file.action() == File::UNKNOWN)
 		{
 			QString clientName = m_request.data("USERNAME");
 			QString filesize = m_request.data("FILESIZE");
 			QString filename = m_request.data("FILENAME");
 
+			qCDebug(TRANSFER) << this << "recieved rsf request" ;
+
+			if(clientName.isEmpty() || filesize.isEmpty() || filename.isEmpty())
+				return;
+
 			m_file.setName(filename);
 			m_file.setSize(filesize.toULongLong());
-			m_file.setAction(File::RECIEVE);
 			m_file.setUserName(clientName);
 			m_file.setUrl(m_conn->peerAddress().toString());
 			m_file.setPath(ControlCenter::instance()->userSettings()->downloadDir());
+			m_file.setAction(File::RECIEVE);
 
 			qCDebug(TRANSFER) << this << "requested transfer" ;
 			emit requested();
 		}
-		if(m_request.option() == Message::RAF)
+		if(m_request.option() == Message::RAF && m_file.action() == File::SEND)
 		{
 			disconnect(m_conn,&IConnection::readyRead,this,&Transfer::handleRead);
 			connect(m_conn,&IConnection::readyRead,this,&Transfer::readyRead);
 			start();
 		}
-		if(m_request.option() == Message::REJ)
+		if(m_request.option() == Message::REJ && m_file.action() == File::SEND)
 		{
 			stop();
 		}
