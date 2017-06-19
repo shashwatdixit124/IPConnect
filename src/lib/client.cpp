@@ -111,6 +111,10 @@ void Client::handleRequest()
 				qCDebug(BASE) << this << "Accepting Detail";
 				QString ip = m_request.data("IP");
 				QString name = m_request.data("NAME");
+
+				if(ip.isEmpty() || name.isEmpty())
+					return;
+
 				m_info.setName(name.trimmed());
 				m_info.setIp(ip.trimmed());
 				qCDebug(BASE) << this << "Accepted request from "<< name;
