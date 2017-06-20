@@ -15,6 +15,7 @@ set(IPConnectLibrary_SRS
     connection.cpp
     controlcenter.cpp
     controlcenter_p.cpp
+    crypt.cpp
     debug.cpp
     debugtransfer.cpp
     file.cpp
@@ -48,6 +49,7 @@ set(IPConnectLibrary_HEADERS
     connection.h
     controlcenter.h
     controlcenter_p.h
+    crypt.h
     debug.h
     debugtransfer.h
     file.h
