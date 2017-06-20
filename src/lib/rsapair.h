@@ -21,13 +21,10 @@
 #ifndef RSAPAIR_H
 #define RSAPAIR_H
 
-#include <openssl/rsa.h>
-
 #include <QObject>
 
 namespace IPConnect
 {
-class Crypt;
 
 class RSAPair
 {
@@ -36,13 +33,12 @@ public:
 	~RSAPair();
 
 	void generateNewPair();
-	RSA* publicKey();
-	RSA* privateKey();
+	QByteArray publicKey();
+	QByteArray privateKey();
 
 private:
-	RSA* m_pub;
-	RSA* m_priv;
-	Crypt* m_c;
+	QByteArray m_pub;
+	QByteArray m_priv;
 
 };
 

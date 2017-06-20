@@ -20,10 +20,6 @@
 
 #include "rsapair.h"
 
-#include "crypt.h"
-
-#include <openssl/rsa.h>
-
 #include <QDebug>
 #include <QFile>
 #include <QObject>
@@ -32,27 +28,16 @@
 namespace IPConnect
 {
 
-RSAPair::RSAPair() : m_priv(nullptr) , m_pub(nullptr) , m_c(new Crypt())
+RSAPair::RSAPair()
 {
 }
 
 RSAPair::~RSAPair()
 {
-	if(m_priv)
-		m_c->freeKey(m_priv);
-	if(m_pub)
-		m_c->freeKey(m_pub);
-	delete m_c;
 }
 
 void RSAPair::generateNewPair()
 {
-	if(m_priv)
-		RSA_free(m_priv);
-
-	if(m_pub)
-		RSA_free(m_pub);
-
 	QString tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
 	QString privFileLocation = tempDir+"/ipconnect_priv_key.pem";
 	QString pubFileLocation = tempDir+"/ipconnect_pub_key.pem";
@@ -74,23 +59,23 @@ void RSAPair::generateNewPair()
 	QFile pub(pubFileLocation);
 	if(!pub.open(QFile::ReadOnly))
 	{
-		qDebug() << "cannot open file " << privFileLocation ;
+		qDebug() << "cannot open file " << pubFileLocation ;
 		return;
 	}
 
 	QByteArray publicKey = pub.readAll();
 	pub.close();
 	
-	m_priv = m_c->getPrivateKey(privateKey);
-	m_pub = m_c->getPublicKey(publicKey);
+	m_priv = privateKey;
+	m_pub = publicKey;
 }
 
-RSA* RSAPair::privateKey()
+QByteArray RSAPair::privateKey()
 {
 	return m_priv;
 }
 
-RSA* RSAPair::publicKey()
+QByteArray RSAPair::publicKey()
 {
 	return m_pub;
 }
