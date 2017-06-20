@@ -5,6 +5,8 @@ P2P Chat and File Transfer Desktop Application for LAN Liscenced under GPLv3.0 (
 ![IPConnect](images/ipconnect.png)
 
 ### Requirements
+* libssl
+* licrypto
 * cmake 3.5.1
 * Qt 5.8 libs
 
