@@ -21,6 +21,7 @@ set(IPConnectLibrary_SRS
     message.cpp
     messageinformation.cpp
     messageserver.cpp
+    rsapair.cpp
     transfer.cpp
     transfermanager.cpp
     transferthreadmanager.cpp
@@ -53,6 +54,7 @@ set(IPConnectLibrary_HEADERS
     message.h
     messageinformation.h
     messageserver.h
+    rsapair.h
     transfer.h
     transfermanager.h
     transferthreadmanager.h
@@ -61,7 +63,7 @@ set(IPConnectLibrary_HEADERS
 )
 
 add_library(IPConnect SHARED ${IPConnectLibrary_SRS})
-target_link_libraries(IPConnect Qt5::Core Qt5::Network)
+target_link_libraries(IPConnect Qt5::Core Qt5::Network ssl crypto)
 install(TARGETS IPConnect LIBRARY DESTINATION lib)
 install(FILES ${IPConnectLibrary_Interfaces_HEADERS} DESTINATION include/ipconnect/interfaces)
 install(FILES ${IPConnectLibrary_HEADERS} DESTINATION include/ipconnect)
