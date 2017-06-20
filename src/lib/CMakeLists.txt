@@ -3,6 +3,7 @@ set(IPConnectLibrary_SRS
     interfaces/iclientmanager.cpp
     interfaces/iconnection.cpp
     interfaces/icontrolcenter.cpp
+    interfaces/icryptengine.cpp
     interfaces/iserver.cpp
     interfaces/itransfer.cpp
     interfaces/itransfermanager.cpp
@@ -16,6 +17,7 @@ set(IPConnectLibrary_SRS
     controlcenter.cpp
     controlcenter_p.cpp
     crypt.cpp
+    cryptengine.cpp
     debug.cpp
     debugtransfer.cpp
     file.cpp
@@ -35,6 +37,7 @@ set(IPConnectLibrary_Interfaces_HEADERS
     interfaces/iclientmanager.h
     interfaces/iconnection.h
     interfaces/icontrolcenter.h
+    interfaces/icryptengine.h
     interfaces/iserver.h
     interfaces/itransfer.h
     interfaces/itransfermanager.h
@@ -50,6 +53,7 @@ set(IPConnectLibrary_HEADERS
     controlcenter.h
     controlcenter_p.h
     crypt.h
+    cryptengine.h
     debug.h
     debugtransfer.h
     file.h
