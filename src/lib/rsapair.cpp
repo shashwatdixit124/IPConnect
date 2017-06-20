@@ -20,9 +20,9 @@
 
 #include "rsapair.h"
 
+#include "crypt.h"
+
 #include <openssl/rsa.h>
-#include <openssl/bio.h>
-#include <openssl/pem.h>
 
 #include <QDebug>
 #include <QFile>
@@ -32,16 +32,17 @@
 namespace IPConnect
 {
 
-RSAPair::RSAPair() : m_priv(nullptr) , m_pub(nullptr)
+RSAPair::RSAPair() : m_priv(nullptr) , m_pub(nullptr) , m_c(new Crypt())
 {
 }
 
 RSAPair::~RSAPair()
 {
 	if(m_priv)
-		RSA_free(m_priv);
+		m_c->freeKey(m_priv);
 	if(m_pub)
-		RSA_free(m_pub);
+		m_c->freeKey(m_pub);
+	delete m_c;
 }
 
 void RSAPair::generateNewPair()
@@ -80,8 +81,8 @@ void RSAPair::generateNewPair()
 	QByteArray publicKey = pub.readAll();
 	pub.close();
 	
-	m_priv = getPrivateKey(privateKey);
-	m_pub = getPublicKey(publicKey);
+	m_priv = m_c->getPrivateKey(privateKey);
+	m_pub = m_c->getPublicKey(publicKey);
 }
 
 RSA* RSAPair::privateKey()
@@ -92,38 +93,6 @@ RSA* RSAPair::privateKey()
 RSA* RSAPair::publicKey()
 {
 	return m_pub;
-}
-
-RSA* RSAPair::getPublicKey(QByteArray &data)
-{
-	const char* publicKeyStr = data.constData();
-	BIO* bio = BIO_new_mem_buf((void*)publicKeyStr, -1);
-	BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
-
-	RSA* rsaPubKey = PEM_read_bio_RSA_PUBKEY(bio,NULL, NULL, NULL);
-	if(!rsaPubKey)
-	{
-		qCritical() << "Could not load public key" ;
-	}
-
-	BIO_free(bio);
-	return rsaPubKey;
-}
-
-RSA* RSAPair::getPrivateKey(QByteArray& data)
-{
-	const char* privateKeyStr = data.constData();
-	BIO* bio = BIO_new_mem_buf((void*)privateKeyStr, -1);
-	BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
-
-	RSA* rsaPrivKey = PEM_read_bio_RSAPrivateKey(bio,NULL, NULL, NULL);
-	if(!rsaPrivKey)
-	{
-		qCritical() << "Could not load private key" ;
-	}
-
-	BIO_free(bio);
-	return rsaPrivKey;
 }
 
 }

@@ -27,6 +27,7 @@
 
 namespace IPConnect
 {
+class Crypt;
 
 class RSAPair
 {
@@ -38,13 +39,10 @@ public:
 	RSA* publicKey();
 	RSA* privateKey();
 
-protected:
-	RSA* getPrivateKey(QByteArray&);
-	RSA* getPublicKey(QByteArray&);
-
 private:
 	RSA* m_pub;
 	RSA* m_priv;
+	Crypt* m_c;
 
 };
 
