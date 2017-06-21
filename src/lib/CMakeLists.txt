@@ -25,6 +25,7 @@ set(IPConnectLibrary_SRS
     messageinformation.cpp
     messageserver.cpp
     rsapair.cpp
+    securetunnel.cpp
     transfer.cpp
     transfermanager.cpp
     transferthreadmanager.cpp
@@ -61,6 +62,7 @@ set(IPConnectLibrary_HEADERS
     messageinformation.h
     messageserver.h
     rsapair.h
+    securetunnel.h
     transfer.h
     transfermanager.h
     transferthreadmanager.h
