@@ -26,6 +26,7 @@
 #include "interfaces/itransfermanager.h"
 #include "interfaces/iusersettings.h"
 #include "clientmanager.h"
+#include "cryptengine.h"
 #include "controlcenter_p.h"
 #include "messageserver.h"
 #include "transfermanager.h"
@@ -76,6 +77,11 @@ IServer* ControlCenter::transferServer()
 IClientManager* ControlCenter::clientManager()
 {
 	return m_ccp->m_clientManager;
+}
+
+ICryptEngine* ControlCenter::cryptEngine()
+{
+	return m_ccp->m_cryptEngine;
 }
 
 ITransferManager* ControlCenter::transferManager()

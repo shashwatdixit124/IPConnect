@@ -26,6 +26,7 @@ namespace IPConnect
 
 class MessageServer;
 class ClientManager;
+class CryptEngine;
 class TransferManager;
 class TransferServer;
 class UserSettings;
@@ -42,6 +43,7 @@ public:
 	MessageServer* m_messageServer;
 	TransferServer* m_transferServer;
 	ClientManager* m_clientManager;
+	CryptEngine* m_cryptEngine;
 	TransferManager* m_transferManager;
 	UserSettings* m_userSettings;
 

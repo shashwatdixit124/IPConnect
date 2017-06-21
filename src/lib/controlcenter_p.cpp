@@ -22,6 +22,7 @@
 
 #include "interfaces/iconnection.h"
 #include "clientmanager.h"
+#include "cryptengine.h"
 #include "controlcenter.h"
 #include "messageserver.h"
 #include "transfermanager.h"
@@ -40,6 +41,7 @@ ControlCenterPrivate::~ControlCenterPrivate(){}
 void ControlCenterPrivate::init()
 {
 	m_userSettings = new UserSettings();
+	m_cryptEngine = new CryptEngine(m_cc);
 	m_clientManager = new ClientManager(m_cc);
 	m_messageServer = new MessageServer(m_cc);
 	m_transferManager = new TransferManager(m_cc);
@@ -66,6 +68,9 @@ void ControlCenterPrivate::shutdown()
 		m_clientManager->shutdown();
 		m_clientManager->deleteLater();
 	}
+
+	if(m_cryptEngine)
+		m_cryptEngine->deleteLater();
 
 	if(m_transferManager) {
 		m_transferManager->shutdown();

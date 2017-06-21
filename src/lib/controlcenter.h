@@ -30,6 +30,7 @@ namespace IPConnect
 
 class IServer;
 class IClientManager;
+class ICryptEngine;
 class ITransferManager;
 class ControlCenterPrivate;
 class IUserSettings;
@@ -47,6 +48,7 @@ public:
 	IServer* messageServer() override;
 	IServer* transferServer() override;
 	IClientManager* clientManager() override;
+	ICryptEngine* cryptEngine() override;
 	ITransferManager* transferManager() override;
 	IUserSettings* userSettings() override;
 

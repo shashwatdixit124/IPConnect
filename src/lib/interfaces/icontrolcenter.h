@@ -28,6 +28,7 @@ namespace IPConnect
 
 class IServer;
 class IClientManager;
+class ICryptEngine;
 class ITransferManager;
 class IUserSettings;
 
@@ -40,6 +41,7 @@ public:
 	virtual IServer* messageServer() = 0;
 	virtual IServer* transferServer() = 0;
 	virtual IClientManager* clientManager() = 0;
+	virtual ICryptEngine* cryptEngine() = 0;
 	virtual ITransferManager* transferManager() = 0;
 	virtual IUserSettings* userSettings() = 0;
 
