@@ -36,8 +36,10 @@ public:
 	explicit Connection();
 	~Connection();
 
-	QByteArray data() override;
+	QByteArray data(quint32 size = 0) override;
+	QByteArray seek(quint32 size = 0) override;
 	bool hasUnreadData() override;
+	quint32 availableSize() override;
 
 protected:
 	void isError();
