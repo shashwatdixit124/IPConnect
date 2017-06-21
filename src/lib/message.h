@@ -31,12 +31,14 @@ public:
 	Message();
 
 	enum Method{
+		SECURE,
 		CONNECT,
 		TRANSFER,
 		MSG
 	};
 
 	enum Option{
+		RSA,
 		REQUEST,
 		TEXT,
 		RSF,

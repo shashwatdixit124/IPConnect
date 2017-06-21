@@ -22,6 +22,7 @@
 
 #include "interfaces/iclient.h"
 #include "interfaces/iconnection.h"
+#include "interfaces/icryptengine.h"
 #include "interfaces/iusersettings.h"
 #include "controlcenter.h"
 #include "clientinformation.h"
@@ -33,7 +34,8 @@
 namespace IPConnect
 {
 
-Client::Client(QObject* parent) : IClient(parent) , m_conn(nullptr) , m_detailAccepted(false) , m_detailSent(false)
+Client::Client(QObject* parent) : IClient(parent) , m_conn(nullptr) , m_detailAccepted(false) , 
+	m_detailSent(false) , m_pubKeySent(false) , m_pubKeyAccepted(false)
 {
 }
 
@@ -57,7 +59,7 @@ void Client::sendMessage(QString msg)
 	m.setMethod(Message::MSG);
 	m.setOption(Message::TEXT);
 	m.setData("MSG",msg);
-	send(m);
+	sendEncrypted(m);
 }
 
 void Client::setConnection(IConnection* conn)
@@ -75,7 +77,7 @@ void Client::setInfo(ClientInformation info)
 
 void Client::start()
 {
-	sendDetail();
+	sendPublicKey();
 }
 
 bool Client::hasAcceptedData() const
@@ -96,14 +98,43 @@ void Client::closeConnection()
 
 void Client::processRead(QByteArray t_data)
 {
-	m_request = Message::fromJson(t_data);
+	if(m_pubKeyAccepted && m_pubKeySent) {
+	QByteArray dData;
+	if(!ControlCenter::instance()->cryptEngine()->decryptData(t_data,dData))
+		return;
+		m_request = Message::fromJson(dData);
+	} else {
+		m_request = Message::fromJson(t_data);
+	}
 	handleRequest();
 }
 
 void Client::handleRequest()
 {
-	if(m_request.method() == Message::CONNECT)
+	if(m_request.method() == Message::SECURE)
 	{
+		if(m_request.option() != Message::RSA)
+			return;
+
+		if(m_pubKeyAccepted)
+			return;
+
+		m_clientPublicKey = m_request.data("KEY");
+
+		if(m_clientPublicKey.isEmpty())
+			return;
+		m_pubKeyAccepted = true;
+
+		if(!m_pubKeySent)
+			sendPublicKey();
+		else
+			sendDetail();
+	}
+	else if(m_request.method() == Message::CONNECT)
+	{
+		if(!m_pubKeyAccepted || !m_pubKeySent)
+			return;
+
 		if(m_request.option() == Message::REQUEST)
 		{
 			if(!m_detailAccepted)
@@ -126,8 +157,11 @@ void Client::handleRequest()
 			}
 		}
 	}
-	if(m_request.method() == Message::MSG)
+	else if(m_request.method() == Message::MSG)
     {
+		if(!m_pubKeyAccepted || !m_pubKeySent)
+			return;
+
 		if(!m_detailSent || !m_detailAccepted)
 			return;
 
@@ -136,10 +170,26 @@ void Client::handleRequest()
 	return;
 }
 
-void Client::send(Message t_message)
+void Client::send(Message m)
 {
 	if(m_conn){
-		m_conn->write(t_message.toJson());
+		m_conn->write(m.toJson());
+		m_conn->flush();
+		m_conn->waitForBytesWritten();
+	}
+	else
+		qCDebug(BASE) << this << "Connection not available on write";
+}
+
+void Client::sendEncrypted(Message m)
+{
+	if(m_conn){
+		QByteArray msg = m.toJson();
+		QByteArray encMsg;
+		QByteArray pubKey = m_clientPublicKey.toUtf8();
+		if(!ControlCenter::instance()->cryptEngine()->encryptData(pubKey,msg,encMsg))
+			return;
+		m_conn->write(encMsg);
 		m_conn->flush();
 		m_conn->waitForBytesWritten();
 	}
@@ -161,11 +211,22 @@ void Client::sendDetail()
 			m.setOption(Message::REQUEST);
 			m.setData("NAME",myName);
 			m.setData("IP",myIp);
-			send(m);
+			sendEncrypted(m);
 		}
 	}
 	else
 		qCDebug(BASE) << this << "Connection not available on greetings";
+}
+
+void Client::sendPublicKey()
+{
+	m_pubKeySent = true;
+	Message m;
+	m.setMethod(Message::SECURE);
+	m.setOption(Message::RSA);
+	QByteArray pubKey = ControlCenter::instance()->cryptEngine()->publicKey();
+	m.setData("KEY",pubKey);
+	send(m);
 }
 
 }
