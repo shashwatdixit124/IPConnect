@@ -24,6 +24,9 @@
 #include <QObject>
 #include <QJsonObject>
 
+namespace IPConnect
+{
+
 class Message
 {
 public:
@@ -66,5 +69,7 @@ protected:
 
 	void parseJson(QByteArray);
 };
+
+}
 
 #endif

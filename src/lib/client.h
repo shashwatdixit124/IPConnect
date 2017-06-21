@@ -32,6 +32,7 @@ namespace IPConnect
 {
 
 class IConnection;
+class SecureTunnel;
 
 class Client : public IClient
 {
@@ -63,18 +64,16 @@ protected:
 	void processRead(QByteArray);
 	void handleRequest();
 	void send(Message);
-	void sendEncrypted(Message);
 	void sendDetail();
-	void sendPublicKey();
+	void secured();
 
 	IConnection* m_conn;
+	SecureTunnel* m_tunnel;
 	ClientInformation m_info;
 	Message m_request;
 	bool m_detailAccepted;
 	bool m_detailSent;
-	bool m_pubKeySent;
-	bool m_pubKeyAccepted;
-	QString m_clientPublicKey;
+	bool m_secured;
 };
 
 }

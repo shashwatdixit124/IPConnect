@@ -23,6 +23,9 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
+namespace IPConnect
+{
+
 Message::Message(QByteArray data)
 {
 	parseJson(data);
@@ -85,4 +88,6 @@ void Message::parseJson(QByteArray data)
 	m_method = Method(root["METHOD"].toInt());
 	m_option = Option(root["OPTION"].toInt());
 	m_data = root["DATA"].toObject();
+}
+
 }

@@ -28,6 +28,7 @@
 #include "clientinformation.h"
 #include "debug.h"
 #include "message.h"
+#include "securetunnel.h"
 
 #include <QObject>
 
@@ -35,12 +36,14 @@ namespace IPConnect
 {
 
 Client::Client(QObject* parent) : IClient(parent) , m_conn(nullptr) , m_detailAccepted(false) , 
-	m_detailSent(false) , m_pubKeySent(false) , m_pubKeyAccepted(false)
+	m_detailSent(false) , m_tunnel(new SecureTunnel(this)) , m_secured(false)
 {
+	connect(m_tunnel,&SecureTunnel::secured,this,&Client::secured);
 }
 
 Client::~Client()
 {
+	m_tunnel->deleteLater();
 }
 
 IConnection* Client::connection()
@@ -59,15 +62,13 @@ void Client::sendMessage(QString msg)
 	m.setMethod(Message::MSG);
 	m.setOption(Message::TEXT);
 	m.setData("MSG",msg);
-	sendEncrypted(m);
+	send(m);
 }
 
 void Client::setConnection(IConnection* conn)
 {
 	m_conn = conn;
-	connect(m_conn,&IConnection::dataAvailable,this,&Client::handleRead);
-	connect(m_conn,&IConnection::disconnected,this,&Client::closeConnection);
-	connect(m_conn,&IConnection::errorOccurred,this,&Client::closeConnection);
+	m_tunnel->setConnection(m_conn);
 }
 
 void Client::setInfo(ClientInformation info)
@@ -77,7 +78,7 @@ void Client::setInfo(ClientInformation info)
 
 void Client::start()
 {
-	sendPublicKey();
+	m_tunnel->create();
 }
 
 bool Client::hasAcceptedData() const
@@ -87,8 +88,10 @@ bool Client::hasAcceptedData() const
 
 void Client::handleRead()
 {
-	QByteArray data = m_conn->data();
-	processRead(data);
+	if(!m_secured)
+		return;
+	m_request = m_tunnel->readMessage();
+	handleRequest();
 }
 
 void Client::closeConnection()
@@ -98,43 +101,13 @@ void Client::closeConnection()
 
 void Client::processRead(QByteArray t_data)
 {
-	if(m_pubKeyAccepted && m_pubKeySent) {
-	QByteArray dData;
-	if(!ControlCenter::instance()->cryptEngine()->decryptData(t_data,dData))
-		return;
-		m_request = Message::fromJson(dData);
-	} else {
-		m_request = Message::fromJson(t_data);
-	}
-	handleRequest();
+
 }
 
 void Client::handleRequest()
 {
-	if(m_request.method() == Message::SECURE)
+	if(m_request.method() == Message::CONNECT)
 	{
-		if(m_request.option() != Message::RSA)
-			return;
-
-		if(m_pubKeyAccepted)
-			return;
-
-		m_clientPublicKey = m_request.data("KEY");
-
-		if(m_clientPublicKey.isEmpty())
-			return;
-		m_pubKeyAccepted = true;
-
-		if(!m_pubKeySent)
-			sendPublicKey();
-		else
-			sendDetail();
-	}
-	else if(m_request.method() == Message::CONNECT)
-	{
-		if(!m_pubKeyAccepted || !m_pubKeySent)
-			return;
-
 		if(m_request.option() == Message::REQUEST)
 		{
 			if(!m_detailAccepted)
@@ -158,10 +131,7 @@ void Client::handleRequest()
 		}
 	}
 	else if(m_request.method() == Message::MSG)
-    {
-		if(!m_pubKeyAccepted || !m_pubKeySent)
-			return;
-
+	{
 		if(!m_detailSent || !m_detailAccepted)
 			return;
 
@@ -173,23 +143,7 @@ void Client::handleRequest()
 void Client::send(Message m)
 {
 	if(m_conn){
-		m_conn->write(m.toJson());
-		m_conn->flush();
-		m_conn->waitForBytesWritten();
-	}
-	else
-		qCDebug(BASE) << this << "Connection not available on write";
-}
-
-void Client::sendEncrypted(Message m)
-{
-	if(m_conn){
-		QByteArray msg = m.toJson();
-		QByteArray encMsg;
-		QByteArray pubKey = m_clientPublicKey.toUtf8();
-		if(!ControlCenter::instance()->cryptEngine()->encryptData(pubKey,msg,encMsg))
-			return;
-		m_conn->write(encMsg);
+		m_tunnel->send(m.toJson());
 		m_conn->flush();
 		m_conn->waitForBytesWritten();
 	}
@@ -211,22 +165,20 @@ void Client::sendDetail()
 			m.setOption(Message::REQUEST);
 			m.setData("NAME",myName);
 			m.setData("IP",myIp);
-			sendEncrypted(m);
+			send(m);
 		}
 	}
 	else
 		qCDebug(BASE) << this << "Connection not available on greetings";
 }
 
-void Client::sendPublicKey()
+void Client::secured()
 {
-	m_pubKeySent = true;
-	Message m;
-	m.setMethod(Message::SECURE);
-	m.setOption(Message::RSA);
-	QByteArray pubKey = ControlCenter::instance()->cryptEngine()->publicKey();
-	m.setData("KEY",pubKey);
-	send(m);
+	m_secured = true;
+	connect(m_conn,&IConnection::dataAvailable,this,&Client::handleRead);
+	connect(m_conn,&IConnection::disconnected,this,&Client::closeConnection);
+	connect(m_conn,&IConnection::errorOccurred,this,&Client::closeConnection);
+	sendDetail();
 }
 
 }
