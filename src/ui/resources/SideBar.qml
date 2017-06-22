@@ -73,15 +73,6 @@ Item { id: item
 					font.pixelSize: 24
 				}
 
-//				Text {
-//					anchors.topMargin: 10
-//					anchors.top: messengerIcon.bottom
-//					anchors.horizontalCenter: parent.horizontalCenter
-//					text: qsTr("Messages")
-//					color: parent.color
-//					font.pixelSize: 10
-//				}
-
 				MouseArea{
 					anchors.fill: parent
 					cursorShape: Qt.PointingHandCursor
@@ -93,18 +84,22 @@ Item { id: item
 				}
 
 				Rectangle { id: msgRemainingBlock
-					property int unreadMessages: IPConnect.unreadMessages
-					visible: sidePane.currentId == parent.idno ? false : unreadMessages === 0 ? false : true
+					visible: sidePane.currentId == parent.idno ? false : IPConnect.unreadMessages === 0 ? false : true
 					anchors.bottom: parent.bottom
 					anchors.right: parent.right
 					height: remainingMsg.implicitWidth + 12
 					width: height
 					radius: width/2
 					color: "#10000000"
-					onUnreadMessagesChanged: {
-						if(sidePane.currentId == parent.idno)
-							IPConnect.unreadMessages = 0
+
+					Connections{
+						target: IPConnect
+						onUnreadMessagesChanged: {
+							if(sidePane.currentId == parent.idno && IPConnect.unreadMessages != 0)
+								IPConnect.unreadMessages = 0
+						}
 					}
+
 					Text { id: remainingMsg
 						text: IPConnect.unreadMessages
 						anchors.centerIn: parent
@@ -140,20 +135,24 @@ Item { id: item
 				}
 
 				Rectangle { id: transferRemainingBlock
-					property int unseenTransfers : IPConnect.unseenTransfers
-					visible: sidePane.currentId == parent.idno ? false : unseenTransfers === 0 ? false : true
+					visible: sidePane.currentId == parent.idno ? false : IPConnect.unseenTransfers === 0 ? false : true
 					anchors.bottom: parent.bottom
 					anchors.right: parent.right
 					height: remainingTransfer.implicitWidth+12
 					width: height
 					radius: width/2
 					color: "#10000000"
-					onUnseenTransfersChanged: {
-						if(sidePane.currentId == parent.idno)
-							IPConnect.unseenTransfers = 0
+
+					Connections{
+						target: IPConnect
+						onUnseenTransfersChanged: {
+							if(sidePane.currentId == parent.idno && IPConnect.unseenTransfers != 0)
+								IPConnect.unseenTransfers = 0
+						}
 					}
+
 					Text { id: remainingTransfer
-						text: parent.unseenTransfers
+						text: IPConnect.unseenTransfers
 						anchors.centerIn: parent
 						color: IPConnect.theme
 						font.pixelSize: 10
