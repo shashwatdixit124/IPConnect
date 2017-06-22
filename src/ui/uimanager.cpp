@@ -184,6 +184,8 @@ void UiManager::setUnseenTransfers(int t)
 
 void UiManager::sendMessage(QString msg)
 {
+	if(msg.isEmpty())
+		return;
 	m_messenger->sendMessage(m_selectedUser,msg);
 }
 
