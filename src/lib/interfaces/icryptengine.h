@@ -33,9 +33,12 @@ class ICryptEngine : public QObject
 public:
 	virtual QByteArray publicKey() = 0;
 	virtual QByteArray privateKey() = 0;
+	virtual QByteArray randomPassword() = 0;
 
-	virtual bool encryptData(QByteArray& , QByteArray& , QByteArray&) = 0;
-	virtual bool decryptData(QByteArray& , QByteArray&) = 0;
+	virtual bool encryptRSA(QByteArray& , QByteArray& , QByteArray&) = 0;
+	virtual bool decryptRSA(QByteArray& , QByteArray&) = 0;
+	virtual bool encryptAES(QByteArray , QByteArray&, QByteArray&) = 0;
+	virtual bool decryptAES(QByteArray , QByteArray&, QByteArray&) = 0;
 
 protected:
 	explicit ICryptEngine(QObject* parent = nullptr);

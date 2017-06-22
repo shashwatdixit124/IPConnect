@@ -41,9 +41,12 @@ public:
 
 	QByteArray publicKey() override;
 	QByteArray privateKey() override;
+	QByteArray randomPassword() override;
 
-	bool encryptData(QByteArray& , QByteArray& , QByteArray&) override;
-	bool decryptData(QByteArray& , QByteArray&) override;
+	bool encryptRSA(QByteArray& , QByteArray& , QByteArray&) override;
+	bool decryptRSA(QByteArray& , QByteArray&) override;
+	bool encryptAES(QByteArray, QByteArray &, QByteArray &) override;
+	bool decryptAES(QByteArray, QByteArray &, QByteArray &) override;
 
 private:
 	RSA* m_pubRSA;

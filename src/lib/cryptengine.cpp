@@ -60,7 +60,30 @@ QByteArray CryptEngine::privateKey()
 	return m_privKey;
 }
 
-bool CryptEngine::encryptData(QByteArray& pubKey , QByteArray& input , QByteArray& output)
+QByteArray CryptEngine::randomPassword()
+{
+	return m_crypt->randomBytes(16);
+}
+
+bool CryptEngine::encryptAES(QByteArray passphrase, QByteArray& input, QByteArray& output)
+{
+	output = m_crypt->encryptAES(passphrase,input);
+	if(output.isEmpty())
+		return false;
+	else
+		return true;
+}
+
+bool CryptEngine::decryptAES(QByteArray passphrase, QByteArray& input, QByteArray& output)
+{
+	output = m_crypt->decryptAES(passphrase,input);
+	if(output.isEmpty())
+		return false;
+	else
+		return true;
+}
+
+bool CryptEngine::encryptRSA(QByteArray& pubKey , QByteArray& input , QByteArray& output)
 {
 	RSA* pub = m_crypt->getPublicKey(pubKey);
 	output = m_crypt->encryptRSA(pub,input);
@@ -71,7 +94,7 @@ bool CryptEngine::encryptData(QByteArray& pubKey , QByteArray& input , QByteArra
 		return true;
 }
 
-bool CryptEngine::decryptData(QByteArray& input , QByteArray& output)
+bool CryptEngine::decryptRSA(QByteArray& input , QByteArray& output)
 {
 	output = m_crypt->decryptRSA(m_privRSA,input);
 	if(output.isEmpty())
