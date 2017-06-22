@@ -85,6 +85,7 @@ protected:
 	bool m_transfering;
 	qint32 m_transfered;
 	qint32 m_transferInCycle;
+	qint32 m_transferInOneSec;
 	int m_id;
 	int m_progress;
 	bool m_stopped;

@@ -42,7 +42,7 @@ namespace IPConnect
 Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
 	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) , m_progress(0) ,
 	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false) , m_stopped(true) ,
-	m_tunnel(new SecureTunnel(this))
+	m_tunnel(new SecureTunnel(this)) , m_transferInOneSec(0)
 {
 	connect(m_tunnel,&SecureTunnel::secured,this,&Transfer::secured);
 }
@@ -336,6 +336,18 @@ void Transfer::scheduleTransfer()
 	}
 	else
 	{
+		if(!m_isSender) {
+			int temp = ((double)m_transfered/m_file.size())*100;
+			if(m_progress != temp) {
+				m_progress = temp;
+				m_file.setProgress(m_progress);
+				m_file.setTransfered(m_transfered);
+				int rate = m_transferInOneSec/(1024*1024);
+				m_transferInOneSec = 0;
+				m_file.setRate(rate);
+				emit progress(m_progress,m_transfered,rate);
+			}
+		}
 		int current = QTime::currentTime().msec();
 		int delay = 1000 - current;
 		qCDebug(TRANSFERRIGOR) << this << "Rate limit (" << m_rate << ") exeeded in prediction (" << m_transferInCycle << " to " <<  prediction << "), delaying transfer for " << delay << "ms";
@@ -377,17 +389,8 @@ void Transfer::transfer()
 		m_destination->write(buffer);
 	m_transferInCycle += len;
 	m_transfered += len;
-	if(!m_isSender) {
-		int temp = ((double)m_transfered/m_file.size())*100;
-		if(m_progress != temp) {
-			m_progress = temp;
-			m_file.setProgress(m_progress);
-			m_file.setTransfered(m_transfered);
-			int rate = len/(1024*1024);
-			m_file.setRate(rate);
-			emit progress(m_progress,m_transfered,rate);
-		}
-	}
+	m_transferInOneSec += len;
+
 
 	if(!m_isSender && m_file.size() == m_transfered)
 	{
