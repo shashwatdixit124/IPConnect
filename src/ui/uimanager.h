@@ -44,11 +44,11 @@ class ITransferManager;
 class UiManager : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(QAbstractListModel* users READ users)
-	Q_PROPERTY(QAbstractListModel* messages READ messages)
-	Q_PROPERTY(QAbstractListModel* pendingTransfers READ pendingTransfers)
-	Q_PROPERTY(QAbstractListModel* runningTransfers READ runningTransfers)
-	Q_PROPERTY(bool runningFirstTime READ runningFirstTime)
+	Q_PROPERTY(QAbstractListModel* users READ users CONSTANT)
+	Q_PROPERTY(QAbstractListModel* messages READ messages CONSTANT)
+	Q_PROPERTY(QAbstractListModel* pendingTransfers READ pendingTransfers CONSTANT)
+	Q_PROPERTY(QAbstractListModel* runningTransfers READ runningTransfers CONSTANT)
+	Q_PROPERTY(bool runningFirstTime READ runningFirstTime CONSTANT)
 	Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged)
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
 	Q_PROPERTY(QString downloadDir READ downloadDir WRITE setDownloadDir NOTIFY downloadDirChanged)
