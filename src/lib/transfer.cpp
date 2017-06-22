@@ -383,14 +383,15 @@ void Transfer::transfer()
 	qCDebug(TRANSFER) << this << "writting to destination: " << buffer.length() ;
 
 	quint64 len = buffer.length();
-	if(m_isSender)
-		m_tunnel->send(buffer);
-	else
-		m_destination->write(buffer);
-	m_transferInCycle += len;
-	m_transfered += len;
-	m_transferInOneSec += len;
-
+	if(len > 0) {
+		if(m_isSender)
+			m_tunnel->send(buffer);
+		else
+			m_destination->write(buffer);
+		m_transferInCycle += len;
+		m_transfered += len;
+		m_transferInOneSec += len;
+	}
 
 	if(!m_isSender && m_file.size() == m_transfered)
 	{

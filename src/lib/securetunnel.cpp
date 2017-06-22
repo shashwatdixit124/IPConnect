@@ -233,6 +233,8 @@ QByteArray SecureTunnel::readAESDecryptedData()
 {
 	QByteArray data = readRawData();
 	QByteArray result;
+	if(data.isEmpty())
+		return result;
 	ControlCenter::instance()->cryptEngine()->decryptAES(m_aesPassPhrase.toUtf8(),data,result);
 	return result;
 }
@@ -241,6 +243,8 @@ QByteArray SecureTunnel::readRSADecryptedData()
 {
 	QByteArray data = readRawData();
 	QByteArray result;
+	if(data.isEmpty())
+		return result;
 	ControlCenter::instance()->cryptEngine()->decryptRSA(data,result);
 	return result;
 }
