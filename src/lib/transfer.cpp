@@ -27,6 +27,7 @@
 #include "debugtransfer.h"
 #include "file.h"
 #include "message.h"
+#include "securetunnel.h"
 
 #include <QObject>
 #include <QFile>
@@ -40,8 +41,10 @@ namespace IPConnect
 
 Transfer::Transfer(QObject* parent) : ITransfer(parent) , 
 	m_rate(5*1024*1024) , m_chunkSize(5*32*1024) , m_source(nullptr) , m_destination(nullptr) , m_progress(0) ,
-	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false) , m_stopped(true)
+	m_scheduled(false) , m_isSender(false) , m_transfering(false) , m_id(0) , m_transferStarted(false) , m_stopped(true) ,
+	m_tunnel(new SecureTunnel(this))
 {
+	connect(m_tunnel,&SecureTunnel::secured,this,&Transfer::secured);
 }
 
 Transfer::~Transfer()
@@ -121,6 +124,15 @@ void Transfer::stop()
 	emit destroyTransfer();
 }
 
+void Transfer::secured()
+{
+	qCDebug(TRANSFER) << this << "transfer is secured";
+	if(m_file.action() == File::SEND)
+		sendFile();
+	else
+		checkForData();
+}
+
 IConnection* Transfer::connection()
 {
 	return m_conn;
@@ -132,14 +144,17 @@ void Transfer::setConnection(IConnection* conn)
 		return;
 
 	m_conn = conn;
+	m_tunnel->setConnection(conn);
 	connect(m_conn,&IConnection::dataAvailable,this,&Transfer::handleRead);
 	connect(m_conn,&IConnection::errorOccurred,this,&Transfer::stop);
 }
 
 void Transfer::sendFile()
 {
-	if(m_file.action() == File::UNKNOWN)
+	if(m_file.action() != File::SEND)
 		return;
+
+	qCDebug(TRANSFER) << this << "sending file " << m_file.name() ;
 
 	QString username = ControlCenter::instance()->userSettings()->name();
 	Message m;
@@ -153,9 +168,12 @@ void Transfer::sendFile()
 
 void Transfer::send(Message m)
 {
+	if(!m_tunnel->secure())
+		return;
+
 	if(m_conn)
 	{
-		m_conn->write(m.toJson());
+		m_tunnel->send(m.toJson());
 		m_conn->flush();
 		m_conn->waitForBytesWritten();
 	}
@@ -183,6 +201,11 @@ void Transfer::setRate(int rate)
 	m_rate = rate;
 }
 
+void Transfer::createTunnel()
+{
+	m_tunnel->create();
+}
+
 void Transfer::setChunkSize(int cs)
 {
 	m_chunkSize = cs;
@@ -199,9 +222,8 @@ void Transfer::checkForData()
 {
 	qCDebug(TRANSFER) << "checking for data" ;
 	if(m_conn && m_conn->hasUnreadData()) {
-		QByteArray msg = m_conn->data();
-		qCDebug(TRANSFER) << this << "recieved" << msg;
-		processRead(msg);
+		m_request = m_tunnel->readMessage();
+		handleRequest();
 	}
 	else 
 		qCDebug(TRANSFER) << "no data found" ;
@@ -274,6 +296,9 @@ bool Transfer::checkTransfer()
 
 void Transfer::scheduleTransfer()
 {
+	if(!m_tunnel->secure())
+		return;
+
 	if(m_stopped)
 		return;
 
@@ -322,6 +347,9 @@ void Transfer::scheduleTransfer()
 
 void Transfer::transfer()
 {
+	if(!m_tunnel->secure())
+		return;
+
 	if(m_stopped)
 		return;
 
@@ -338,12 +366,15 @@ void Transfer::transfer()
 	if(m_isSender)
 		buffer = m_source->read(m_chunkSize);
 	else
-		buffer = m_conn->data();
+		buffer = m_tunnel->read();
 
 	qCDebug(TRANSFER) << this << "writting to destination: " << buffer.length() ;
 
 	quint64 len = buffer.length();
-	m_destination->write(buffer);
+	if(m_isSender)
+		m_tunnel->send(buffer);
+	else
+		m_destination->write(buffer);
 	m_transferInCycle += len;
 	m_transfered += len;
 	if(!m_isSender) {
@@ -390,17 +421,21 @@ void Transfer::transfer()
 
 void Transfer::handleRead()
 {
+	if(!m_tunnel->secure())
+		return;
+
 	if(m_transferStarted)
 		return;
 
-	QByteArray msg = m_conn->data();
-	qCDebug(TRANSFER) << this << "recieved message " << msg ;
-
-	processRead(msg);
+	m_request = m_tunnel->readMessage();
+	handleRequest();
 }
 
 void Transfer::handleWrite(qint32)
 {
+	if(!m_tunnel->secure())
+		return;
+
 	if(m_transferStarted)
 		return;
 }
@@ -437,7 +472,7 @@ void Transfer::handleRequest()
 {
 	if(m_request.method() == Message::TRANSFER)
 	{
-		if(m_request.option() == Message::RSF )//&& m_file.action() == File::UNKNOWN)
+		if(m_request.option() == Message::RSF && m_file.action() == File::UNKNOWN)
 		{
 			QString clientName = m_request.data("USERNAME");
 			QString filesize = m_request.data("FILESIZE");

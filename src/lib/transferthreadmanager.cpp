@@ -53,7 +53,6 @@ void TransferThreadManager::transferCreated(Transfer* transfer)
 	qint16 id = transfer->file().id();
 	m_transferList.insert(id,transfer);
 	qCDebug(TRANSFER) << this << "Transfer Added with id " << id ;
-	transfer->checkForData();
 }
 
 void TransferThreadManager::manualTransferCreated(Transfer* transfer)
@@ -63,7 +62,7 @@ void TransferThreadManager::manualTransferCreated(Transfer* transfer)
 
 	qint16 id = transfer->file().id();
 	m_transferList.insert(id,transfer);
-	transfer->sendFile();
+	transfer->createTunnel();
 	qCDebug(TRANSFER) << this << "Manual Transfer Added with id " << id;
 }
 

@@ -35,6 +35,7 @@ namespace IPConnect
 {
 
 class IConnection;
+class SecureTunnel;
 
 class Transfer : public ITransfer
 {
@@ -47,6 +48,7 @@ public:
 	void accept() override;
 	void reject() override;
 	void sendFile() override;
+	void createTunnel();
 
 	IConnection* connection();
 	void setConnection(IConnection*);
@@ -66,9 +68,13 @@ Q_SIGNALS:
 	void requested();
 	void destroyTransfer();
 
+protected Q_SLOTS:
+	void secured();
+
 protected:
 	File m_file;
 	IConnection* m_conn;
+	SecureTunnel* m_tunnel;
 	int m_rate;
 	int m_chunkSize;
 	QIODevice* m_source;
@@ -92,6 +98,7 @@ protected:
 
 	Message m_request;
 	bool m_transferStarted;
+	bool m_secured;
 
 	void start();
 	void send(Message);
