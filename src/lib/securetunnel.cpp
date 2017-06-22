@@ -74,19 +74,8 @@ QByteArray SecureTunnel::read()
 	QByteArray result;
 	while(true)
 	{
-		QByteArray l = m_conn->seek(8);
-
-		if(l.isEmpty())
-			break;
-
-		quint32 size = l.toULong();
-
-		if(m_conn->availableSize() < size + 8)
-			break;
-
-		QByteArray data = m_conn->data(size+8).mid(8);
-		QByteArray resultTemp;
-		if(!ControlCenter::instance()->cryptEngine()->decryptAES(m_aesPassPhrase.toUtf8(),data,resultTemp))
+		QByteArray resultTemp = readAESDecryptedData();
+		if(resultTemp.isEmpty())
 			break;
 		result += resultTemp;
 	}
@@ -100,21 +89,7 @@ Message SecureTunnel::readMessage()
 	if(!secure())
 		return m;
 
-	QByteArray l = m_conn->seek(8);
-
-	if(l.isEmpty())
-		return m;
-
-	quint32 size = l.toULong();
-
-	if(m_conn->availableSize() < size + 8)
-		return m;
-
-	QByteArray data = m_conn->data(size+8).mid(8);
-
-	QByteArray result;
-	if(!ControlCenter::instance()->cryptEngine()->decryptAES(m_aesPassPhrase.toUtf8(),data,result))
-		return m;
+	QByteArray result = readAESDecryptedData();
 
 	m = Message::fromJson(result);
 	return m;
@@ -164,7 +139,7 @@ void SecureTunnel::getAESPass()
 	if(!m_keySent || !m_keyAccepted)
 		return;
 
-	Message m = Message::fromJson(readEncryptedData());
+	Message m = Message::fromJson(readRSADecryptedData());
 	if(m.method() != Message::SECURE)
 		return;
 
@@ -254,7 +229,15 @@ QByteArray SecureTunnel::dataSize(quint32 size)
 	return len.toUtf8();
 }
 
-QByteArray SecureTunnel::readEncryptedData()
+QByteArray SecureTunnel::readAESDecryptedData()
+{
+	QByteArray data = readRawData();
+	QByteArray result;
+	ControlCenter::instance()->cryptEngine()->decryptAES(m_aesPassPhrase.toUtf8(),data,result);
+	return result;
+}
+
+QByteArray SecureTunnel::readRSADecryptedData()
 {
 	QByteArray data = readRawData();
 	QByteArray result;

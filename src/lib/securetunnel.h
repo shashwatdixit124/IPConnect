@@ -54,7 +54,8 @@ protected:
 	void getRSAPub();
 	QByteArray dataSize(quint32);
 	QByteArray readRawData();
-	QByteArray readEncryptedData();
+	QByteArray readAESDecryptedData();
+	QByteArray readRSADecryptedData();
 
 private:
 	bool m_secured;
