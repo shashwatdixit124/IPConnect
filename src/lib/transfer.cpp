@@ -338,15 +338,15 @@ void Transfer::scheduleTransfer()
 	{
 		if(!m_isSender) {
 			int temp = ((double)m_transfered/m_file.size())*100;
-			if(m_progress != temp) {
-				m_progress = temp;
-				m_file.setProgress(m_progress);
-				m_file.setTransfered(m_transfered);
-				int rate = m_transferInOneSec/(1024*1024);
-				m_transferInOneSec = 0;
-				m_file.setRate(rate);
-				emit progress(m_progress,m_transfered,rate);
-			}
+
+			m_progress = temp;
+			m_file.setProgress(m_progress);
+			m_file.setTransfered(m_transfered);
+			int rate = m_transferInOneSec/(1024*1024);
+			m_transferInOneSec = 0;
+			m_file.setRate(rate);
+			emit progress(m_progress,m_transfered,rate);
+
 		}
 		int current = QTime::currentTime().msec();
 		int delay = 1000 - current;
