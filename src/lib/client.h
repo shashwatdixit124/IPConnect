@@ -73,7 +73,6 @@ protected:
 	Message m_request;
 	bool m_detailAccepted;
 	bool m_detailSent;
-	bool m_secured;
 };
 
 }

@@ -36,7 +36,7 @@ namespace IPConnect
 {
 
 Client::Client(QObject* parent) : IClient(parent) , m_conn(nullptr) , m_detailAccepted(false) , 
-	m_detailSent(false) , m_tunnel(new SecureTunnel(this)) , m_secured(false)
+	m_detailSent(false) , m_tunnel(new SecureTunnel(this))
 {
 	connect(m_tunnel,&SecureTunnel::secured,this,&Client::secured);
 }
@@ -69,6 +69,9 @@ void Client::setConnection(IConnection* conn)
 {
 	m_conn = conn;
 	m_tunnel->setConnection(m_conn);
+	connect(m_conn,&IConnection::dataAvailable,this,&Client::handleRead);
+	connect(m_conn,&IConnection::disconnected,this,&Client::closeConnection);
+	connect(m_conn,&IConnection::errorOccurred,this,&Client::closeConnection);
 }
 
 void Client::setInfo(ClientInformation info)
@@ -88,7 +91,7 @@ bool Client::hasAcceptedData() const
 
 void Client::handleRead()
 {
-	if(!m_secured)
+	if(!m_tunnel->secure())
 		return;
 	m_request = m_tunnel->readMessage();
 	handleRequest();
@@ -142,6 +145,9 @@ void Client::handleRequest()
 
 void Client::send(Message m)
 {
+	if(!m_tunnel->secure())
+		return;
+
 	if(m_conn){
 		m_tunnel->send(m.toJson());
 		m_conn->flush();
@@ -174,10 +180,6 @@ void Client::sendDetail()
 
 void Client::secured()
 {
-	m_secured = true;
-	connect(m_conn,&IConnection::dataAvailable,this,&Client::handleRead);
-	connect(m_conn,&IConnection::disconnected,this,&Client::closeConnection);
-	connect(m_conn,&IConnection::errorOccurred,this,&Client::closeConnection);
 	sendDetail();
 }
 
