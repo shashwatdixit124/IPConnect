@@ -42,6 +42,7 @@ public:
 
 	enum Option{
 		RSA,
+		AES,
 		REQUEST,
 		TEXT,
 		RSF,

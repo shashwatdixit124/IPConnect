@@ -31,7 +31,7 @@ namespace IPConnect
 {
 
 SecureTunnel::SecureTunnel(QObject* parent) : QObject(parent) , m_secured(false) , m_conn(nullptr) ,
-	m_keySent(false) , m_keyAccepted(false)
+	m_keySent(false) , m_keyAccepted(false) , m_gotRSAPub(false)
 {
 }
 
@@ -56,7 +56,7 @@ void SecureTunnel::send(QByteArray data)
 	if(!secure())
 		return;
 	QByteArray encData;
-	if(!ControlCenter::instance()->cryptEngine()->encryptData(m_clientPublicKey,data,encData))
+	if(!ControlCenter::instance()->cryptEngine()->encryptAES(m_aesPassPhrase.toUtf8(),data,encData))
 		return;
 
 	encData = dataSize(encData.size()) + encData;
@@ -86,7 +86,7 @@ QByteArray SecureTunnel::read()
 
 		QByteArray data = m_conn->data(size+8).mid(8);
 		QByteArray resultTemp;
-		if(!ControlCenter::instance()->cryptEngine()->decryptData(data,resultTemp))
+		if(!ControlCenter::instance()->cryptEngine()->decryptAES(m_aesPassPhrase.toUtf8(),data,resultTemp))
 			break;
 		result += resultTemp;
 	}
@@ -113,7 +113,7 @@ Message SecureTunnel::readMessage()
 	QByteArray data = m_conn->data(size+8).mid(8);
 
 	QByteArray result;
-	if(!ControlCenter::instance()->cryptEngine()->decryptData(data,result))
+	if(!ControlCenter::instance()->cryptEngine()->decryptAES(m_aesPassPhrase.toUtf8(),data,result))
 		return m;
 
 	m = Message::fromJson(result);
@@ -131,21 +131,23 @@ void SecureTunnel::readyRead()
 	if(secure())
 		return;
 
-	QByteArray l = m_conn->seek(8);
+	if(!m_keyAccepted)
+		getRSAPub();
+	else
+		getAESPass();
 
-	if(l.isEmpty())
+	if(!m_keyAccepted || !m_keySent || secure())
+		return;
+	sendAESPass();
+}
+
+void SecureTunnel::getRSAPub()
+{
+	Message m = Message::fromJson(readRawData());
+	if(m.method() != Message::SECURE)
 		return;
 
-	quint32 size = l.toULong();
-
-	if(m_conn->availableSize() < size + 8)
-		return;
-
-	QByteArray data = m_conn->data(size+8).mid(8);
-
-	Message m = Message::fromJson(data);
-
-	if(m.method() == Message::SECURE && m.option() == Message::RSA)
+	if(m.option() == Message::RSA)
 	{
 		m_clientPublicKey = m.data("KEY").toUtf8();
 		if(m_clientPublicKey.isEmpty())
@@ -154,13 +156,75 @@ void SecureTunnel::readyRead()
 
 		if(!m_keySent)
 			sendKey();
-		if(m_keySent && m_keyAccepted)
-		{
+	}
+}
+
+void SecureTunnel::getAESPass()
+{
+	if(!m_keySent || !m_keyAccepted)
+		return;
+
+	Message m = Message::fromJson(readEncryptedData());
+	if(m.method() != Message::SECURE)
+		return;
+
+	if(m.option() == Message::AES)
+	{
+		if(m_aesPassPhrase.isEmpty()) {
+			m_aesPassPhrase = m.data("KEY");
+		}
+		else if(m_aesPassPhrase < m.data("KEY").toUtf8()) {
+			m_aesPassPhrase = m.data("KEY");
+		}
+		else {
 			m_secured = true;
 			disconnect(m_conn,&IConnection::dataAvailable,this,&SecureTunnel::readyRead);
 			emit secured();
+			return;
 		}
+
+		if(m_aesPassPhrase.isEmpty())
+			return;
+
+		m_secured = true;
+		disconnect(m_conn,&IConnection::dataAvailable,this,&SecureTunnel::readyRead);
+		emit secured();
 	}
+}
+
+void SecureTunnel::sendAESPass()
+{
+	if(!m_keySent || !m_keyAccepted || secure())
+		return;
+
+	QByteArray passphrase;
+	if(!m_aesPassPhrase.isEmpty())
+	{
+		passphrase = ControlCenter::instance()->cryptEngine()->randomPassword();
+		if(passphrase < m_aesPassPhrase)
+			return;
+		m_aesPassPhrase = passphrase;
+	}
+	else
+	{
+		m_aesPassPhrase = ControlCenter::instance()->cryptEngine()->randomPassword();
+	}
+
+	Message m;
+	m.setMethod(Message::SECURE);
+	m.setOption(Message::AES);
+	m.setData("KEY",m_aesPassPhrase);
+
+	QByteArray data = m.toJson();
+	QByteArray encData;
+	if(!ControlCenter::instance()->cryptEngine()->encryptRSA(m_clientPublicKey,data,encData))
+		return;
+
+	encData = dataSize(encData.size()) + encData;
+
+	m_conn->write(encData);
+	m_conn->flush();
+	m_conn->waitForBytesWritten();
 }
 
 void SecureTunnel::sendKey()
@@ -188,6 +252,31 @@ QByteArray SecureTunnel::dataSize(quint32 size)
 		len = QStringLiteral("0")+len;
 	}
 	return len.toUtf8();
+}
+
+QByteArray SecureTunnel::readEncryptedData()
+{
+	QByteArray data = readRawData();
+	QByteArray result;
+	ControlCenter::instance()->cryptEngine()->decryptRSA(data,result);
+	return result;
+}
+
+QByteArray SecureTunnel::readRawData()
+{
+	QByteArray data;
+	QByteArray l = m_conn->seek(8);
+
+	if(l.isEmpty())
+		return data;
+
+	quint32 size = l.toULong();
+
+	if(m_conn->availableSize() < size + 8)
+		return data;
+
+	data = m_conn->data(size+8).mid(8);
+	return data;
 }
 
 }

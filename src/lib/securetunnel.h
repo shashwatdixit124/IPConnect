@@ -49,14 +49,21 @@ Q_SIGNALS:
 protected:
 	void readyRead();
 	void sendKey();
+	void sendAESPass();
+	void getAESPass();
+	void getRSAPub();
 	QByteArray dataSize(quint32);
+	QByteArray readRawData();
+	QByteArray readEncryptedData();
 
 private:
 	bool m_secured;
+	bool m_gotRSAPub;
 	bool m_keySent;
 	bool m_keyAccepted;
 	IConnection* m_conn;
 	QByteArray m_clientPublicKey;
+	QString m_aesPassPhrase;
 };
 
 }
