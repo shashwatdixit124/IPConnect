@@ -30,6 +30,10 @@ namespace IPConnect
 class IClientManager;
 class ClientInformation;
 
+/**
+ * @brief List of all available clients
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class UserList : public QAbstractListModel
 {
 	Q_OBJECT
@@ -46,6 +50,9 @@ public:
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public Q_SLOTS:
+	/**
+	 * @brief updates the list of clients
+	 */
 	void updateList();
 
 protected:

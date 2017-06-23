@@ -31,6 +31,9 @@ namespace IPConnect
 {
 class IClientManager;
 
+/**
+ * @brief provides all Messages send or recieved for GUI
+ */
 class MessageList : public QAbstractListModel
 {
 	Q_OBJECT
@@ -47,9 +50,16 @@ public:
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public Q_SLOTS:
-	void updateList(MessageInformation);
+	/**
+	 * @brief adds new message provided to the message list
+	 * @param mi Message to add to list
+	 */
+	void updateList(MessageInformation mi);
 
 Q_SIGNALS:
+	/**
+	 * @brief emitted when new message is added
+	 */
 	void messagesAdded(int);
 
 protected:

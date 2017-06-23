@@ -466,12 +466,6 @@ void Transfer::reject()
 	stop();
 }
 
-void Transfer::processRead(QByteArray data)
-{
-	m_request = Message::fromJson(data);
-	handleRequest();
-}
-
 void Transfer::handleRequest()
 {
 	if(m_request.method() == Message::TRANSFER)

@@ -41,6 +41,11 @@ class IClientManager;
 class IUserSettings;
 class ITransferManager;
 
+/**
+ * @brief Singleton to Connect ControlCenter to GUI
+ * provides all information and methods to GUI
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class UiManager : public QObject
 {
 	Q_OBJECT
@@ -62,36 +67,59 @@ public:
 	UiManager();
 	~UiManager();
 
+	/**
+	 * @brief list of all client
+	 * @return UserList
+	 */
 	QAbstractListModel* users();
+
+	/**
+	 * @brief list of all messages
+	 * @return MessageList
+	 */
 	QAbstractListModel* messages();
+
+	/**
+	 * @brief list of pending Trasnfers
+	 * @return PendingTransfers
+	 */
 	QAbstractListModel* pendingTransfers();
+
+	/**
+	 * @brief list of running transfers
+	 * @return RunningTransfers
+	 */
 	QAbstractListModel* runningTransfers();
 	
+	/**
+	 * @brief checks if running first time
+	 * @return true if running first time, false otherwise
+	 */
 	bool runningFirstTime();
 
 	QString theme();
-	void setTheme(QString);
+	void setTheme(QString color);
 
 	QString userName();
-	void setUserName(QString);
+	void setUserName(QString name);
 
 	QString downloadDir();
-	void setDownloadDir(QString);
+	void setDownloadDir(QString ddir);
 
 	qint16 selectedUser();
-	void setSelectedUser(qint16);
+	void setSelectedUser(qint16 id);
 
 	QString notificationMsg();
-	void setNotificationMsg(QString);
+	void setNotificationMsg(QString msg);
 
 	QString notificationStatus();
-	void setNotificationStatus(QString);
+	void setNotificationStatus(QString status);
 
 	int unreadMessages();
 	void setUnreadMessages(int);
 
 	int unseenTransfers();
-	void setUnseenTransfers(int);
+	void setUnseenTransfers(int m);
 
 	Q_INVOKABLE void sendMessage(QString);
 	Q_INVOKABLE void sendFile(QString);

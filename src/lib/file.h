@@ -26,6 +26,11 @@
 namespace IPConnect
 {
 
+/**
+ * @brief Container for all informations related to a transfer
+ * i.e. filename , path to store to , file size , url to send to, etc.
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class File
 {
 

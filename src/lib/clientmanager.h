@@ -37,6 +37,10 @@ class Client;
 class ClientInformation;
 class ClientThreadManager;
 
+/**
+ * @see IClientManager
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class ClientManager : public IClientManager
 {
 	Q_OBJECT

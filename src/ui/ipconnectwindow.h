@@ -28,12 +28,19 @@ namespace IPConnect
 class IControlCenter;
 class UiManager;
 
+/**
+ * @brief Window for IPConnect GUI
+ */
 class IPConnectWindow
 {
 
 public:
 	explicit IPConnectWindow();
 	~IPConnectWindow();
+
+	/**
+	 * @brief loads the gui pages
+	 */
 	void show();
 
 protected:

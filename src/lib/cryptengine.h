@@ -31,6 +31,10 @@ namespace IPConnect
 {
 class Crypt;
 
+/**
+ * @see ICryptEngine
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class CryptEngine : public ICryptEngine
 {
 	Q_OBJECT

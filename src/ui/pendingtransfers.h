@@ -30,6 +30,10 @@ namespace IPConnect
 class ITransferManager;
 class File;
 
+/**
+ * @brief List of all Pending Transfers for GUI
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class PendingTransfers : public QAbstractListModel
 {
 	Q_OBJECT
@@ -49,9 +53,15 @@ public:
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public Q_SLOTS:
+	/**
+	 * @brief updates the list
+	 */
 	void updateList();
 
 Q_SIGNALS:
+	/**
+	 * @brief emitted when a new pending Trasnfer is added
+	 */
 	void transfersAdded(int);
 
 protected:
@@ -59,7 +69,12 @@ protected:
 	ITransferManager *m_tm;
 	QList<File> m_transfers;
 
-	QString bytesToString(quint64) const;
+	/**
+	 * @brief converts a no in bytes to a string in B/KB/MB/GB
+	 * @param bytes to convert
+	 * @return converted string
+	 */
+	QString bytesToString(quint64 bytes) const;
 
 };
 

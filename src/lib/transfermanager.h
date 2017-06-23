@@ -28,6 +28,10 @@
 #include <QMap>
 #include <QThread>
 
+/**
+ * @see ITransferManager
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 namespace IPConnect
 {
 
