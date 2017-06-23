@@ -31,6 +31,11 @@
 namespace IPConnect
 {
 
+/**
+ * @brief Implements methods to encrypt and decrypt data with RSA and AES using OpenSSl library
+ *
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class Crypt : public QObject
 {
 	Q_OBJECT

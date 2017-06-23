@@ -43,10 +43,10 @@ public:
 	QByteArray privateKey() override;
 	QByteArray randomPassword() override;
 
-	bool encryptRSA(QByteArray& , QByteArray& , QByteArray&) override;
-	bool decryptRSA(QByteArray& , QByteArray&) override;
-	bool encryptAES(QByteArray, QByteArray &, QByteArray &) override;
-	bool decryptAES(QByteArray, QByteArray &, QByteArray &) override;
+	bool encryptRSA(QByteArray& pubKey, QByteArray& input, QByteArray& output) override;
+	bool decryptRSA(QByteArray& input, QByteArray& output) override;
+	bool encryptAES(QByteArray pass, QByteArray& input, QByteArray& output) override;
+	bool decryptAES(QByteArray pass, QByteArray& input, QByteArray& output) override;
 
 private:
 	RSA* m_pubRSA;

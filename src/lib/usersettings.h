@@ -29,6 +29,10 @@
 namespace IPConnect
 {
 
+/**
+ * @see IUserSettings
+ * @author Shashwat Dixit <shashwatdixit124@gmail.com>
+ */
 class UserSettings : public IUserSettings
 {
 	Q_OBJECT

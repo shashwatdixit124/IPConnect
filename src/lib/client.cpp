@@ -102,11 +102,6 @@ void Client::closeConnection()
 	emit connectionClosed();
 }
 
-void Client::processRead(QByteArray t_data)
-{
-
-}
-
 void Client::handleRequest()
 {
 	if(m_request.method() == Message::CONNECT)
