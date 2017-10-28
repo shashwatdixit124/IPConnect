@@ -166,18 +166,21 @@ QByteArray Crypt::encryptAES(QByteArray passphrase, QByteArray &data)
 	if(!EVP_EncryptInit_ex(&en, NULL, NULL, NULL, NULL))
 	{
 		qCritical() << "EVP_EncryptInit_ex() failed " <<  ERR_error_string(ERR_get_error(), NULL) ;
+		free(ciphertext);
 		return QByteArray();
 	}
 
 	if(!EVP_EncryptUpdate(&en, ciphertext, &c_len,(unsigned char *)input, len))
 	{
 		qCritical() << "EVP_EncryptUpdate() failed " <<  ERR_error_string(ERR_get_error(), NULL) ;
+		free(ciphertext);
 		return QByteArray();
 	}
 
 	if(!EVP_EncryptFinal(&en, ciphertext+c_len, &f_len))
 	{
 		qCritical() << "EVP_EncryptFinal_ex() failed " <<  ERR_error_string(ERR_get_error(), NULL) ;
+		free(ciphertext);
 		return QByteArray();
 	}
 
