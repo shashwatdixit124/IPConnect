@@ -160,8 +160,8 @@ QByteArray Crypt::encryptAES(QByteArray passphrase, QByteArray &data)
 	char *input = data.data();
 	int len = data.size();
 
-	int c_len = len + AES_BLOCK_SIZE, f_len = 0;
-	unsigned char *ciphertext = (unsigned char*)malloc(c_len);
+	int c_len = len, f_len = 0;
+	unsigned char *ciphertext = (unsigned char*)malloc(c_len + AES_BLOCK_SIZE);
 
 	if(!EVP_EncryptInit_ex(&en, NULL, NULL, NULL, NULL))
 	{
